@@ -17,18 +17,24 @@
 # limitations under the License.
 #
 
-include NetApp::Api
+include NetAppEHelper
 
 action :create do
-  login(node['netapp']['user'], node['netapp']['password'])
-  resource_update = add_storage_system(new_resource.name)
-  logout(node['netapp']['user'], node['netapp']['password'])
-  new_resource.updated_by_last_action(true) if resource_update
+  netapp_api = NetApp::ESeries::Api.new(url)
+
+  netapp_api.login(node['netapp']['user'], node['netapp']['password'])
+  resource_update_status = netapp_api.add_storage_system(new_resource.name)
+  netapp_api.logout(node['netapp']['user'], node['netapp']['password'])
+
+  new_resource.updated_by_last_action(true) if resource_update_status
 end
 
 action :delete do
-  login(node['netapp']['user'], node['netapp']['password'])
-  resource_update = remove_storage_system(new_resource.name)
-  logout(node['netapp']['user'], node['netapp']['password'])
-  new_resource.updated_by_last_action(true) if resource_update
+  netapp_api = NetApp::ESeries::Api.new(url)
+
+  netapp_api.login(node['netapp']['user'], node['netapp']['password'])
+  resource_update_status = netapp_api.remove_storage_system(new_resource.name)
+  netapp_api.logout(node['netapp']['user'], node['netapp']['password'])
+
+  new_resource.updated_by_last_action(true) if resource_update_status
 end
