@@ -40,12 +40,8 @@ module NetApp
     def remove_storage_system(storage_system_ip)
       system_id = get_storage_system_id(storage_system_ip)
       # system id or wwn can be used to do storage related operations.
-      if system_id.nil?
-        fail 'Storage system not found'
-      else
-        response = request(:delete, url, "/devmgr/v2/storage-systems/#{system_id}")
-        response.status == 200 ? true :  false # or fail "http etrror- #{response.status} while trying to delete storage system"
-      end
+      response = request(:delete, url, "/devmgr/v2/storage-systems/#{system_id}") unless system_id.nil?
+      response.status == 200 ? true : (fail "http etrror- #{response.status} while trying to delete storage system")
     end
 
     # This will remain with cookbook library and will not be exported to gem

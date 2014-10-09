@@ -20,4 +20,4 @@
 actions :create, :delete
 default_action :create
 
-attribute :storage_system, :kind_of => String, :required => true, :name_attribute => true
+attribute :storage_system, kind_of: String, required: true, name_attribute: true

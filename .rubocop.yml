@@ -1,0 +1,10 @@
+AllCops:
+  Exclude:
+    - metadata.rb
+
+LineLength:
+  Enabled: false
+MethodLength:
+  Max: 30
+Documentation:
+    Enabled: false
