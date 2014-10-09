@@ -16,3 +16,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+actions :create
+default_action :create
+
+attribute :storage_system, kind_of: String, required: true, name_attribute: true
+attribute :current_admin_password, kind_of: String, required: true
+attribute :admin_password, kind_of: [TrueClass, FalseClass], required: true
+attribute :new_password, kind_of: String, required: true
