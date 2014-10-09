@@ -19,3 +19,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+netapp_e_host '10.250.117.112' do
+  action :create
+end
+
+netapp_e_host '10.250.117.112' do
+  action :delete
+end

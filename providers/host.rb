@@ -16,3 +16,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+include NetApp::Api
+
+action :create do
+  login(node['netapp']['user'], node['netapp']['password'])
+  resource_update = add_storage_system(new_resource.name)
+  logout(node['netapp']['user'], node['netapp']['password'])
+  new_resource.updated_by_last_action(true) if resource_update
+end
+
+action :delete do
+  login(node['netapp']['user'], node['netapp']['password'])
+  resource_update = remove_storage_system(new_resource.name)
+  logout(node['netapp']['user'], node['netapp']['password'])
+  new_resource.updated_by_last_action(true) if resource_update
+end
