@@ -7,7 +7,7 @@ class NetApp
       # To do
       # Verify HTTP error codes and print appropriate error messages
 
-      def initialize(url, storage_system_ip connect_timeout = nil)
+      def initialize(url, storage_system_ip, connect_timeout = nil)
         @url = url
         @storage_system_ip = storage_system_ip
         @connect_timeout = connect_timeout
@@ -37,98 +37,98 @@ class NetApp
       end
 
       def delete_storage_system
-        system_id = get_storage_system_id
-        # system id or wwn can be used to do storage related operations.
-        if system_id.nil?
-          false # the resource wasn't updated
+        sys_id = storage_system_id
+        if sys_id.nil?
+          false
         else
-          response = request(:delete, "/devmgr/v2/storage-systems/#{system_id}")
+          response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}")
           response.status == 200 ? true : (fail "Failed to remove storage system. HTTP etrror- #{response.status} while trying to delete storage system")
         end
       end
 
       def change_password(current_pwd, admin_pwd, new_pwd)
         body = { currentAdminPassword: current_pwd, adminPassword: admin_pwd, newPassword: new_pwd }
-        system_id = get_storage_system_id
+        sys_id = storage_system_id
         if system_id.nil?
           false
         else
-          response = request(:post, "/devmgr/v2/storage-systems/#{system_id}
-           /passwords", body) unless system_id.nil?
+          response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}
+           /passwords", body) unless sys_id.nil?
           response.status == 201 ? true : (fail "Failed to change password. HTTP error- #{response.status} while trying to delete storage system")
         end
       end
 
       def create_storage_pool(raid_level, disk_drive_ids, name)
-        system_id = get_storage_system_id
-        if system_id.nil?
+        sys_id = storage_system_id
+        if sys_id.nil?
           false
         else
           body = { raidLevel: raid_level, diskDriveIds: disk_drive_ids, name: name }.to_json
-          response = request(:post, "/devmgr/v2/storage-systems/#{system_id}/storage-pools", body)
+          response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/storage-pools", body)
           response.status == 200 ? true : (fail "Failed to create storage pool.HTTP error- #{response.status} while trying to delete storage system")
         end
       end
 
       def create_volume(poolid, name, size_unit, size, segment_size)
-        system_id = get_storage_system_id
-        if system_id.nil?
+        sys_id = storage_system_id
+        if sys_id.nil?
           false
         else
           body = { poolId: poolid, name: name, sizeUnit: size_unit, size: size, segSize: segment_size }.to_json
-          response = request(:post, "/devmgr/v2/storage-systems/#{system_id}/volumes", body)
+          response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/volumes", body)
           response.status == 200 ? true : (fail "Failed to create volume. HTTP error- #{response.status} while trying to delete storage system")
         end
       end
 
       def update_volume(old_name, new_name)
-        volume_id = get_volume_id(old_name)
-        if volume_id.nil?
+        sys_id = storage_system_id
+        if sys_id.nil?
           false
         else
-          body = { name: new_name }.to_json
-          response = request(:post, "/devmgr/v2/storage-systems/#{system_id}/volumes/#{volume_id}", body)
-          response.status == 200 ? true : (fail "Failed to create volume. HTTP error- #{response.status} while trying to delete storage system")
+          vol_id = volume_id(sys_id, old_name)
+          if vol_id.nil?
+            false
+          else
+            body = { name: new_name }.to_json
+            response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/volumes/#{vol_id}", body)
+            response.status == 200 ? true : (fail "Failed to create volume. HTTP error- #{response.status} while trying to delete storage system")
+          end
         end
       end
 
       def delete_volume(name)
-        volume_id = get_volume_id(name)
-        if volume_id.nil?
+        sys_id = storage_system_id
+        if sys_id.nil?
           false
         else
-          response = request(:delete, "/devmgr/v2/storage-systems/#{system_id}/volumes/#{volume_id}")
-          response.status == 200 ? true : (fail "Failed to create volume. HTTP error- #{response.status} while trying to delete storage system")
+          vol_id = volume_id(sys_id, name)
+          if vol_id.nil?
+            false
+          else
+            response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/volumes/#{vol_id}")
+            response.status == 200 ? true : (fail "Failed to create volume. HTTP error- #{response.status} while trying to delete storage system")
+          end
         end
       end
 
       private
 
-      def get_storage_system_id
+      def storage_system_id
         response = request(:get, '/devmgr/v2/storage-systems')
         storage_systems = JSON.parse(response.body)
         storage_systems.each do |system|
-          if system['ip1'] == @storage_system_ip || system['ip2'] == @storage_system_ip
-            return system['id']
-          end
+          return system['id'] if system['ip1'] == @storage_system_ip || system['ip2'] == @storage_system_ip
         end
         nil
       end
 
-      def get_volume_id(name)
-        system_id = get_storage_system_id(@storage_system_ip)
-        if system_id.nil?
-          nil
-        else
-          response = request(:get, "/devmgr/v2/storage-systems/#{system_id}/volumes")
-          volumes = JSON.parse(response.body)
-          volumes.each do |volume|
-            if volume['name'] == name
-              return volume['id']
-            end
-          end
-          nil
+      def volume_id(storage_sys_id, name)
+        response = request(:get, "/devmgr/v2/storage-systems/#{storage_sys_id}/volumes")
+        volumes = JSON.parse(response.body)
+        volumes.each do |volume|
+          return volume['id'] if volume['name'] == name
         end
+        nil
       end
 
       def request(method, path, body = nil)

@@ -7,4 +7,6 @@ LineLength:
 MethodLength:
   Max: 30
 Documentation:
-    Enabled: false
+  Enabled: false
+ClassLength:
+  Enabled: false

@@ -21,10 +21,10 @@ include NetAppEHelper
 
 action :create do
   # validations
-  raise ArgumentError, "Attribute pool_id is required for volume creation" unless new_resource.pool_id
-  raise ArgumentError, "Attribute size_unit is required for volume creation" unless new_resource.size_unit
-  raise ArgumentError, "Attribute size is required for volume creation" unless new_resource.size
-  raise ArgumentError, "Attribute segment_size is required for volume creation" unless new_resource.segment_size
+  fail ArgumentError, 'Attribute pool_id is required for volume creation' unless new_resource.pool_id
+  fail ArgumentError, 'Attribute size_unit is required for volume creation' unless new_resource.size_unit
+  fail ArgumentError, 'Attribute size is required for volume creation' unless new_resource.size
+  fail ArgumentError, 'Attribute segment_size is required for volume creation' unless new_resource.segment_size
 
   netapp_api = NetApp::ESeries::Api.new(url, new_resource.storage_system)
 
@@ -47,7 +47,7 @@ end
 
 action :update do
   # validations
-  raise ArgumentError, "Attribute new_name is required to update volume name" unless new_resource.new_name
+  fail ArgumentError, 'Attribute new_name is required to update volume name' unless new_resource.new_name
 
   netapp_api = NetApp::ESeries::Api.new(url, new_resource.storage_system)
 

@@ -24,7 +24,7 @@ attribute :volume_name, kind_of: String, required: true, name_attribute: true
 attribute :storage_system, kind_of: String, required: true
 
 attribute :pool_id, kind_of: String
-attribute :size_unit, kind_of: String, equal_to: ['bytes', 'b', 'kb', 'mb', 'gb', 'tb', 'pb', 'eb', 'zb', 'yb']
+attribute :size_unit, kind_of: String, equal_to: %w(bytes b kb mb gb tb pb eb zb yb)
 attribute :size, kind_of: Integer
 attribute :segment_size, kind_of: Integer
 attribute :new_name, kind_of: String
