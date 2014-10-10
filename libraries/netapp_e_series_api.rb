@@ -58,14 +58,29 @@ class NetApp
         end
       end
 
-      def create_storage_pool(raid_level, disk_drive_ids, name)
+      def create_storage_pool(raid_level, disk_drive_ids, label)
         sys_id = storage_system_id
         if sys_id.nil?
           false
         else
-          body = { raidLevel: raid_level, diskDriveIds: disk_drive_ids, name: name }.to_json
+          body = { raidLevel: raid_level, diskDriveIds: disk_drive_ids, name: label }.to_json
           response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/storage-pools", body)
           response.status == 200 ? true : (fail "Failed to create storage pool.HTTP error- #{response.status} while trying to delete storage system")
+        end
+      end
+
+      def delete_storage_pool(label)
+        sys_id = storage_system_id
+        if sys_id.nil?
+          false
+        else
+          pool_id = storage_pool_id(sys_id, label)
+          if pool_id.nil?
+            false
+          else
+            response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/storage-pools/#{pool_id}")
+            response.status == 200 ? true : (fail "Failed to create volume. HTTP error- #{response.status} while trying to delete storage system")
+          end
         end
       end
 
@@ -127,6 +142,15 @@ class NetApp
         volumes = JSON.parse(response.body)
         volumes.each do |volume|
           return volume['id'] if volume['name'] == name
+        end
+        nil
+      end
+
+      def storage_pool_id(storage_sys_id, label)
+        response = request(:get, "/devmgr/v2/storage-systems/#{storage_sys_id}/storage-pools")
+        storage_pools = JSON.parse(response.body)
+        storage_pools.each do |pool|
+          return pool['id'] if pool['label'] == label
         end
         nil
       end
