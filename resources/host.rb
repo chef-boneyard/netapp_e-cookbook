@@ -16,3 +16,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+actions :create, :delete
+default_action :create
+
+attribute :name, kind_of: String, required: true, name_attribute: true
+attribute :storage_system, kind_of: String, required: true
+
+# Host Type
+attribute :host_default, kind_of: [TrueClass, FalseClass]
+attribute :code, kind_of: String
+attribute :host_used, kind_of: [TrueClass, FalseClass]
+attribute :index, kind_of: Integer
+attribute :host_type_name, kind_of: String
+
+attribute :group_id, kind_of: String
+attribute :ports, kind_of: => Array

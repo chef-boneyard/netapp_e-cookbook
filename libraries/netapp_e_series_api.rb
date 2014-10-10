@@ -58,6 +58,58 @@ class NetApp
         end
       end
 
+      def create_host(name, host_type, group_id = nil, ports = nil)
+        sys_id = storage_system_id
+        if sys_id.nil?
+          false
+        else
+          body = { name: name, hostType: host_type, groupId: group_id, ports: ports }.to_json
+          response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/hosts", body)
+          response.status == 200 ? true : (fail "Failed to create storage pool.HTTP error- #{response.status} while trying to delete storage system")
+        end
+      end
+
+      def delete_host(name)
+        sys_id = storage_system_id
+        if sys_id.nil?
+          false
+        else
+          host = host_id(sys_id, label)
+          if hosthost.nil?
+            false
+          else
+            response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/hosts/#{host}")
+            response.status == 200 ? true : (fail "Failed to create volume. HTTP error- #{response.status} while trying to delete storage system")
+          end
+        end
+      end
+
+      def create_host_group(name, hosts = nil)
+        sys_id = storage_system_id
+        if sys_id.nil?
+          false
+        else
+          body = { name: name, hosts: hosts }.to_json
+          response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/host-groups", body)
+          response.status == 200 ? true : (fail "Failed to create storage pool.HTTP error- #{response.status} while trying to delete storage system")
+        end
+      end
+
+      def delete_host_group(label)
+        sys_id = storage_system_id
+        if sys_id.nil?
+          false
+        else
+          host_grp_id = host_group_id(sys_id, label)
+          if host_grp_id.nil?
+            false
+          else
+            response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/host-groups/#{host_grp_id}")
+            response.status == 200 ? true : (fail "Failed to create volume. HTTP error- #{response.status} while trying to delete storage system")
+          end
+        end
+      end
+
       def create_storage_pool(raid_level, disk_drive_ids, label)
         sys_id = storage_system_id
         if sys_id.nil?
@@ -137,11 +189,20 @@ class NetApp
         nil
       end
 
-      def volume_id(storage_sys_id, name)
-        response = request(:get, "/devmgr/v2/storage-systems/#{storage_sys_id}/volumes")
-        volumes = JSON.parse(response.body)
-        volumes.each do |volume|
-          return volume['id'] if volume['name'] == name
+      def host_id(storage_sys_id, name)
+        response = request(:get, "/devmgr/v2/storage-systems/#{storage_sys_id}/hosts")
+        hosts = JSON.parse(response.body)
+        hosts.each do |host|
+          return host['id'] if host['label'] == label
+        end
+        nil
+      end
+
+      def host_group_id(storage_sys_id, label)
+        response = request(:get, "/devmgr/v2/storage-systems/#{storage_sys_id}/host-groups")
+        host_groups = JSON.parse(response.body)
+        host_groups.each do |host_group|
+          return host_group['id'] if host_group['label'] == label
         end
         nil
       end
@@ -151,6 +212,15 @@ class NetApp
         storage_pools = JSON.parse(response.body)
         storage_pools.each do |pool|
           return pool['id'] if pool['label'] == label
+        end
+        nil
+      end
+
+      def volume_id(storage_sys_id, name)
+        response = request(:get, "/devmgr/v2/storage-systems/#{storage_sys_id}/volumes")
+        volumes = JSON.parse(response.body)
+        volumes.each do |volume|
+          return volume['id'] if volume['name'] == name
         end
         nil
       end

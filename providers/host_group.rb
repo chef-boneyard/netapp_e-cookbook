@@ -16,3 +16,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+action :create do
+  netapp_api = NetApp::ESeries::Api.new(url, new_resource.storage_system)
+
+  netapp_api.login(node['netapp']['user'], node['netapp']['password'])
+  resource_update_status = netapp_api.create_host(new_resource.name, host_type, new_resource.hosts)
+  netapp_api.logout(node['netapp']['user'], node['netapp']['password'])
+
+  new_resource.updated_by_last_action(true) if resource_update_status
+end
+
+action :delete do
+  netapp_api = NetApp::ESeries::Api.new(url, new_resource.storage_system)
+
+  netapp_api.login(node['netapp']['user'], node['netapp']['password'])
+  resource_update_status = netapp_api.delete_storage_pool(new_resource.name)
+  netapp_api.logout(node['netapp']['user'], node['netapp']['password'])
+
+  new_resource.updated_by_last_action(true) if resource_update_status
+end
