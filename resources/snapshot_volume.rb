@@ -16,3 +16,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+actions :create, :delete
+default_action :create
+
+attribute :name, kind_of: String, required: true, name_attribute: true
+attribute :storage_system, kind_of: String, required: true
+
+attribute :snapshot_image_id, kind_of: String
+attribute :full_threshold, kind_of: Integer
+attribute :view_mode, kind_of: String, equal_to: %w(modeUnknown readWrote readOnly)
+attribute :repository_percentage, kind_of: Integer
+attribute :repository_pool_id, kind_of: String

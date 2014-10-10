@@ -204,6 +204,32 @@ class NetApp
         end
       end
 
+      def create_volume_snapshot(snapshot_image_id, full_threshold, name, view_mode, repository_percentage, repository_pool_id)
+        sys_id = storage_system_id
+        if sys_id.nil?
+          false
+        else
+          body = { snapshotImageId: snapshot_image_id, fullThreshold: full_threshold, name: name, viewMode: view_mode, repositoryPercentage: repository_percentage, repositoryPoolId: repository_pool_id }.to_json
+          response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/snapshot-volumes", body)
+          response.status == 200 ? true : (fail "Failed to create volume. HTTP error- #{response.status} while trying to delete storage system")
+        end
+      end
+
+      def delete_volume_snapshot(name)
+        sys_id = storage_system_id
+        if sys_id.nil?
+          false
+        else
+          snapshot_id = volume_snapshot_id(sys_id, name)
+          if snapshot_id.nil?
+            false
+          else
+            response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/snapshot-volumes/#{snapshot_id}")
+            response.status == 200 ? true : (fail "Failed to create volume. HTTP error- #{response.status} while trying to delete storage system")
+          end
+        end
+      end
+
       private
 
       def storage_system_id
@@ -253,6 +279,15 @@ class NetApp
 
       def group_snapshot_id(storage_sys_id, name)
         response = request(:get, "/devmgr/v2/storage-systems/#{storage_sys_id}/snapshot-groups")
+        snapshots = JSON.parse(response.body)
+        snapshots.each do |snapshot|
+          return snapshot['id'] if snapshot['label'] == name
+        end
+        nil
+      end
+
+      def volume_snapshot_id(storage_sys_id, name)
+        response = request(:get, "/devmgr/v2/storage-systems/#{storage_sys_id}/snapshot-volumes")
         snapshots = JSON.parse(response.body)
         snapshots.each do |snapshot|
           return snapshot['id'] if snapshot['label'] == name
