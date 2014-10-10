@@ -16,3 +16,31 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+action :create do
+  # Validations
+  fail ArgumentError, 'Attribute base_mappable_object_id is required to create group snapshot creation' unless new_resource.base_mappable_object_id
+  fail ArgumentError, 'Attribute repository_percentage is required to create group snapshot creation' unless new_resource.repository_percentage
+  fail ArgumentError, 'Attribute warning_threshold is required to create group snapshot creation' unless new_resource.warning_threshold
+  fail ArgumentError, 'Attribute auto_delete_limit is required to create group snapshot creation' unless new_resource.auto_delete_limit
+  fail ArgumentError, 'Attribute full_policy is required to create group snapshot creation' unless new_resource.full_policy
+  fail ArgumentError, 'Attribute storage_pool_id is required to create group snapshot creation' unless new_resource.storage_pool_id
+
+  netapp_api = NetApp::ESeries::Api.new(url, new_resource.storage_system)
+
+  netapp_api.login(node['netapp']['user'], node['netapp']['password'])
+  resource_update_status = netapp_api.create_group_snapshot(new_resource.base_mappable_object_id, new_resource.name, new_resource.repository_percentage, new_resource.warning_threshold, new_resource.auto_delete_limit, new_resource.full_policy, new_resource.storage_pool_id)
+  netapp_api.logout(node['netapp']['user'], node['netapp']['password'])
+
+  new_resource.updated_by_last_action(true) if resource_update_status
+end
+
+action :delete do
+  netapp_api = NetApp::ESeries::Api.new(url, new_resource.storage_system)
+
+  netapp_api.login(node['netapp']['user'], node['netapp']['password'])
+  resource_update_status = netapp_api.delete_group_snapshot(new_resource.name)
+  netapp_api.logout(node['netapp']['user'], node['netapp']['password'])
+
+  new_resource.updated_by_last_action(true) if resource_update_status
+end

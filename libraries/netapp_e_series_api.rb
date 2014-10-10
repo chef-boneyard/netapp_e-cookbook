@@ -74,7 +74,7 @@ class NetApp
         if sys_id.nil?
           false
         else
-          host = host_id(sys_id, label)
+          host = host_id(sys_id, name)
           if hosthost.nil?
             false
           else
@@ -95,12 +95,12 @@ class NetApp
         end
       end
 
-      def delete_host_group(label)
+      def delete_host_group(name)
         sys_id = storage_system_id
         if sys_id.nil?
           false
         else
-          host_grp_id = host_group_id(sys_id, label)
+          host_grp_id = host_group_id(sys_id, name)
           if host_grp_id.nil?
             false
           else
@@ -110,23 +110,23 @@ class NetApp
         end
       end
 
-      def create_storage_pool(raid_level, disk_drive_ids, label)
+      def create_storage_pool(raid_level, disk_drive_ids, name)
         sys_id = storage_system_id
         if sys_id.nil?
           false
         else
-          body = { raidLevel: raid_level, diskDriveIds: disk_drive_ids, name: label }.to_json
+          body = { raidLevel: raid_level, diskDriveIds: disk_drive_ids, name: name }.to_json
           response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/storage-pools", body)
           response.status == 200 ? true : (fail "Failed to create storage pool.HTTP error- #{response.status} while trying to delete storage system")
         end
       end
 
-      def delete_storage_pool(label)
+      def delete_storage_pool(name)
         sys_id = storage_system_id
         if sys_id.nil?
           false
         else
-          pool_id = storage_pool_id(sys_id, label)
+          pool_id = storage_pool_id(sys_id, name)
           if pool_id.nil?
             false
           else
@@ -178,6 +178,32 @@ class NetApp
         end
       end
 
+      def create_group_snapshot(base_mappable_object_id, name, repository_percentage, warning_threshold, auto_delete_limit, full_policy, storage_pool_id)
+        sys_id = storage_system_id
+        if sys_id.nil?
+          false
+        else
+          body = { baseMappableObjectId: base_mappable_object_id, name: name, repositoryPercentage: repository_percentage, warningThreshold: warning_threshold, autoDeleteLimit: auto_delete_limit, fullPolicy: full_policy, storagePoolId: storage_pool_id }.to_json
+          response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/snapshot-groups", body)
+          response.status == 200 ? true : (fail "Failed to create volume. HTTP error- #{response.status} while trying to delete storage system")
+        end
+      end
+
+      def delete_group_snapshot(name)
+        sys_id = storage_system_id
+        if sys_id.nil?
+          false
+        else
+          snapshot_id = group_snapshot_id(sys_id, name)
+          if snapshot_id.nil?
+            false
+          else
+            response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/snapshot-groups/#{snapshot_id}")
+            response.status == 200 ? true : (fail "Failed to create volume. HTTP error- #{response.status} while trying to delete storage system")
+          end
+        end
+      end
+
       private
 
       def storage_system_id
@@ -193,25 +219,25 @@ class NetApp
         response = request(:get, "/devmgr/v2/storage-systems/#{storage_sys_id}/hosts")
         hosts = JSON.parse(response.body)
         hosts.each do |host|
-          return host['id'] if host['label'] == label
+          return host['id'] if host['label'] == name
         end
         nil
       end
 
-      def host_group_id(storage_sys_id, label)
+      def host_group_id(storage_sys_id, name)
         response = request(:get, "/devmgr/v2/storage-systems/#{storage_sys_id}/host-groups")
         host_groups = JSON.parse(response.body)
         host_groups.each do |host_group|
-          return host_group['id'] if host_group['label'] == label
+          return host_group['id'] if host_group['label'] == name
         end
         nil
       end
 
-      def storage_pool_id(storage_sys_id, label)
+      def storage_pool_id(storage_sys_id, name)
         response = request(:get, "/devmgr/v2/storage-systems/#{storage_sys_id}/storage-pools")
         storage_pools = JSON.parse(response.body)
         storage_pools.each do |pool|
-          return pool['id'] if pool['label'] == label
+          return pool['id'] if pool['label'] == name
         end
         nil
       end
@@ -221,6 +247,15 @@ class NetApp
         volumes = JSON.parse(response.body)
         volumes.each do |volume|
           return volume['id'] if volume['name'] == name
+        end
+        nil
+      end
+
+      def group_snapshot_id(storage_sys_id, name)
+        response = request(:get, "/devmgr/v2/storage-systems/#{storage_sys_id}/snapshot-groups")
+        snapshots = JSON.parse(response.body)
+        snapshots.each do |snapshot|
+          return snapshot['id'] if snapshot['label'] == name
         end
         nil
       end

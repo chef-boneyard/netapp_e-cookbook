@@ -31,4 +31,4 @@ attribute :index, kind_of: Integer
 attribute :host_type_name, kind_of: String
 
 attribute :group_id, kind_of: String
-attribute :ports, kind_of: => Array
+attribute :ports, kind_of: Array

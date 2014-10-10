@@ -16,3 +16,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+actions :create, :delete
+default_action :create
+
+attribute :name, kind_of: String, required: true, name_attribute: true
+attribute :storage_system, kind_of: String, required: true
+
+attribute :base_mappable_object_id, kind_of: String
+attribute :repository_percentage, kind_of: Integer
+attribute :warning_threshold, kind_of: Integer
+attribute :auto_delete_limit, kind_of: Integer
+attribute :full_policy, kind_of: String, equal_to: %w(unknown failbasewrites purgepit)
+attribute :storage_pool_id, kind_of: String
