@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: netapp-e-series
-# Provider:: host
+# Resource:: storage_system
 #
 # Copyright 2014, Chef Software, Inc.
 #
@@ -16,3 +16,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+actions :create, :delete
+default_action :create
+
+attribute :storage_system, kind_of: String, required: true, name_attribute: true

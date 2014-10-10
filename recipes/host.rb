@@ -2,9 +2,6 @@
 # Cookbook Name:: netapp-e-series
 # Recipe:: host
 #
-# Cookbook Name:: netapp-e-series
-# Recipe:: host
-#
 # Copyright 2014, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,11 +16,3 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
-netapp_e_host '10.250.117.112' do
-  action :create
-end
-
-netapp_e_host '10.250.117.112' do
-  action :delete
-end
