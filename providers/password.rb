@@ -20,10 +20,10 @@
 include NetAppEHelper
 
 action :create do
-  netapp_api = NetApp::ESeries::Api.new(url)
+  netapp_api = NetApp::ESeries::Api.new(url, new_resource.name)
 
   netapp_api.login(node['netapp']['user'], node['netapp']['password'])
-  resource_update_status = netapp_api.change_password(new_resource.name, new_resource.current_admin_password, new_resource.admin_password, new_resource.new_password)
+  resource_update_status = netapp_api.change_password(new_resource.current_admin_password, new_resource.admin_password, new_resource.new_password)
   netapp_api.logout(node['netapp']['user'], node['netapp']['password'])
 
   new_resource.updated_by_last_action(true) if resource_update_status

@@ -20,20 +20,20 @@
 include NetAppEHelper
 
 action :create do
-  netapp_api = NetApp::ESeries::Api.new(url)
+  netapp_api = NetApp::ESeries::Api.new(url, new_resource.name)
 
   netapp_api.login(node['netapp']['user'], node['netapp']['password'])
-  resource_update_status = netapp_api.add_storage_system(new_resource.name)
+  resource_update_status = netapp_api.create_storage_system
   netapp_api.logout(node['netapp']['user'], node['netapp']['password'])
 
   new_resource.updated_by_last_action(true) if resource_update_status
 end
 
 action :delete do
-  netapp_api = NetApp::ESeries::Api.new(url)
+  netapp_api = NetApp::ESeries::Api.new(url, new_resource.name)
 
   netapp_api.login(node['netapp']['user'], node['netapp']['password'])
-  resource_update_status = netapp_api.remove_storage_system(new_resource.name)
+  resource_update_status = netapp_api.delete_storage_system
   netapp_api.logout(node['netapp']['user'], node['netapp']['password'])
 
   new_resource.updated_by_last_action(true) if resource_update_status
