@@ -314,11 +314,11 @@ class NetApp
         else
           if @basic_auth
             response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/snapshot-volumes", request_body.to_json)
-            resource_update_status = status(response, '201', %w(201 200), 'Failed to delete group snapshot')
+            resource_update_status = status(response, '201', %w(201 200), 'Failed to create volume snapshot')
           else
             login
             response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/snapshot-volumes", request_body.to_json)
-            resource_update_status = status(response, '201', %w(201 200), 'Failed to delete group snapshot')
+            resource_update_status = status(response, '201', %w(201 200), 'Failed to create volume snapshot')
             logout
           end
 
@@ -337,11 +337,11 @@ class NetApp
           else
             if @basic_auth
               response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/snapshot-volumes/#{snapshot_id}")
-              resource_update_status = status(response, '201', %w(201 200), 'Failed to delete group snapshot')
+              resource_update_status = status(response, '201', %w(201 200), 'Failed to delete volume snapshot')
             else
               login
               response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/snapshot-volumes/#{snapshot_id}")
-              resource_update_status = status(response, '201', %w(201 200), 'Failed to delete group snapshot')
+              resource_update_status = status(response, '201', %w(201 200), 'Failed to delete volume snapshot')
               logout
             end
 
@@ -404,6 +404,49 @@ class NetApp
               login
               response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/snapshot-volumes/#{volume_id}")
               resource_update_status = status(response, '201', %w(201 200), 'Failed to delete thin volume')
+              logout
+            end
+
+            resource_update_status
+          end
+        end
+      end
+
+      def create_volume_group(storage_system_ip, request_body)
+        sys_id = storage_system_id(storage_system_ip)
+        if sys_id.nil?
+          false
+        else
+          if @basic_auth
+            response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/storage-pools", request_body.to_json)
+            resource_update_status = status(response, '201', %w(201 200), 'Failed to create volume group')
+          else
+            login
+            response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/storage-pools", request_body.to_json)
+            resource_update_status = status(response, '201', %w(201 200), 'Failed to create volume group')
+            logout
+          end
+
+          resource_update_status
+        end
+      end
+
+      def delete_volume_group(storage_system_ip, name)
+        sys_id = storage_system_id(storage_system_ip)
+        if sys_id.nil?
+          false
+        else
+          group_id = volume_group_id(sys_id, name)
+          if group_id.nil?
+            false
+          else
+            if @basic_auth
+              response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/storage-pools/#{group_id}")
+              resource_update_status = status(response, '201', %w(201 200), 'Failed to delete volume group')
+            else
+              login
+              response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/storage-pools/#{group_id}")
+              resource_update_status = status(response, '201', %w(201 200), 'Failed to delete volume group')
               logout
             end
 
@@ -482,6 +525,15 @@ class NetApp
         volumes = JSON.parse(response.body)
         volumes.each do |volume|
           return volume['id'] if volume['name'] == name
+        end
+        nil
+      end
+
+      def volume_group_id(storage_sys_id, name)
+        response = request(:get, "/devmgr/v2/storage-systems/#{storage_sys_id}/storage-pools")
+        groups = JSON.parse(response.body)
+        groups.each do |group|
+          return group['id'] if group['label'] == name
         end
         nil
       end

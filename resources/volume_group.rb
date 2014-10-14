@@ -16,3 +16,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+actions :create, :delete
+default_action :create
+
+attribute :label, kind_of: String, required: true, name_attribute: true
+attribute :storage_system, kind_of: String, required: true
+
+attribute :raid_level, kind_of: String, equal_to: %w(Unsupported All 0 1 3 5 6 DiskPool)
+attribute :disk_drive_ids, kind_of: Array
