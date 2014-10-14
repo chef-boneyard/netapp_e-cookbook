@@ -19,6 +19,7 @@
 
 action :create do
   # Validations
+  fail ArgumentError, 'Attribute basic_auth has to be set to true or false. It cannot be empty' unless node['netapp']['basic_auth']
   fail ArgumentError, 'Attribute base_mappable_object_id is required to create group snapshot creation' unless new_resource.base_mappable_object_id
   fail ArgumentError, 'Attribute repository_percentage is required to create group snapshot creation' unless new_resource.repository_percentage
   fail ArgumentError, 'Attribute warning_threshold is required to create group snapshot creation' unless new_resource.warning_threshold
@@ -26,21 +27,22 @@ action :create do
   fail ArgumentError, 'Attribute full_policy is required to create group snapshot creation' unless new_resource.full_policy
   fail ArgumentError, 'Attribute storage_pool_id is required to create group snapshot creation' unless new_resource.storage_pool_id
 
+  request_body = { baseMappableObjectId: new_resource.base_mappable_object_id, name: new_resource.name, repositoryPercentage: new_resource.repository_percentage, warningThreshold: new_resource.warning_threshold, autoDeleteLimit: new_resource.auto_delete_limit, fullPolicy: new_resource.full_policy, storagePoolId: new_resource.storage_pool_id }
+
   netapp_api = NetApp::ESeries::Api.new(url, new_resource.storage_system)
 
-  netapp_api.login(node['netapp']['user'], node['netapp']['password'])
-  resource_update_status = netapp_api.create_group_snapshot(new_resource.base_mappable_object_id, new_resource.name, new_resource.repository_percentage, new_resource.warning_threshold, new_resource.auto_delete_limit, new_resource.full_policy, new_resource.storage_pool_id)
-  netapp_api.logout(node['netapp']['user'], node['netapp']['password'])
+  resource_update_status = netapp_api.create_group_snapshot(new_resource.storage_system, request_body)
 
   new_resource.updated_by_last_action(true) if resource_update_status
 end
 
 action :delete do
+  # Validations
+  fail ArgumentError, 'Attribute basic_auth has to be set to true or false. It cannot be empty' unless node['netapp']['basic_auth']
+
   netapp_api = NetApp::ESeries::Api.new(url, new_resource.storage_system)
 
-  netapp_api.login(node['netapp']['user'], node['netapp']['password'])
-  resource_update_status = netapp_api.delete_group_snapshot(new_resource.name)
-  netapp_api.logout(node['netapp']['user'], node['netapp']['password'])
+  resource_update_status = netapp_api.delete_group_snapshot(new_resource.storage_system, new_resource.name)
 
   new_resource.updated_by_last_action(true) if resource_update_status
 end
