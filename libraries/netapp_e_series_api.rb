@@ -369,6 +369,49 @@ class NetApp
         end
       end
 
+      def create_thin_volume(storage_system_ip, request_body)
+        sys_id = storage_system_id(storage_system_ip)
+        if sys_id.nil?
+          false
+        else
+          if @basic_auth
+            response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/thin-volumes", request_body.to_json)
+            resource_update_status = status(response, '201', %w(201 200), 'Failed to delete group snapshot')
+          else
+            login
+            response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/thin-volumes", request_body.to_json)
+            resource_update_status = status(response, '201', %w(201 200), 'Failed to create thin volume')
+            logout
+          end
+
+          resource_update_status
+        end
+      end
+
+      def delete_thin_volume(storage_system_ip, name)
+        sys_id = storage_system_id(storage_system_ip)
+        if sys_id.nil?
+          false
+        else
+          volume_id = thin_volume_id(sys_id, name)
+          if volume_id.nil?
+            false
+          else
+            if @basic_auth
+              response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/snapshot-volumes/#{volume_id}")
+              resource_update_status = status(response, '201', %w(201 200), 'Failed to delete thin volume')
+            else
+              login
+              response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/snapshot-volumes/#{volume_id}")
+              resource_update_status = status(response, '201', %w(201 200), 'Failed to delete thin volume')
+              logout
+            end
+
+            resource_update_status
+          end
+        end
+      end
+
       private
 
       def storage_system_id(storage_system_ip)
@@ -430,6 +473,15 @@ class NetApp
         snapshots = JSON.parse(response.body)
         snapshots.each do |snapshot|
           return snapshot['id'] if snapshot['label'] == name
+        end
+        nil
+      end
+
+      def thin_volume_id(storage_sys_id, name)
+        response = request(:get, "/devmgr/v2/storage-systems/#{storage_sys_id}/thin-volumes")
+        volumes = JSON.parse(response.body)
+        volumes.each do |volume|
+          return volume['id'] if volume['name'] == name
         end
         nil
       end
