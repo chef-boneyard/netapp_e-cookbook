@@ -21,3 +21,6 @@ actions :create, :delete
 default_action :create
 
 attribute :storage_system, kind_of: String, required: true, name_attribute: true
+attribute :password, kind_of: String
+attribute :wwn, kind_of: String
+attribute :meta_tags, kind_of: Array

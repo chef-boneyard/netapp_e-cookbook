@@ -16,3 +16,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+actions :update
+default_action :update
+
+attribute :storage_system, kind_of: String, required: true, name_attribute: true
+
+attribute :alias, kind_of: String
+attribute :enable_chap_authentication, kind_of: [TrueClass, FalseClass]
+attribute :chap_secret, kind_of: String

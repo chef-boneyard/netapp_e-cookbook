@@ -18,21 +18,25 @@
 #
 
 action :create do
-  netapp_api = NetApp::ESeries::Api.new(url, new_resource.storage_system)
+  # Validations
+  fail ArgumentError, 'Attribute basic_auth has to be set to true or false. It cannot be empty' unless node['netapp']['basic_auth']
 
-  netapp_api.login(node['netapp']['user'], node['netapp']['password'])
-  resource_update_status = netapp_api.create_host(new_resource.name, host_type, new_resource.hosts)
-  netapp_api.logout(node['netapp']['user'], node['netapp']['password'])
+  netapp_api = NetApp::ESeries::Api.new(node['netapp']['user'], node['netapp']['password'], url, node['netapp']['basic_auth'], node['netapp']['api']['timeout'])
+
+  request_body = { name: new_resource.name, hosts: new_resource.hosts }
+
+  resource_update_status = netapp_api.create_host_group(new_resource.storage_system, request_body)
 
   new_resource.updated_by_last_action(true) if resource_update_status
 end
 
 action :delete do
-  netapp_api = NetApp::ESeries::Api.new(url, new_resource.storage_system)
+  # Validations
+  fail ArgumentError, 'Attribute basic_auth has to be set to true or false. It cannot be empty' unless node['netapp']['basic_auth']
 
-  netapp_api.login(node['netapp']['user'], node['netapp']['password'])
-  resource_update_status = netapp_api.delete_storage_pool(new_resource.name)
-  netapp_api.logout(node['netapp']['user'], node['netapp']['password'])
+  netapp_api = NetApp::ESeries::Api.new(node['netapp']['user'], node['netapp']['password'], url, node['netapp']['basic_auth'], node['netapp']['api']['timeout'])
+
+  resource_update_status = netapp_api.delete_host_group(new_resource.storage_system, new_resource.name)
 
   new_resource.updated_by_last_action(true) if resource_update_status
 end

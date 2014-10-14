@@ -20,21 +20,25 @@
 include NetAppEHelper
 
 action :create do
-  netapp_api = NetApp::ESeries::Api.new(url, new_resource.name)
+  # Validations
+  fail ArgumentError, 'Attribute basic_auth has to be set to true or false. It cannot be empty' unless node['netapp']['basic_auth']
 
-  netapp_api.login(node['netapp']['user'], node['netapp']['password'])
-  resource_update_status = netapp_api.create_storage_system
-  netapp_api.logout(node['netapp']['user'], node['netapp']['password'])
+  netapp_api = NetApp::ESeries::Api.new(node['netapp']['user'], node['netapp']['password'], url, node['netapp']['basic_auth'], node['netapp']['api']['timeout'])
+
+  request_body = { controllerAddresses: Array.new << new_resource.name, password: new_resource.password, wwn: new_resource.wwn, metaTags: new_resource.meta_tags }
+
+  resource_update_status = netapp_api.create_storage_system(request_body)
 
   new_resource.updated_by_last_action(true) if resource_update_status
 end
 
 action :delete do
-  netapp_api = NetApp::ESeries::Api.new(url, new_resource.name)
+  # Validations
+  fail ArgumentError, 'Attribute basic_auth has to be set to true or false. It cannot be empty' unless node['netapp']['basic_auth']
 
-  netapp_api.login(node['netapp']['user'], node['netapp']['password'])
-  resource_update_status = netapp_api.delete_storage_system
-  netapp_api.logout(node['netapp']['user'], node['netapp']['password'])
+  netapp_api = NetApp::ESeries::Api.new(node['netapp']['user'], node['netapp']['password'], url, node['netapp']['basic_auth'], node['netapp']['api']['timeout'])
+
+  resource_update_status = netapp_api.delete_storage_system(new_resource.name)
 
   new_resource.updated_by_last_action(true) if resource_update_status
 end

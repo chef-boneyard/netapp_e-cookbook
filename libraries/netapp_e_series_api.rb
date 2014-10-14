@@ -7,7 +7,7 @@ class NetApp
       # To do
       # Verify HTTP error codes and print appropriate error messages
 
-      def initialize(user, password, url, basic_auth = true, connect_timeout = nil)
+      def initialize(user, password, url, basic_auth, connect_timeout = nil)
         @user = user
         @password = password
         @url = url
@@ -347,6 +347,25 @@ class NetApp
 
             resource_update_status
           end
+        end
+      end
+
+      def update_iscsi(storage_system_ip, request_body)
+        sys_id = storage_system_id(storage_system_ip)
+        if sys_id.nil?
+          false
+        else
+          if @basic_auth
+            response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/iscsi/target-settings", request_body.to_json)
+            resource_update_status = status(response, '201', %w(201 200), 'Failed to update iscsi target settings')
+          else
+            login
+            response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/iscsi/target-settings", request_body.to_json)
+            resource_update_status = status(response, '201', %w(201 200), 'Failed to update iscsi target settings')
+            logout
+          end
+
+          resource_update_status
         end
       end
 

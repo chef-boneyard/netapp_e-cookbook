@@ -16,3 +16,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+include NetAppEHelper
+
+action :update do
+  # Validations
+  fail ArgumentError, 'Attribute basic_auth has to be set to true or false. It cannot be empty' unless node['netapp']['basic_auth']
+
+  request_body = { alias: new_resource.alias, enableChapAuthentication: new_resource.enable_chap_authentication, chapSecret: new_resource.chap_secret }
+
+  netapp_api = NetApp::ESeries::Api.new(node['netapp']['user'], node['netapp']['password'], url, node['netapp']['basic_auth'], node['netapp']['api']['timeout'])
+
+  resource_update_status = netapp_api.update_iscsi(new_resource.storage_system, request_body)
+
+  new_resource.updated_by_last_action(true) if resource_update_status
+end
