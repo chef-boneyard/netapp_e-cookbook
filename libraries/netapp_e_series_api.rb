@@ -7,70 +7,87 @@ class NetApp
       # To do
       # Verify HTTP error codes and print appropriate error messages
 
-      def initialize(url, storage_system_ip, connect_timeout = nil)
+      def initialize(user, password, url, basic_auth = true, connect_timeout = nil)
+        @user = user
+        @password = password
         @url = url
-        @storage_system_ip = storage_system_ip
+        @basic_auth = basic_auth
         @connect_timeout = connect_timeout
       end
 
-      def login(username, pwd)
-        body = { userId: username, password: pwd }.to_json
-        response = request(:post, '/devmgr/utils/login', body)
-        fail "Login failed. HTTP error- #{response.status}" if response.status != 200
-        @cookie = response.headers['Set-Cookie'].split(';').first
-      end
-
-      def logout(username, pwd)
-        body = { userId: username, password: pwd }.to_json
-        response = request(:delete, '/devmgr/utils/login', body)
-        fail "Logout failed. HTTP error- #{response.status}" if response.status != 204
-        @cookie = nil
-      end
-
-      def create_storage_system
-        body = { controllerAddresses: @storage_system_ip }.to_json
-        response = request(:post, '/devmgr/v2/storage-systems', body)
-        if response.status != 200 && response.status != 201
-          fail "Storage creation failed. HTTP error- #{response.status}"
+      def create_storage_system(request_body)
+        if @basic_auth
+          response = request(:post, '/devmgr/v2/storage-systems', request_body.to_json)
+          resource_update_status = status(response, '201', %w(201 200), 'Storage Creation Failed')
+        else
+          login
+          response = request(:post, '/devmgr/v2/storage-systems', request_body.to_json)
+          resource_update_status = status(response, '201', %w(201 200), 'Storage Creation Failed')
+          logout
         end
-        response.status == 201 ? true :  false
+
+        resource_update_status
       end
 
-      def delete_storage_system
-        sys_id = storage_system_id
+      def delete_storage_system(storage_system_ip)
+        sys_id = storage_system_id(storage_system_ip)
         if sys_id.nil?
           false
         else
-          response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}")
-          response.status == 200 ? true : (fail "Failed to remove storage system. HTTP etrror- #{response.status} while trying to delete storage system")
+          if @basic_auth
+            response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}")
+            resource_update_status = status(response, '201', %w(201 200), 'Storage Deletion Failed')
+          else
+            login
+            response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}")
+            resource_update_status = status(response, '201', %w(201 200), 'Storage Creation Failed')
+            logout
+          end
+
+          resource_update_status
         end
       end
 
-      def change_password(current_pwd, admin_pwd, new_pwd)
-        body = { currentAdminPassword: current_pwd, adminPassword: admin_pwd, newPassword: new_pwd }
-        sys_id = storage_system_id
-        if system_id.nil?
-          false
-        else
-          response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}
-           /passwords", body) unless sys_id.nil?
-          response.status == 201 ? true : (fail "Failed to change password. HTTP error- #{response.status} while trying to delete storage system")
-        end
-      end
-
-      def create_host(name, host_type, group_id = nil, ports = nil)
-        sys_id = storage_system_id
+      def change_password(storage_system_ip, request_body)
+        sys_id = storage_system_id(storage_system_ip)
         if sys_id.nil?
           false
         else
-          body = { name: name, hostType: host_type, groupId: group_id, ports: ports }.to_json
-          response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/hosts", body)
-          response.status == 200 ? true : (fail "Failed to create storage pool.HTTP error- #{response.status} while trying to delete storage system")
+          if @basic_auth
+            response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/passwords", request_body.to_json)
+            resource_update_status = status(response, '201', %w(201 200), 'Password Update Failed')
+          else
+            login
+            response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/passwords", request_body.to_json)
+            resource_update_status = status(response, '201', %w(201 200), 'Password Update Failed')
+            logout
+          end
+
+          resource_update_status
         end
       end
 
-      def delete_host(name)
-        sys_id = storage_system_id
+      def create_host(storage_system_ip, request_body)
+        sys_id = storage_system_id(storage_system_ip)
+        if sys_id.nil?
+          false
+        else
+          if @basic_auth
+            response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/hosts", request_body.to_json)
+            resource_update_status = status(response, '201', %w(201 200), 'Failed to create host')
+          else
+            login
+            response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/hosts", request_body.to_json)
+            resource_update_status = status(response, '201', %w(201 200), 'Failed to create host')
+            logout
+          end
+
+          resource_update_status
+        end
+      end
+
+      def delete_host(storage_system_ip, name)
+        sys_id = storage_system_id(storage_system_ip)
         if sys_id.nil?
           false
         else
@@ -78,25 +95,42 @@ class NetApp
           if hosthost.nil?
             false
           else
-            response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/hosts/#{host}")
-            response.status == 200 ? true : (fail "Failed to create volume. HTTP error- #{response.status} while trying to delete storage system")
+            if @basic_auth
+              response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/hosts/#{host}")
+              resource_update_status = status(response, '201', %w(201 200), 'Failed to delete host')
+            else
+              login
+              response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/hosts/#{host}")
+              resource_update_status = status(response, '201', %w(201 200), 'Failed to delete host')
+              logout
+            end
+
+            resource_update_status
           end
         end
       end
 
-      def create_host_group(name, hosts = nil)
-        sys_id = storage_system_id
+      def create_host_group(storage_system_ip, request_body)
+        sys_id = storage_system_id(storage_system_ip)
         if sys_id.nil?
           false
         else
-          body = { name: name, hosts: hosts }.to_json
-          response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/host-groups", body)
-          response.status == 200 ? true : (fail "Failed to create storage pool.HTTP error- #{response.status} while trying to delete storage system")
+          if @basic_auth
+            response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/host-groups", request_body.to_json)
+            resource_update_status = status(response, '201', %w(201 200), 'Failed to create host group')
+          else
+            login
+            response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/host-groups", request_body.to_json)
+            resource_update_status = status(response, '201', %w(201 200), 'Failed to create host group')
+            logout
+          end
+
+          resource_update_status
         end
       end
 
-      def delete_host_group(name)
-        sys_id = storage_system_id
+      def delete_host_group(storage_system_ip, name)
+        sys_id = storage_system_id(storage_system_ip)
         if sys_id.nil?
           false
         else
@@ -104,25 +138,42 @@ class NetApp
           if host_grp_id.nil?
             false
           else
-            response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/host-groups/#{host_grp_id}")
-            response.status == 200 ? true : (fail "Failed to create volume. HTTP error- #{response.status} while trying to delete storage system")
+            if @basic_auth
+              response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/host-groups/#{host_grp_id}")
+              resource_update_status = status(response, '201', %w(201 200), 'Failed to delete host group')
+            else
+              login
+              response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/host-groups/#{host_grp_id}")
+              resource_update_status = status(response, '201', %w(201 200), 'Failed to delete host group')
+              logout
+            end
+
+            resource_update_status
           end
         end
       end
 
-      def create_storage_pool(raid_level, disk_drive_ids, name)
-        sys_id = storage_system_id
+      def create_storage_pool(storage_system_ip, request_body)
+        sys_id = storage_system_id(storage_system_ip)
         if sys_id.nil?
           false
         else
-          body = { raidLevel: raid_level, diskDriveIds: disk_drive_ids, name: name }.to_json
-          response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/storage-pools", body)
-          response.status == 200 ? true : (fail "Failed to create storage pool.HTTP error- #{response.status} while trying to delete storage system")
+          if @basic_auth
+            response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/storage-pools", request_body.to_json)
+            resource_update_status = status(response, '201', %w(201 200), 'Failed to create storage pool')
+          else
+            login
+            response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/storage-pools", request_body.to_json)
+            resource_update_status = status(response, '201', %w(201 200), 'Failed to create storage pool')
+            logout
+          end
+
+          resource_update_status
         end
       end
 
-      def delete_storage_pool(name)
-        sys_id = storage_system_id
+      def delete_storage_pool(storage_system_ip, name)
+        sys_id = storage_system_id(storage_system_ip)
         if sys_id.nil?
           false
         else
@@ -130,25 +181,42 @@ class NetApp
           if pool_id.nil?
             false
           else
-            response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/storage-pools/#{pool_id}")
-            response.status == 200 ? true : (fail "Failed to create volume. HTTP error- #{response.status} while trying to delete storage system")
+            if @basic_auth
+              response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/storage-pools/#{pool_id}")
+              resource_update_status = status(response, '201', %w(201 200), 'Failed to delete storage pool')
+            else
+              login
+              response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/storage-pools/#{pool_id}")
+              resource_update_status = status(response, '201', %w(201 200), 'Failed to delete storage pool')
+              logout
+            end
+
+            resource_update_status
           end
         end
       end
 
-      def create_volume(poolid, name, size_unit, size, segment_size)
+      def create_volume(_storage_system_ip, request_body)
         sys_id = storage_system_id
         if sys_id.nil?
           false
         else
-          body = { poolId: poolid, name: name, sizeUnit: size_unit, size: size, segSize: segment_size }.to_json
-          response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/volumes", body)
-          response.status == 200 ? true : (fail "Failed to create volume. HTTP error- #{response.status} while trying to delete storage system")
+          if @basic_auth
+            response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/volumes", request_body.to_json)
+            resource_update_status = status(response, '201', %w(201 200), 'Failed to create volume')
+          else
+            login
+            response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/volumes", request_body.to_json)
+            resource_update_status = status(response, '201', %w(201 200), 'Failed to create volume')
+            logout
+          end
+
+          resource_update_status
         end
       end
 
-      def update_volume(old_name, new_name)
-        sys_id = storage_system_id
+      def update_volume(storage_system_ip, old_name, new_name)
+        sys_id = storage_system_id(storage_system_ip)
         if sys_id.nil?
           false
         else
@@ -157,14 +225,23 @@ class NetApp
             false
           else
             body = { name: new_name }.to_json
-            response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/volumes/#{vol_id}", body)
-            response.status == 200 ? true : (fail "Failed to create volume. HTTP error- #{response.status} while trying to delete storage system")
+            if @basic_auth
+              response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/volumes/#{vol_id}", body)
+              resource_update_status = status(response, '201', %w(201 200), 'Failed to update volume')
+            else
+              login
+              response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/volumes/#{vol_id}", body)
+              resource_update_status = status(response, '201', %w(201 200), 'Failed to update volume')
+              logout
+            end
+
+            resource_update_status
           end
         end
       end
 
-      def delete_volume(name)
-        sys_id = storage_system_id
+      def delete_volume(storage_system_ip, name)
+        sys_id = storage_system_id(storage_system_ip)
         if sys_id.nil?
           false
         else
@@ -172,25 +249,42 @@ class NetApp
           if vol_id.nil?
             false
           else
-            response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/volumes/#{vol_id}")
-            response.status == 200 ? true : (fail "Failed to create volume. HTTP error- #{response.status} while trying to delete storage system")
+            if @basic_auth
+              response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/volumes/#{vol_id}")
+              resource_update_status = status(response, '201', %w(201 200), 'Failed to delete volume')
+            else
+              login
+              response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/volumes/#{vol_id}")
+              resource_update_status = status(response, '201', %w(201 200), 'Failed to delete volume')
+              logout
+            end
+
+            resource_update_status
           end
         end
       end
 
-      def create_group_snapshot(base_mappable_object_id, name, repository_percentage, warning_threshold, auto_delete_limit, full_policy, storage_pool_id)
-        sys_id = storage_system_id
+      def create_group_snapshot(storage_system_ip, request_body)
+        sys_id = storage_system_id(storage_system_ip)
         if sys_id.nil?
           false
         else
-          body = { baseMappableObjectId: base_mappable_object_id, name: name, repositoryPercentage: repository_percentage, warningThreshold: warning_threshold, autoDeleteLimit: auto_delete_limit, fullPolicy: full_policy, storagePoolId: storage_pool_id }.to_json
-          response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/snapshot-groups", body)
-          response.status == 200 ? true : (fail "Failed to create volume. HTTP error- #{response.status} while trying to delete storage system")
+          if @basic_auth
+            response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/snapshot-groups", request_body.to_json)
+            resource_update_status = status(response, '201', %w(201 200), 'Failed to create group snapshot ')
+          else
+            login
+            response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/snapshot-groups", request_body.to_json)
+            resource_update_status = status(response, '201', %w(201 200), 'Failed to create group snapshot ')
+            logout
+          end
+
+          resource_update_status
         end
       end
 
-      def delete_group_snapshot(name)
-        sys_id = storage_system_id
+      def delete_group_snapshot(storage_system_ip, name)
+        sys_id = storage_system_id(storage_system_ip)
         if sys_id.nil?
           false
         else
@@ -198,25 +292,42 @@ class NetApp
           if snapshot_id.nil?
             false
           else
-            response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/snapshot-groups/#{snapshot_id}")
-            response.status == 200 ? true : (fail "Failed to create volume. HTTP error- #{response.status} while trying to delete storage system")
+            if @basic_auth
+              response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/snapshot-groups/#{snapshot_id}")
+              resource_update_status = status(response, '201', %w(201 200), 'Failed to delete group snapshot')
+            else
+              login
+              response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/snapshot-groups/#{snapshot_id}")
+              resource_update_status = status(response, '201', %w(201 200), 'Failed to delete group snapshot')
+              logout
+            end
+
+            resource_update_status
           end
         end
       end
 
-      def create_volume_snapshot(snapshot_image_id, full_threshold, name, view_mode, repository_percentage, repository_pool_id)
-        sys_id = storage_system_id
+      def create_volume_snapshot(storage_system_ip, request_body)
+        sys_id = storage_system_id(storage_system_ip)
         if sys_id.nil?
           false
         else
-          body = { snapshotImageId: snapshot_image_id, fullThreshold: full_threshold, name: name, viewMode: view_mode, repositoryPercentage: repository_percentage, repositoryPoolId: repository_pool_id }.to_json
-          response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/snapshot-volumes", body)
-          response.status == 200 ? true : (fail "Failed to create volume. HTTP error- #{response.status} while trying to delete storage system")
+          if @basic_auth
+            response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/snapshot-volumes", request_body.to_json)
+            resource_update_status = status(response, '201', %w(201 200), 'Failed to delete group snapshot')
+          else
+            login
+            response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/snapshot-volumes", request_body.to_json)
+            resource_update_status = status(response, '201', %w(201 200), 'Failed to delete group snapshot')
+            logout
+          end
+
+          resource_update_status
         end
       end
 
-      def delete_volume_snapshot(name)
-        sys_id = storage_system_id
+      def delete_volume_snapshot(storage_system_ip, name)
+        sys_id = storage_system_id(storage_system_ip)
         if sys_id.nil?
           false
         else
@@ -224,19 +335,28 @@ class NetApp
           if snapshot_id.nil?
             false
           else
-            response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/snapshot-volumes/#{snapshot_id}")
-            response.status == 200 ? true : (fail "Failed to create volume. HTTP error- #{response.status} while trying to delete storage system")
+            if @basic_auth
+              response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/snapshot-volumes/#{snapshot_id}")
+              resource_update_status = status(response, '201', %w(201 200), 'Failed to delete group snapshot')
+            else
+              login
+              response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/snapshot-volumes/#{snapshot_id}")
+              resource_update_status = status(response, '201', %w(201 200), 'Failed to delete group snapshot')
+              logout
+            end
+
+            resource_update_status
           end
         end
       end
 
       private
 
-      def storage_system_id
+      def storage_system_id(storage_system_ip)
         response = request(:get, '/devmgr/v2/storage-systems')
         storage_systems = JSON.parse(response.body)
         storage_systems.each do |system|
-          return system['id'] if system['ip1'] == @storage_system_ip || system['ip2'] == @storage_system_ip
+          return system['id'] if system['ip1'] == storage_system_ip || system['ip2'] == storage_system_ip
         end
         nil
       end
@@ -295,12 +415,51 @@ class NetApp
         nil
       end
 
+      def status(response, expected_status_code, allowed_status_codes, failure_message)
+        request_fail = true
+        resource_update_status = false
+
+        allowed_status_codes.each do |status_code|
+          if status_code == expected_status_code
+            request_fail = false
+            resource_update_status = true
+            break
+          end
+
+          request_fail = false if response.status == status_code
+        end
+
+        request_fail ? (fail "#{failure_message}. HTTP error- #{response.status}") : resource_update_status
+      end
+
       def request(method, path, body = nil)
-        Excon.send(method, @url, path: path, headers: web_proxy_headers, body: body, connect_timeout: @connect_timeout)
+        if @basic_auth
+          Excon.send(method, @url, path: path, headers: web_proxy_headers, body: body, connect_timeout: @connect_timeout, user: @user, password: @password)
+        else
+          Excon.send(method, @url, path: path, headers: web_proxy_headers, body: body, connect_timeout: @connect_timeout)
+        end
       end
 
       def web_proxy_headers
-        { 'Accept' => 'application/json', 'Content-Type' => 'application/json', 'cookie' => @cookie }
+        if @basic_auth
+          { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }
+        else
+          { 'Accept' => 'application/json', 'Content-Type' => 'application/json', 'cookie' => @cookie }
+        end
+      end
+
+      def login
+        body = { userId: @user, password: @password }.to_json
+        response = request(:post, '/devmgr/utils/login', body.to_json)
+        fail "Login failed. HTTP error- #{response.status}" if response.status != 200
+        @cookie = response.headers['Set-Cookie'].split(';').first
+      end
+
+      def logout
+        body = { userId: @user, password: @password }.to_json
+        response = request(:delete, '/devmgr/utils/login', body.to_json)
+        fail "Logout failed. HTTP error- #{response.status}" if response.status != 204
+        @cookie = nil
       end
     end
   end
