@@ -16,3 +16,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+netapp_e_password '10.250.117.112' do
+  current_admin_password 'netapp123'
+  admin_password true
+  new_password ''
+
+  action :update
+end

@@ -19,15 +19,15 @@
 
 include NetAppEHelper
 
-action :create do
-  # Validations
-  fail ArgumentError, 'Attribute basic_auth has to be set to true or false. It cannot be empty' unless node['netapp']['basic_auth']
+action :update do
 
   request_body = { currentAdminPassword: new_resource.current_admin_password, adminPassword: new_resource.admin_password, newPassword: new_resource.new_password }
 
-  netapp_api = NetApp::ESeries::Api.new(node['netapp']['user'], node['netapp']['password'], url, node['netapp']['basic_auth'], node['netapp']['api']['timeout'])
+  netapp_api = netapp_api_create
 
+  netapp_api.login unless node['netapp']['basic_auth']
   resource_update_status = netapp_api.change_password(new_resource.name, request_body)
+  netapp_api.logout unless node['netapp']['basic_auth']
 
   new_resource.updated_by_last_action(true) if resource_update_status
 end

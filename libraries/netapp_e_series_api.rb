@@ -43,21 +43,10 @@ class NetApp
 
       def change_password(storage_system_ip, request_body)
         sys_id = storage_system_id(storage_system_ip)
-        if sys_id.nil?
-          false
-        else
-          if @basic_auth
-            response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/passwords", request_body.to_json)
-            resource_update_status = status(response, '201', %w(201 200), 'Password Update Failed')
-          else
-            login
-            response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/passwords", request_body.to_json)
-            resource_update_status = status(response, '201', %w(201 200), 'Password Update Failed')
-            logout
-          end
+        return false if sys_id.nil?
 
-          resource_update_status
-        end
+        response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/passwords", request_body.to_json)
+        status(response, 200, [200], 'Password Update Failed')
       end
 
       def create_host(storage_system_ip, request_body)

@@ -17,8 +17,8 @@
 # limitations under the License.
 #
 
-actions :create
-default_action :create
+actions :update
+default_action :update
 
 attribute :storage_system, kind_of: String, required: true, name_attribute: true
 attribute :current_admin_password, kind_of: String, required: true
