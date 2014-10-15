@@ -16,3 +16,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+netapp_e_volume 'myvol1' do
+  storage_system '10.250.117.112'
+  pool_id '0400000060080E50003220A80000006F52D8010D'
+  size_unit 'b'
+  size 100
+  segment_size 0
+
+  action :create
+end
+
+netapp_e_volume 'myvol1' do
+  storage_system '10.250.117.112'
+  new_name 'myvol2'
+
+  action :update
+end
+
+netapp_e_volume 'myvol2' do
+  storage_system '10.250.117.112'
+
+  action :delete
+end

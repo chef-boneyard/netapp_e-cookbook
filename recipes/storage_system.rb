@@ -19,6 +19,7 @@
 
 netapp_e_storage_system '10.250.117.112' do
   password 'Netapp123'
+
   action :create
 end
 

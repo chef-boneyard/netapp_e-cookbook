@@ -26,21 +26,23 @@ action :create do
   fail ArgumentError, 'Attribute size is required for volume creation' unless new_resource.size
   fail ArgumentError, 'Attribute segment_size is required for volume creation' unless new_resource.segment_size
 
-  netapp_api = NetApp::ESeries::Api.new(url, new_resource.storage_system)
+  request_body = { poolId: new_resource.pool_id, name: new_resource.name, sizeUnit: new_resource.size_unit, size: new_resource.size, segSize: new_resource.segment_size }
 
-  netapp_api.login(node['netapp']['user'], node['netapp']['password'])
-  resource_update_status = netapp_api.create_volume(new_resource.pool_id, new_resource.name, new_resource.size_unit, new_resource.size, new_resource.segment_size)
-  netapp_api.logout(node['netapp']['user'], node['netapp']['password'])
+  netapp_api = netapp_api_create
+
+  netapp_api.login unless node['netapp']['basic_auth']
+  resource_update_status = netapp_api.create_volume(new_resource.storage_system, request_body)
+  netapp_api.logout unless node['netapp']['basic_auth']
 
   new_resource.updated_by_last_action(true) if resource_update_status
 end
 
 action :delete do
-  netapp_api = NetApp::ESeries::Api.new(url, new_resource.storage_system)
+  netapp_api = netapp_api_create
 
-  netapp_api.login(node['netapp']['user'], node['netapp']['password'])
-  resource_update_status = netapp_api.delete_volume(new_resource.name)
-  netapp_api.logout(node['netapp']['user'], node['netapp']['password'])
+  netapp_api.login unless node['netapp']['basic_auth']
+  resource_update_status = netapp_api.delete_volume(new_resource.storage_system, new_resource.name)
+  netapp_api.logout unless node['netapp']['basic_auth']
 
   new_resource.updated_by_last_action(true) if resource_update_status
 end
@@ -49,11 +51,11 @@ action :update do
   # validations
   fail ArgumentError, 'Attribute new_name is required to update volume name' unless new_resource.new_name
 
-  netapp_api = NetApp::ESeries::Api.new(url, new_resource.storage_system)
+  netapp_api = netapp_api_create
 
-  netapp_api.login(node['netapp']['user'], node['netapp']['password'])
-  resource_update_status = netapp_api.update_volume(new_resource.name, new_resource.new_name)
-  netapp_api.logout(node['netapp']['user'], node['netapp']['password'])
+  netapp_api.login unless node['netapp']['basic_auth']
+  resource_update_status = netapp_api.update_volume(new_resource.storage_system, new_resource.name, new_resource.new_name)
+  netapp_api.logout unless node['netapp']['basic_auth']
 
   new_resource.updated_by_last_action(true) if resource_update_status
 end

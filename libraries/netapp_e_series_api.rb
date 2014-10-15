@@ -30,20 +30,15 @@ class NetApp
 
       def create_storage_system(request_body)
         response = request(:post, '/devmgr/v2/storage-systems', request_body.to_json)
-        resource_update_status = status(response, 201, [201, 200], 'Storage Creation Failed')
-
-        resource_update_status
+        status(response, 201, [201, 200], 'Storage Creation Failed')
       end
 
       def delete_storage_system(storage_system_ip)
         sys_id = storage_system_id(storage_system_ip)
-        if sys_id.nil?
-          Chef::Log.info('The storage system does not exist')
-          false
-        else
-          response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}")
-          resource_update_status = status(response, 200, [200], 'Storage Deletion Failed')
-        end
+        return false if sys_id.nil?
+
+        response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}")
+        status(response, 200, [200], 'Storage Deletion Failed')
       end
 
       def change_password(storage_system_ip, request_body)
@@ -194,68 +189,38 @@ class NetApp
         end
       end
 
-      def create_volume(_storage_system_ip, request_body)
-        sys_id = storage_system_id
-        if sys_id.nil?
-          false
-        else
-          if @basic_auth
-            response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/volumes", request_body.to_json)
-            resource_update_status = status(response, '201', %w(201 200), 'Failed to create volume')
-          else
-            login
-            response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/volumes", request_body.to_json)
-            resource_update_status = status(response, '201', %w(201 200), 'Failed to create volume')
-            logout
-          end
+      def create_volume(storage_system_ip, request_body)
+        sys_id = storage_system_id(storage_system_ip)
+        return false if sys_id.nil?
 
-          resource_update_status
-        end
+        vol_id = volume_id(sys_id, request_body[:name])
+        return false unless vol_id.nil?
+
+        response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/volumes", request_body.to_json)
+        status(response, 201, [201], 'Failed to create volume')
       end
 
       def update_volume(storage_system_ip, old_name, new_name)
         sys_id = storage_system_id(storage_system_ip)
-        if sys_id.nil?
-          false
-        else
-          vol_id = volume_id(sys_id, old_name)
-          if vol_id.nil?
-            false
-          else
-            body = { name: new_name }.to_json
-            if @basic_auth
-              response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/volumes/#{vol_id}", body)
-              resource_update_status = status(response, '201', %w(201 200), 'Failed to update volume')
-            else
-              login
-              response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/volumes/#{vol_id}", body)
-              resource_update_status = status(response, '201', %w(201 200), 'Failed to update volume')
-              logout
-            end
+        return false if sys_id.nil?
 
-            resource_update_status
-          end
-        end
+        vol_id = volume_id(sys_id, old_name)
+        return false if vol_id.nil?
+
+        body = { name: new_name }.to_json
+        response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/volumes/#{vol_id}", body)
+        status(response, 200, [200], 'Failed to update volume')
       end
 
       def delete_volume(storage_system_ip, name)
-        login unless @basic_auth
-
         sys_id = storage_system_id(storage_system_ip)
-        if sys_id.nil?
-          resource_update_status = false
-        else
-          vol_id = volume_id(sys_id, name)
-          if vol_id.nil?
-            resource_update_status = false
-          else
-            response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/volumes/#{vol_id}")
-            resource_update_status = status(response, 200, [200], 'Failed to delete volume')
-          end
-        end
-        logout unless @basic_auth
+        return false if sys_id.nil?
 
-        resource_update_status
+        vol_id = volume_id(sys_id, name)
+        return false if vol_id.nil?
+
+        response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/volumes/#{vol_id}")
+        status(response, 200, [200], 'Failed to delete volume')
       end
 
       def create_group_snapshot(storage_system_ip, request_body)
