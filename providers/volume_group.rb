@@ -21,26 +21,27 @@ include NetAppEHelper
 
 action :create do
   # Validations
-  fail ArgumentError, 'Attribute basic_auth has to be set to true or false. It cannot be empty' unless node['netapp']['basic_auth']
   fail ArgumentError, 'Attribute raid_level is required for volume group creation' unless new_resource.raid_level
-  fail ArgumentError, 'Attribute disk_drive_ids is required for volume group creation' unless new_resource.disk_drive_ids.empty?
+  fail ArgumentError, 'Attribute disk_drive_ids is required for volume group creation' if new_resource.disk_drive_ids.empty?
 
-  request_body = { raidLevel: new_resource.raid_level, diskDriveIds: new_resource.disk_drive_ids, name: new_resource.name }
+  request_body = { raidLevel: "raid#{new_resource.raid_level}", diskDriveIds: new_resource.disk_drive_ids, name: new_resource.name }
 
-  netapp_api = NetApp::ESeries::Api.new(node['netapp']['user'], node['netapp']['password'], url, node['netapp']['basic_auth'], node['netapp']['api']['timeout'])
+  netapp_api = netapp_api_create
 
+  netapp_api.login unless node['netapp']['basic_auth']
   resource_update_status = netapp_api.create_volume_group(new_resource.storage_system, request_body)
+  netapp_api.logout unless node['netapp']['basic_auth']
 
   new_resource.updated_by_last_action(true) if resource_update_status
 end
 
 action :delete do
-  # Validations
-  fail ArgumentError, 'Attribute basic_auth has to be set to true or false. It cannot be empty' unless node['netapp']['basic_auth']
 
-  netapp_api = NetApp::ESeries::Api.new(node['netapp']['user'], node['netapp']['password'], url, node['netapp']['basic_auth'], node['netapp']['api']['timeout'])
+  netapp_api = netapp_api_create
 
+  netapp_api.login unless node['netapp']['basic_auth']
   resource_update_status = netapp_api.delete_volume_group(new_resource.storage_system, new_resource.name)
+  netapp_api.logout unless node['netapp']['basic_auth']
 
   new_resource.updated_by_last_action(true) if resource_update_status
 end

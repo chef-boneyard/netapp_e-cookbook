@@ -362,45 +362,24 @@ class NetApp
 
       def create_volume_group(storage_system_ip, request_body)
         sys_id = storage_system_id(storage_system_ip)
-        if sys_id.nil?
-          false
-        else
-          if @basic_auth
-            response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/storage-pools", request_body.to_json)
-            resource_update_status = status(response, '201', %w(201 200), 'Failed to create volume group')
-          else
-            login
-            response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/storage-pools", request_body.to_json)
-            resource_update_status = status(response, '201', %w(201 200), 'Failed to create volume group')
-            logout
-          end
+        return false if sys_id.nil?
 
-          resource_update_status
-        end
+        group_id = volume_group_id(sys_id, request_body[:name])
+        return false unless group_id.nil?
+
+        response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/storage-pools", request_body.to_json)
+        status(response, 201, [201], 'Failed to create volume group')
       end
 
       def delete_volume_group(storage_system_ip, name)
         sys_id = storage_system_id(storage_system_ip)
-        if sys_id.nil?
-          false
-        else
-          group_id = volume_group_id(sys_id, name)
-          if group_id.nil?
-            false
-          else
-            if @basic_auth
-              response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/storage-pools/#{group_id}")
-              resource_update_status = status(response, '201', %w(201 200), 'Failed to delete volume group')
-            else
-              login
-              response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/storage-pools/#{group_id}")
-              resource_update_status = status(response, '201', %w(201 200), 'Failed to delete volume group')
-              logout
-            end
+        return false if sys_id.nil?
 
-            resource_update_status
-          end
-        end
+        group_id = volume_group_id(sys_id, name)
+        return false if group_id.nil?
+
+        response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/storage-pools/#{group_id}")
+        status(response, 200, [200], 'Failed to delete volume group')
       end
 
       private

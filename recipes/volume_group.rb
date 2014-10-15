@@ -16,3 +16,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+netapp_e_volume_group 'my_vol_group' do
+  storage_system '10.250.117.112'
+  raid_level '0'
+  disk_drive_ids ['010000005000CCA016B3C9340000000000000000']
+
+  action :create
+end
+
+netapp_e_volume_group 'my_vol_group' do
+  storage_system '10.250.117.112'
+
+  action :delete
+end
