@@ -40,7 +40,7 @@ class NetApp
           else
             login
             response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}")
-            resource_update_status = status(response, '201', %w(201 200), 'Storage Creation Failed')
+            resource_update_status = status(response, '200', '200', 'Storage Creation Failed')
             logout
           end
 

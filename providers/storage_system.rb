@@ -20,12 +20,9 @@
 include NetAppEHelper
 
 action :create do
-  # Validations
-  fail ArgumentError, 'Attribute basic_auth has to be set to true or false. It cannot be empty' unless node['netapp']['basic_auth']
-
-  netapp_api = NetApp::ESeries::Api.new(node['netapp']['user'], node['netapp']['password'], url, node['netapp']['basic_auth'], node['netapp']['api']['timeout'])
-
   request_body = { controllerAddresses: Array.new << new_resource.name, password: new_resource.password, wwn: new_resource.wwn, metaTags: new_resource.meta_tags }
+
+  netapp_api = netapp_api_create
 
   resource_update_status = netapp_api.create_storage_system(request_body)
 
@@ -33,10 +30,7 @@ action :create do
 end
 
 action :delete do
-  # Validations
-  fail ArgumentError, 'Attribute basic_auth has to be set to true or false. It cannot be empty' unless node['netapp']['basic_auth']
-
-  netapp_api = NetApp::ESeries::Api.new(node['netapp']['user'], node['netapp']['password'], url, node['netapp']['basic_auth'], node['netapp']['api']['timeout'])
+  netapp_api = netapp_api_create
 
   resource_update_status = netapp_api.delete_storage_system(new_resource.name)
 
