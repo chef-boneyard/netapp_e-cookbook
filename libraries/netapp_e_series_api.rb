@@ -15,16 +15,22 @@ class NetApp
         @connect_timeout = connect_timeout
       end
 
+      def login
+        body = { userId: @user, password: @password }.to_json
+        response = request(:post, '/devmgr/utils/login', body)
+        fail "Login failed. HTTP error- #{response.status}" if response.status != 200
+        @cookie = response.headers['Set-Cookie'].split(';').first
+      end
+
+      def logout
+        response = request(:delete, '/devmgr/utils/login')
+        fail "Logout failed. HTTP error- #{response.status}" if response.status != 204
+        @cookie = nil
+      end
+
       def create_storage_system(request_body)
-        if @basic_auth
-          response = request(:post, '/devmgr/v2/storage-systems', request_body.to_json)
-          resource_update_status = status(response, '201', %w(201 200), 'Storage Creation Failed')
-        else
-          login
-          response = request(:post, '/devmgr/v2/storage-systems', request_body.to_json)
-          resource_update_status = status(response, '201', %w(201 200), 'Storage Creation Failed')
-          logout
-        end
+        response = request(:post, '/devmgr/v2/storage-systems', request_body.to_json)
+        resource_update_status = status(response, 201, [201, 200], 'Storage Creation Failed')
 
         resource_update_status
       end
@@ -32,19 +38,11 @@ class NetApp
       def delete_storage_system(storage_system_ip)
         sys_id = storage_system_id(storage_system_ip)
         if sys_id.nil?
+          Chef::Log.info('The storage system does not exist')
           false
         else
-          if @basic_auth
-            response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}")
-            resource_update_status = status(response, '201', %w(201 200), 'Storage Deletion Failed')
-          else
-            login
-            response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}")
-            resource_update_status = status(response, '200', '200', 'Storage Creation Failed')
-            logout
-          end
-
-          resource_update_status
+          response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}")
+          resource_update_status = status(response, 200, [200], 'Storage Deletion Failed')
         end
       end
 
@@ -241,27 +239,23 @@ class NetApp
       end
 
       def delete_volume(storage_system_ip, name)
+        login unless @basic_auth
+
         sys_id = storage_system_id(storage_system_ip)
         if sys_id.nil?
-          false
+          resource_update_status = false
         else
           vol_id = volume_id(sys_id, name)
           if vol_id.nil?
-            false
+            resource_update_status = false
           else
-            if @basic_auth
-              response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/volumes/#{vol_id}")
-              resource_update_status = status(response, '201', %w(201 200), 'Failed to delete volume')
-            else
-              login
-              response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/volumes/#{vol_id}")
-              resource_update_status = status(response, '201', %w(201 200), 'Failed to delete volume')
-              logout
-            end
-
-            resource_update_status
+            response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/volumes/#{vol_id}")
+            resource_update_status = status(response, 200, [200], 'Failed to delete volume')
           end
         end
+        logout unless @basic_auth
+
+        resource_update_status
       end
 
       def create_group_snapshot(storage_system_ip, request_body)
@@ -542,16 +536,16 @@ class NetApp
         request_fail = true
         resource_update_status = false
 
-        allowed_status_codes.each do |status_code|
-          if status_code == expected_status_code
+        if response.status == expected_status_code
+          request_fail = false
+          resource_update_status = true
+        else
+          allowed_status_codes.each do |status_code|
+            next if response.status != status_code
             request_fail = false
-            resource_update_status = true
             break
           end
-
-          request_fail = false if response.status == status_code
         end
-
         request_fail ? (fail "#{failure_message}. HTTP error- #{response.status}") : resource_update_status
       end
 
@@ -569,20 +563,6 @@ class NetApp
         else
           { 'Accept' => 'application/json', 'Content-Type' => 'application/json', 'cookie' => @cookie }
         end
-      end
-
-      def login
-        body = { userId: @user, password: @password }.to_json
-        response = request(:post, '/devmgr/utils/login', body.to_json)
-        fail "Login failed. HTTP error- #{response.status}" if response.status != 200
-        @cookie = response.headers['Set-Cookie'].split(';').first
-      end
-
-      def logout
-        body = { userId: @user, password: @password }.to_json
-        response = request(:delete, '/devmgr/utils/login', body.to_json)
-        fail "Logout failed. HTTP error- #{response.status}" if response.status != 204
-        @cookie = nil
       end
     end
   end

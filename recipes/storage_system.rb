@@ -22,6 +22,6 @@ netapp_e_storage_system '10.250.117.112' do
   action :create
 end
 
-# netapp_e_storage_system '10.250.117.112' do
-#   action :delete
-# end
+netapp_e_storage_system '10.250.117.112' do
+  action :delete
+end
