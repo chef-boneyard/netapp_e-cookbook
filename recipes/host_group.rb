@@ -16,3 +16,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+netapp_e_host_group 'demo_group' do
+  storage_system '10.250.117.112'
+
+  action :create
+end
+
+netapp_e_host_group 'demo_group' do
+  storage_system '10.250.117.112'
+
+  action :delete
+end

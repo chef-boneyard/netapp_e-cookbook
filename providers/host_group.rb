@@ -17,26 +17,26 @@
 # limitations under the License.
 #
 
+include NetAppEHelper
+
 action :create do
-  # Validations
-  fail ArgumentError, 'Attribute basic_auth has to be set to true or false. It cannot be empty' unless node['netapp']['basic_auth']
-
-  netapp_api = NetApp::ESeries::Api.new(node['netapp']['user'], node['netapp']['password'], url, node['netapp']['basic_auth'], node['netapp']['api']['timeout'])
-
   request_body = { name: new_resource.name, hosts: new_resource.hosts }
 
+  netapp_api = netapp_api_create
+
+  netapp_api.login unless node['netapp']['basic_auth']
   resource_update_status = netapp_api.create_host_group(new_resource.storage_system, request_body)
+  netapp_api.logout unless node['netapp']['basic_auth']
 
   new_resource.updated_by_last_action(true) if resource_update_status
 end
 
 action :delete do
-  # Validations
-  fail ArgumentError, 'Attribute basic_auth has to be set to true or false. It cannot be empty' unless node['netapp']['basic_auth']
+  netapp_api = netapp_api_create
 
-  netapp_api = NetApp::ESeries::Api.new(node['netapp']['user'], node['netapp']['password'], url, node['netapp']['basic_auth'], node['netapp']['api']['timeout'])
-
+  netapp_api.login unless node['netapp']['basic_auth']
   resource_update_status = netapp_api.delete_host_group(new_resource.storage_system, new_resource.name)
+  netapp_api.logout unless node['netapp']['basic_auth']
 
   new_resource.updated_by_last_action(true) if resource_update_status
 end

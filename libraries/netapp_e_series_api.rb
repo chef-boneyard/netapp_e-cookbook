@@ -73,45 +73,24 @@ class NetApp
 
       def create_host_group(storage_system_ip, request_body)
         sys_id = storage_system_id(storage_system_ip)
-        if sys_id.nil?
-          false
-        else
-          if @basic_auth
-            response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/host-groups", request_body.to_json)
-            resource_update_status = status(response, '201', %w(201 200), 'Failed to create host group')
-          else
-            login
-            response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/host-groups", request_body.to_json)
-            resource_update_status = status(response, '201', %w(201 200), 'Failed to create host group')
-            logout
-          end
+        return false if sys_id.nil?
 
-          resource_update_status
-        end
+        host_grp_id = host_group_id(sys_id, request_body[:name])
+        return false unless host_grp_id.nil?
+
+        response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/host-groups", request_body.to_json)
+        status(response, 201, [201], 'Failed to create host group')
       end
 
       def delete_host_group(storage_system_ip, name)
         sys_id = storage_system_id(storage_system_ip)
-        if sys_id.nil?
-          false
-        else
-          host_grp_id = host_group_id(sys_id, name)
-          if host_grp_id.nil?
-            false
-          else
-            if @basic_auth
-              response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/host-groups/#{host_grp_id}")
-              resource_update_status = status(response, '201', %w(201 200), 'Failed to delete host group')
-            else
-              login
-              response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/host-groups/#{host_grp_id}")
-              resource_update_status = status(response, '201', %w(201 200), 'Failed to delete host group')
-              logout
-            end
+        return false if sys_id.nil?
 
-            resource_update_status
-          end
-        end
+        host_grp_id = host_group_id(sys_id, name)
+        return false if host_grp_id.nil?
+
+        response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/host-groups/#{host_grp_id}")
+        status(response, 200, [200], 'Failed to delete host group')
       end
 
       def create_storage_pool(storage_system_ip, request_body)
