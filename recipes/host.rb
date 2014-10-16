@@ -16,3 +16,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+netapp_e_host 'demo_host' do
+  storage_system '10.250.117.112'
+  host_default false
+  code 'demo_code'
+  host_used true
+  index 0
+  host_type_name 'dc'
+
+  action :create
+end
+
+netapp_e_host 'demo_host' do
+  storage_system '10.250.117.112'
+
+  action :delete
+end

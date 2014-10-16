@@ -51,45 +51,24 @@ class NetApp
 
       def create_host(storage_system_ip, request_body)
         sys_id = storage_system_id(storage_system_ip)
-        if sys_id.nil?
-          false
-        else
-          if @basic_auth
-            response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/hosts", request_body.to_json)
-            resource_update_status = status(response, '201', %w(201 200), 'Failed to create host')
-          else
-            login
-            response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/hosts", request_body.to_json)
-            resource_update_status = status(response, '201', %w(201 200), 'Failed to create host')
-            logout
-          end
+        return false if sys_id.nil?
 
-          resource_update_status
-        end
+        host = host_id(sys_id, request_body[:name])
+        return false unless host.nil?
+
+        response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/hosts", request_body.to_json)
+        status(response, 201, [201], 'Failed to create host')
       end
 
       def delete_host(storage_system_ip, name)
         sys_id = storage_system_id(storage_system_ip)
-        if sys_id.nil?
-          false
-        else
-          host = host_id(sys_id, name)
-          if hosthost.nil?
-            false
-          else
-            if @basic_auth
-              response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/hosts/#{host}")
-              resource_update_status = status(response, '201', %w(201 200), 'Failed to delete host')
-            else
-              login
-              response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/hosts/#{host}")
-              resource_update_status = status(response, '201', %w(201 200), 'Failed to delete host')
-              logout
-            end
+        return false if sys_id.nil?
 
-            resource_update_status
-          end
-        end
+        host = host_id(sys_id, name)
+        return false if host.nil?
+
+        response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/hosts/#{host}")
+        status(response, 200, [200], 'Failed to delete host')
       end
 
       def create_host_group(storage_system_ip, request_body)
