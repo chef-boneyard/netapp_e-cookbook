@@ -405,7 +405,7 @@ class NetApp
             break
           end
         end
-        request_fail ? (fail "#{failure_message}. HTTP error- #{response.status}") : resource_update_status
+        request_fail ? (fail "#{failure_message}.\n\n#{response.body}") : resource_update_status
       end
 
       def request(method, path, body = nil)
