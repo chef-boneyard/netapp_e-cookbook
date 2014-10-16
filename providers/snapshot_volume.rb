@@ -17,9 +17,10 @@
 # limitations under the License.
 #
 
+include NetAppEHelper
+
 action :create do
   # Validations
-  fail ArgumentError, 'Attribute basic_auth has to be set to true or false. It cannot be empty' unless node['netapp']['basic_auth']
   fail ArgumentError, 'Attribute snapshot_image_id is required for volume snapshot creation' unless new_resource.snapshot_image_id
   fail ArgumentError, 'Attribute full_threshold is required for volume snapshot creation' unless new_resource.full_threshold
   fail ArgumentError, 'Attribute view_mode is required for volume snapshot creation' unless new_resource.view_mode
@@ -28,20 +29,21 @@ action :create do
 
   request_body = { snapshotImageId: new_resource.snapshot_image_id, fullThreshold: new_resource.full_threshold, name: new_resource.name, viewMode: new_resource.view_mode, repositoryPercentage: new_resource.repository_percentage, repositoryPoolId: new_resource.repository_pool_id }
 
-  netapp_api = NetApp::ESeries::Api.new(node['netapp']['user'], node['netapp']['password'], url, node['netapp']['basic_auth'], node['netapp']['api']['timeout'])
+  netapp_api = netapp_api_create
 
+  netapp_api.login unless node['netapp']['basic_auth']
   resource_update_status = netapp_api.create_volume_snapshot(new_resource.storage_system, request_body)
+  netapp_api.logout unless node['netapp']['basic_auth']
 
   new_resource.updated_by_last_action(true) if resource_update_status
 end
 
 action :delete do
-  # Validations
-  fail ArgumentError, 'Attribute basic_auth has to be set to true or false. It cannot be empty' unless node['netapp']['basic_auth']
+  netapp_api = netapp_api_create
 
-  netapp_api = NetApp::ESeries::Api.new(node['netapp']['user'], node['netapp']['password'], url, node['netapp']['basic_auth'], node['netapp']['api']['timeout'])
-
+  netapp_api.login unless node['netapp']['basic_auth']
   resource_update_status = netapp_api.delete_volume_snapshot(new_resource.storage_system, new_resource.name)
+  netapp_api.logout unless node['netapp']['basic_auth']
 
   new_resource.updated_by_last_action(true) if resource_update_status
 end

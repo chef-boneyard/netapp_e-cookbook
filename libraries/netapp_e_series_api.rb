@@ -172,88 +172,46 @@ class NetApp
 
       def create_group_snapshot(storage_system_ip, request_body)
         sys_id = storage_system_id(storage_system_ip)
-        if sys_id.nil?
-          false
-        else
-          if @basic_auth
-            response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/snapshot-groups", request_body.to_json)
-            resource_update_status = status(response, '201', %w(201 200), 'Failed to create group snapshot ')
-          else
-            login
-            response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/snapshot-groups", request_body.to_json)
-            resource_update_status = status(response, '201', %w(201 200), 'Failed to create group snapshot ')
-            logout
-          end
+        return false if sys_id.nil?
 
-          resource_update_status
-        end
+        snapshot_id = group_snapshot_id(sys_id, request_body[:name])
+        return false unless snapshot_id.nil?
+
+        response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/snapshot-groups", request_body.to_json)
+        status(response, 201, [201], 'Failed to create group snapshot ')
       end
 
       def delete_group_snapshot(storage_system_ip, name)
         sys_id = storage_system_id(storage_system_ip)
-        if sys_id.nil?
-          false
-        else
-          snapshot_id = group_snapshot_id(sys_id, name)
-          if snapshot_id.nil?
-            false
-          else
-            if @basic_auth
-              response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/snapshot-groups/#{snapshot_id}")
-              resource_update_status = status(response, '201', %w(201 200), 'Failed to delete group snapshot')
-            else
-              login
-              response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/snapshot-groups/#{snapshot_id}")
-              resource_update_status = status(response, '201', %w(201 200), 'Failed to delete group snapshot')
-              logout
-            end
+        return false if sys_id.nil?
 
-            resource_update_status
-          end
-        end
+        snapshot_id = group_snapshot_id(sys_id, name)
+        return false if snapshot_id.nil?
+
+        response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/snapshot-groups/#{snapshot_id}")
+        resource_update_status = status(response, 200, [200], 'Failed to delete group snapshot')
       end
 
       def create_volume_snapshot(storage_system_ip, request_body)
         sys_id = storage_system_id(storage_system_ip)
-        if sys_id.nil?
-          false
-        else
-          if @basic_auth
-            response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/snapshot-volumes", request_body.to_json)
-            resource_update_status = status(response, '201', %w(201 200), 'Failed to create volume snapshot')
-          else
-            login
-            response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/snapshot-volumes", request_body.to_json)
-            resource_update_status = status(response, '201', %w(201 200), 'Failed to create volume snapshot')
-            logout
-          end
+        return false if sys_id.nil?
 
-          resource_update_status
-        end
+        snapshot_id = volume_snapshot_id(sys_id, request_body[:name])
+        return false unless snapshot_id.nil?
+
+        response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/snapshot-volumes", request_body.to_json)
+        status(response, 201, [201], 'Failed to create volume snapshot')
       end
 
       def delete_volume_snapshot(storage_system_ip, name)
         sys_id = storage_system_id(storage_system_ip)
-        if sys_id.nil?
-          false
-        else
-          snapshot_id = volume_snapshot_id(sys_id, name)
-          if snapshot_id.nil?
-            false
-          else
-            if @basic_auth
-              response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/snapshot-volumes/#{snapshot_id}")
-              resource_update_status = status(response, '201', %w(201 200), 'Failed to delete volume snapshot')
-            else
-              login
-              response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/snapshot-volumes/#{snapshot_id}")
-              resource_update_status = status(response, '201', %w(201 200), 'Failed to delete volume snapshot')
-              logout
-            end
+        return false if sys_id.nil?
 
-            resource_update_status
-          end
-        end
+        snapshot_id = volume_snapshot_id(sys_id, name)
+        return false if snapshot_id.nil?
+
+        response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/snapshot-volumes/#{snapshot_id}")
+        status(response, 200, [200], 'Failed to delete volume snapshot')
       end
 
       def update_iscsi(storage_system_ip, request_body)
