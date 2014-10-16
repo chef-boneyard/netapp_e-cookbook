@@ -19,13 +19,19 @@ module NetAppEHelper
     end
 
     begin
+      fail unless node['netapp']['https'] == true || node['netapp']['https'] == false
+      fail unless node['netapp']['user'].class == String
+      fail unless node['netapp']['password'].class == String
+      fail unless node['netapp']['fqdn'].class == String
+      fail unless node['netapp']['basic_auth'] == true || node['netapp']['basic_auth'] == false
+
       if timeout_set
         NetApp::ESeries::Api.new(node['netapp']['user'], node['netapp']['password'], url, node['netapp']['basic_auth'], node['netapp']['api']['timeout']) if node['netap']['api']['timeout']
       else
         NetApp::ESeries::Api.new(node['netapp']['user'], node['netapp']['password'], url, node['netapp']['basic_auth'])
       end
     rescue
-      Chef::Log.error('One or more mandatory parameters are not provided')
+      Chef::Log.error('One or more mandatory parameters are not provided or are set incorrectly')
       exit
     end
   end

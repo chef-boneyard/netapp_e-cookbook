@@ -4,9 +4,6 @@ require 'excon'
 class NetApp
   class ESeries
     class Api
-      # To do
-      # Verify HTTP error codes and print appropriate error messages
-
       def initialize(user, password, url, basic_auth, connect_timeout = nil)
         @user = user
         @password = password
