@@ -20,7 +20,7 @@
 netapp_e_snapshot_group 'demo_snapshot_group' do
   storage_system '10.250.117.112'
   base_mappable_object_id '0200000060080E500032223000000388543E09C1'
-  repository_percentage 10000000000
+  repository_percentage 10_000_000_000
   warning_threshold 0
   auto_delete_limit 32
   full_policy 'failbasewrites'

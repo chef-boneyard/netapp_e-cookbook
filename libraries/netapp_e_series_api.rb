@@ -189,7 +189,7 @@ class NetApp
         return false if snapshot_id.nil?
 
         response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/snapshot-groups/#{snapshot_id}")
-        resource_update_status = status(response, 200, [200], 'Failed to delete group snapshot')
+        status(response, 200, [200], 'Failed to delete group snapshot')
       end
 
       def create_volume_snapshot(storage_system_ip, request_body)

@@ -22,7 +22,7 @@ netapp_e_snapshot_volume 'demo_snapshot_volume' do
   snapshot_image_id '3400000060080E5000322230006303BB543F6228'
   full_threshold 0
   view_mode 'readWrite'
-  repository_percentage 10000000000
+  repository_percentage 10_000_000_000
   repository_pool_id '0400000060080E50003222300000025853F33C1A'
 
   action :create
