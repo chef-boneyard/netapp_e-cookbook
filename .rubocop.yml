@@ -10,3 +10,5 @@ Documentation:
   Enabled: false
 ClassLength:
   Enabled: false
+CyclomaticComplexity:
+  Max: 8

@@ -9,6 +9,14 @@ module NetAppEHelper
     end
   end
 
+  def validate_node_attributes
+    fail unless node['netapp']['https'] == true || node['netapp']['https'] == false
+    fail unless node['netapp']['user'].class == String
+    fail unless node['netapp']['password'].class == String
+    fail unless node['netapp']['fqdn'].class == String
+    fail unless node['netapp']['basic_auth'] == true || node['netapp']['basic_auth'] == false
+  end
+
   def netapp_api_create
     # Validate the mandatory parameters and create a netapp api object
     begin
@@ -19,12 +27,7 @@ module NetAppEHelper
     end
 
     begin
-      fail unless node['netapp']['https'] == true || node['netapp']['https'] == false
-      fail unless node['netapp']['user'].class == String
-      fail unless node['netapp']['password'].class == String
-      fail unless node['netapp']['fqdn'].class == String
-      fail unless node['netapp']['basic_auth'] == true || node['netapp']['basic_auth'] == false
-
+      validate_node_attributes
       if timeout_set
         NetApp::ESeries::Api.new(node['netapp']['user'], node['netapp']['password'], url, node['netapp']['basic_auth'], node['netapp']['api']['timeout']) if node['netap']['api']['timeout']
       else
