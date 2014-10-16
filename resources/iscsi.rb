@@ -22,6 +22,6 @@ default_action :update
 
 attribute :storage_system, kind_of: String, required: true, name_attribute: true
 
-attribute :alias, kind_of: String
+attribute :iscsi_alias, kind_of: String
 attribute :enable_chap_authentication, kind_of: [TrueClass, FalseClass]
 attribute :chap_secret, kind_of: String

@@ -16,3 +16,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+netapp_e_iscsi '10.250.117.112' do
+  iscsi_alias 'demo_alias'
+  enable_chap_authentication false
+
+  action :update
+end
