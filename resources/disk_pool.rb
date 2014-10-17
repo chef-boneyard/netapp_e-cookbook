@@ -16,3 +16,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+actions :create, :delete
+default_action :create
+
+attribute :name, kind_of: String, required: true, name_attribute: true
+attribute :storage_system, kind_of: String, required: true
+
+attribute :disk_drive_ids, kind_of: Array

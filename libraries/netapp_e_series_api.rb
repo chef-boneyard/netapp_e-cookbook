@@ -241,7 +241,7 @@ class NetApp
         status(response, 200, [200], 'Failed to delete thin volume')
       end
 
-      def create_volume_group(storage_system_ip, request_body)
+      def create_storage_pool(storage_system_ip, request_body)
         sys_id = storage_system_id(storage_system_ip)
         return false if sys_id.nil?
 
@@ -252,7 +252,7 @@ class NetApp
         status(response, 201, [201], 'Failed to create volume group')
       end
 
-      def delete_volume_group(storage_system_ip, name)
+      def delete_storage_pool(storage_system_ip, name)
         sys_id = storage_system_id(storage_system_ip)
         return false if sys_id.nil?
 
