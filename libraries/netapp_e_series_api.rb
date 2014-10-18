@@ -58,6 +58,7 @@ class NetApp
         response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/hosts", request_body.to_json)
         status(response, 201, [201], 'Failed to create host')
       end
+
       def delete_host(storage_system_ip, name)
         sys_id = storage_system_id(storage_system_ip)
         return false if sys_id.nil?
@@ -155,7 +156,7 @@ class NetApp
         return false unless snapshot_id.nil?
 
         response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/snapshot-groups", request_body.to_json)
-        status(response, 201, [201], 'Failed to create group snapshot ')
+        status(response, 201, [201], 'Failed to create group snapshot')
       end
 
       def delete_group_snapshot(storage_system_ip, name)
