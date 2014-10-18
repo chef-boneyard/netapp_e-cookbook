@@ -11,4 +11,4 @@ Documentation:
 ClassLength:
   Enabled: false
 CyclomaticComplexity:
-  Max: 10
+  Enabled: false

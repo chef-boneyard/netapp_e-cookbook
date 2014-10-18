@@ -26,6 +26,8 @@ class NetApp
       end
 
       def create_storage_system(request_body)
+        return false unless storage_system_id(request_body[:controllerAddresses][0]).nil?
+
         response = request(:post, '/devmgr/v2/storage-systems', request_body.to_json)
         status(response, 201, [201, 200], 'Storage Creation Failed')
       end
