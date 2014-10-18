@@ -131,13 +131,13 @@ describe 'netapp_e_series_api' do
       expect(@netapp_api).to receive(:request).with(:post, '/devmgr/v2/storage-systems/12345/passwords', request_body).and_return(response)
       expect(@netapp_api).to receive(:status).with(response, 200, [200], 'Password Update Failed')
 
-      @netapp_api.change_password('10.0.0.1', {newPassword: 'Netapp123'})
+      @netapp_api.change_password('10.0.0.1', newPassword: 'Netapp123')
     end
 
     it 'fails when storage does not exist' do
       expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return(nil)
 
-      expect(@netapp_api.change_password('10.0.0.1', {newPassword: 'Netapp123'})).to eq(false)
+      expect(@netapp_api.change_password('10.0.0.1', newPassword: 'Netapp123')).to eq(false)
     end
   end
 
@@ -151,20 +151,20 @@ describe 'netapp_e_series_api' do
       expect(@netapp_api).to receive(:request).with(:post, '/devmgr/v2/storage-systems/12345/hosts', request_body).and_return(response)
       expect(@netapp_api).to receive(:status).with(response, 201, [201], 'Failed to create host')
 
-      @netapp_api.create_host('10.0.0.1', {name: 'demo_host'})
+      @netapp_api.create_host('10.0.0.1', name: 'demo_host')
     end
 
     it 'return false when storage system does not exist (create)' do
       expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return(nil)
 
-      expect(@netapp_api.create_host('10.0.0.1', {name: 'demo_host'})).to eq(false)
+      expect(@netapp_api.create_host('10.0.0.1', name: 'demo_host')).to eq(false)
     end
 
     it 'return false when host exists (create)' do
       expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
       expect(@netapp_api).to receive(:host_id).with('12345', 'demo_host').and_return('111111')
 
-      expect(@netapp_api.create_host('10.0.0.1', {name: 'demo_host'})).to eq(false)
+      expect(@netapp_api.create_host('10.0.0.1', name: 'demo_host')).to eq(false)
     end
 
     it 'is deleted' do
@@ -189,6 +189,108 @@ describe 'netapp_e_series_api' do
       expect(@netapp_api).to receive(:host_id).with('12345', 'demo_host').and_return(nil)
 
       expect(@netapp_api.delete_host('10.0.0.1', 'demo_host')).to eq(false)
+    end
+  end
+
+  context 'host_group:' do
+    it 'is created' do
+      response = double
+      request_body = "{\"name\":\"demo_host_group\"}"
+
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
+      expect(@netapp_api).to receive(:host_group_id).with('12345', 'demo_host_group').and_return(nil)
+      expect(@netapp_api).to receive(:request).with(:post, '/devmgr/v2/storage-systems/12345/host-groups', request_body).and_return(response)
+      expect(@netapp_api).to receive(:status).with(response, 201, [201], 'Failed to create host group')
+
+      @netapp_api.create_host_group('10.0.0.1', name: 'demo_host_group')
+    end
+
+    it 'return false when storage system does not exist (create)' do
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return(nil)
+
+      expect(@netapp_api.create_host_group('10.0.0.1', name: 'demo_host_group')).to eq(false)
+    end
+
+    it 'return false when host group exists (create)' do
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
+      expect(@netapp_api).to receive(:host_group_id).with('12345', 'demo_host_group').and_return('111111')
+
+      expect(@netapp_api.create_host_group('10.0.0.1', name: 'demo_host_group')).to eq(false)
+    end
+
+    it 'is deleted' do
+      response = double
+
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
+      expect(@netapp_api).to receive(:host_group_id).with('12345', 'demo_host_group').and_return('111111')
+      expect(@netapp_api).to receive(:request).with(:delete, '/devmgr/v2/storage-systems/12345/host-groups/111111').and_return(response)
+      expect(@netapp_api).to receive(:status).with(response, 200, [200], 'Failed to delete host group')
+
+      @netapp_api.delete_host_group('10.0.0.1', 'demo_host_group')
+    end
+
+    it 'return false when the storage system does not exist (delete)' do
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return(nil)
+
+      expect(@netapp_api.delete_host_group('10.0.0.1', 'demo_host_group')).to eq(false)
+    end
+
+    it 'return false when host group does not exist (delete)' do
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
+      expect(@netapp_api).to receive(:host_group_id).with('12345', 'demo_host_group').and_return(nil)
+
+      expect(@netapp_api.delete_host_group('10.0.0.1', 'demo_host_group')).to eq(false)
+    end
+  end
+
+  context 'storage_pool:' do
+    it 'is created' do
+      response = double
+      request_body = "{\"name\":\"demo_storage_pool\"}"
+
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
+      expect(@netapp_api).to receive(:storage_pool_id).with('12345', 'demo_storage_pool').and_return(nil)
+      expect(@netapp_api).to receive(:request).with(:post, '/devmgr/v2/storage-systems/12345/storage-pools', request_body).and_return(response)
+      expect(@netapp_api).to receive(:status).with(response, 201, [201], 'Failed to create storage pool')
+
+      @netapp_api.create_storage_pool('10.0.0.1', name: 'demo_storage_pool')
+    end
+
+    it 'return false when storage system does not exist (create)' do
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return(nil)
+
+      expect(@netapp_api.create_storage_pool('10.0.0.1', name: 'demo_storage_pool')).to eq(false)
+    end
+
+    it 'return false when storage pool exists (create)' do
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
+      expect(@netapp_api).to receive(:storage_pool_id).with('12345', 'demo_storage_pool').and_return('111111')
+
+      expect(@netapp_api.create_storage_pool('10.0.0.1', name: 'demo_storage_pool')).to eq(false)
+    end
+
+    it 'is deleted' do
+      response = double
+
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
+      expect(@netapp_api).to receive(:storage_pool_id).with('12345', 'demo_storage_pool').and_return('111111')
+      expect(@netapp_api).to receive(:request).with(:delete, '/devmgr/v2/storage-systems/12345/storage-pools/111111').and_return(response)
+      expect(@netapp_api).to receive(:status).with(response, 200, [200], 'Failed to delete storage pool')
+
+      @netapp_api.delete_storage_pool('10.0.0.1', 'demo_storage_pool')
+    end
+
+    it 'return false when the storage system does not exist (delete)' do
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return(nil)
+
+      expect(@netapp_api.delete_storage_pool('10.0.0.1', 'demo_storage_pool')).to eq(false)
+    end
+
+    it 'return false when storage pool does not exist (delete)' do
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
+      expect(@netapp_api).to receive(:storage_pool_id).with('12345', 'demo_storage_pool').and_return(nil)
+
+      expect(@netapp_api.delete_storage_pool('10.0.0.1', 'demo_storage_pool')).to eq(false)
     end
   end
 end

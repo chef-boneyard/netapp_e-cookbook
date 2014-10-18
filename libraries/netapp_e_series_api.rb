@@ -58,7 +58,6 @@ class NetApp
         response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/hosts", request_body.to_json)
         status(response, 201, [201], 'Failed to create host')
       end
-
       def delete_host(storage_system_ip, name)
         sys_id = storage_system_id(storage_system_ip)
         return false if sys_id.nil?
@@ -94,45 +93,24 @@ class NetApp
 
       def create_storage_pool(storage_system_ip, request_body)
         sys_id = storage_system_id(storage_system_ip)
-        if sys_id.nil?
-          false
-        else
-          if @basic_auth
-            response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/storage-pools", request_body.to_json)
-            resource_update_status = status(response, '201', %w(201 200), 'Failed to create storage pool')
-          else
-            login
-            response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/storage-pools", request_body.to_json)
-            resource_update_status = status(response, '201', %w(201 200), 'Failed to create storage pool')
-            logout
-          end
+        return false if sys_id.nil?
 
-          resource_update_status
-        end
+        pool_id = storage_pool_id(sys_id, request_body[:name])
+        return false unless pool_id.nil?
+
+        response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/storage-pools", request_body.to_json)
+        status(response, 201, [201], 'Failed to create storage pool')
       end
 
       def delete_storage_pool(storage_system_ip, name)
         sys_id = storage_system_id(storage_system_ip)
-        if sys_id.nil?
-          false
-        else
-          pool_id = storage_pool_id(sys_id, name)
-          if pool_id.nil?
-            false
-          else
-            if @basic_auth
-              response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/storage-pools/#{pool_id}")
-              resource_update_status = status(response, '201', %w(201 200), 'Failed to delete storage pool')
-            else
-              login
-              response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/storage-pools/#{pool_id}")
-              resource_update_status = status(response, '201', %w(201 200), 'Failed to delete storage pool')
-              logout
-            end
+        return false if sys_id.nil?
 
-            resource_update_status
-          end
-        end
+        pool_id = storage_pool_id(sys_id, name)
+        return false if pool_id.nil?
+
+        response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/storage-pools/#{pool_id}")
+        status(response, 200, [200], 'Failed to delete storage pool')
       end
 
       def create_volume(storage_system_ip, request_body)
@@ -241,28 +219,6 @@ class NetApp
 
         response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/thin-volumes/#{volume_id}")
         status(response, 200, [200], 'Failed to delete thin volume')
-      end
-
-      def create_storage_pool(storage_system_ip, request_body)
-        sys_id = storage_system_id(storage_system_ip)
-        return false if sys_id.nil?
-
-        group_id = volume_group_id(sys_id, request_body[:name])
-        return false unless group_id.nil?
-
-        response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/storage-pools", request_body.to_json)
-        status(response, 201, [201], 'Failed to create volume group')
-      end
-
-      def delete_storage_pool(storage_system_ip, name)
-        sys_id = storage_system_id(storage_system_ip)
-        return false if sys_id.nil?
-
-        group_id = volume_group_id(sys_id, name)
-        return false if group_id.nil?
-
-        response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/storage-pools/#{group_id}")
-        status(response, 200, [200], 'Failed to delete volume group')
       end
 
       private
