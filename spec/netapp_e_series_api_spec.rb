@@ -370,7 +370,7 @@ describe 'netapp_e_series_api' do
     end
   end
 
-  context 'storage_pool:' do
+  context 'group_snapshot:' do
     it 'is created' do
       response = double
       request_body = "{\"name\":\"demo_group_snapshot\"}"
@@ -418,6 +418,127 @@ describe 'netapp_e_series_api' do
       expect(@netapp_api).to receive(:group_snapshot_id).with('12345', 'demo_group_snapshot').and_return(nil)
 
       expect(@netapp_api.delete_group_snapshot('10.0.0.1', 'demo_group_snapshot')).to eq(false)
+    end
+  end
+
+  context 'volume_snapshot:' do
+    it 'is created' do
+      response = double
+      request_body = "{\"name\":\"demo_volume_snapshot\"}"
+
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
+      expect(@netapp_api).to receive(:volume_snapshot_id).with('12345', 'demo_volume_snapshot').and_return(nil)
+      expect(@netapp_api).to receive(:request).with(:post, '/devmgr/v2/storage-systems/12345/snapshot-volumes', request_body).and_return(response)
+      expect(@netapp_api).to receive(:status).with(response, 201, [201], 'Failed to create volume snapshot')
+
+      @netapp_api.create_volume_snapshot('10.0.0.1', name: 'demo_volume_snapshot')
+    end
+
+    it 'return false when storage system does not exist (create)' do
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return(nil)
+
+      expect(@netapp_api.create_volume_snapshot('10.0.0.1', name: 'demo_volume_snapshot')).to eq(false)
+    end
+
+    it 'return false when group snapshot exists (create)' do
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
+      expect(@netapp_api).to receive(:volume_snapshot_id).with('12345', 'demo_volume_snapshot').and_return('111111')
+
+      expect(@netapp_api.create_volume_snapshot('10.0.0.1', name: 'demo_volume_snapshot')).to eq(false)
+    end
+
+    it 'is deleted' do
+      response = double
+
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
+      expect(@netapp_api).to receive(:volume_snapshot_id).with('12345', 'demo_volume_snapshot').and_return('111111')
+      expect(@netapp_api).to receive(:request).with(:delete, '/devmgr/v2/storage-systems/12345/snapshot-volumes/111111').and_return(response)
+      expect(@netapp_api).to receive(:status).with(response, 200, [200], 'Failed to delete volume snapshot')
+
+      @netapp_api.delete_volume_snapshot('10.0.0.1', 'demo_volume_snapshot')
+    end
+
+    it 'return false when the storage system does not exist (delete)' do
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return(nil)
+
+      expect(@netapp_api.delete_volume_snapshot('10.0.0.1', 'demo_volume_snapshot')).to eq(false)
+    end
+
+    it 'return false when group snapshot does not exist (delete)' do
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
+      expect(@netapp_api).to receive(:volume_snapshot_id).with('12345', 'demo_volume_snapshot').and_return(nil)
+
+      expect(@netapp_api.delete_volume_snapshot('10.0.0.1', 'demo_volume_snapshot')).to eq(false)
+    end
+  end
+
+  context 'thin_volume:' do
+    it 'is created' do
+      response = double
+      request_body = "{\"name\":\"demo_thin_volume\"}"
+
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
+      expect(@netapp_api).to receive(:thin_volume_id).with('12345', 'demo_thin_volume').and_return(nil)
+      expect(@netapp_api).to receive(:request).with(:post, '/devmgr/v2/storage-systems/12345/thin-volumes', request_body).and_return(response)
+      expect(@netapp_api).to receive(:status).with(response, 201, [201], 'Failed to create thin volume')
+
+      @netapp_api.create_thin_volume('10.0.0.1', name: 'demo_thin_volume')
+    end
+
+    it 'return false when storage system does not exist (create)' do
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return(nil)
+
+      expect(@netapp_api.create_thin_volume('10.0.0.1', name: 'demo_thin_volume')).to eq(false)
+    end
+
+    it 'return false when group snapshot exists (create)' do
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
+      expect(@netapp_api).to receive(:thin_volume_id).with('12345', 'demo_thin_volume').and_return('111111')
+
+      expect(@netapp_api.create_thin_volume('10.0.0.1', name: 'demo_thin_volume')).to eq(false)
+    end
+
+    it 'is deleted' do
+      response = double
+
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
+      expect(@netapp_api).to receive(:thin_volume_id).with('12345', 'demo_thin_volume').and_return('111111')
+      expect(@netapp_api).to receive(:request).with(:delete, '/devmgr/v2/storage-systems/12345/thin-volumes/111111').and_return(response)
+      expect(@netapp_api).to receive(:status).with(response, 200, [200], 'Failed to delete thin volume')
+
+      @netapp_api.delete_thin_volume('10.0.0.1', 'demo_thin_volume')
+    end
+
+    it 'return false when the storage system does not exist (delete)' do
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return(nil)
+
+      expect(@netapp_api.delete_thin_volume('10.0.0.1', 'demo_thin_volume')).to eq(false)
+    end
+
+    it 'return false when group snapshot does not exist (delete)' do
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
+      expect(@netapp_api).to receive(:thin_volume_id).with('12345', 'demo_thin_volume').and_return(nil)
+
+      expect(@netapp_api.delete_thin_volume('10.0.0.1', 'demo_thin_volume')).to eq(false)
+    end
+  end
+
+  context 'iscsi:' do
+    it 'is updated' do
+      response = double
+      request_body = "{\"alias\":\"iscsi_new\"}"
+
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
+      expect(@netapp_api).to receive(:request).with(:post, '/devmgr/v2/storage-systems/12345/iscsi/target-settings', request_body).and_return(response)
+      expect(@netapp_api).to receive(:status).with(response, 200, [200], 'Failed to update iscsi target settings')
+
+      @netapp_api.update_iscsi('10.0.0.1', alias: 'iscsi_new')
+    end
+
+    it 'return false when the storage system does not exist' do
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return(nil)
+
+      expect(@netapp_api.update_iscsi('10.0.0.1', alias: 'iscsi_new')).to eq(false)
     end
   end
 end
