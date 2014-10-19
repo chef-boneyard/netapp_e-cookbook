@@ -1,6 +1,7 @@
 AllCops:
   Exclude:
     - metadata.rb
+    - ./bundle
 
 LineLength:
   Enabled: false
@@ -11,4 +12,6 @@ Documentation:
 ClassLength:
   Enabled: false
 CyclomaticComplexity:
+  Enabled: false
+PerceivedComplexity:
   Enabled: false

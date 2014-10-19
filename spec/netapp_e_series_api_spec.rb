@@ -1,4 +1,3 @@
-require_relative 'spec_helper'
 require_relative '../libraries/netapp_e_series_api'
 
 describe 'netapp_e_series_api' do
