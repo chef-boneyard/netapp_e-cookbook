@@ -296,15 +296,6 @@ class NetApp
         nil
       end
 
-      def volume_group_id(storage_sys_id, name)
-        response = request(:get, "/devmgr/v2/storage-systems/#{storage_sys_id}/storage-pools")
-        groups = JSON.parse(response.body)
-        groups.each do |group|
-          return group['id'] if group['label'] == name
-        end
-        nil
-      end
-
       def status(response, expected_status_code, allowed_status_codes, failure_message)
         request_fail = true
         resource_update_status = false

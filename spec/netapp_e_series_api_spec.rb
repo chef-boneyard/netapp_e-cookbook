@@ -656,4 +656,73 @@ describe 'netapp_e_series_api' do
       expect(@netapp_api.send(:volume_id, '12345', 'demo_volume')).to eq(nil)
     end
   end
+
+  context 'group_snapshot_id:' do
+    it 'returns id when host exits' do
+      response = double(body: "[{\"label\":\"demo_group_snapshot\",\"id\":\"111111\"}]")
+
+      expect(@netapp_api).to receive(:request).with(:get, '/devmgr/v2/storage-systems/12345/snapshot-groups').and_return(response)
+      expect(@netapp_api.send(:group_snapshot_id, '12345', 'demo_group_snapshot')).to eq('111111')
+    end
+
+    it 'returns nil when no hosts exist' do
+      response = double(body: '[]')
+
+      expect(@netapp_api).to receive(:request).with(:get, '/devmgr/v2/storage-systems/12345/snapshot-groups').and_return(response)
+      expect(@netapp_api.send(:group_snapshot_id, '12345', 'demo_group_snapshot')).to eq(nil)
+    end
+
+    it 'returns nil when the required host does not exist' do
+      response = double(body: "[{\"label\":\"demo_group_snapshot_1\",\"id\":\"111111\"}]")
+
+      expect(@netapp_api).to receive(:request).with(:get, '/devmgr/v2/storage-systems/12345/snapshot-groups').and_return(response)
+      expect(@netapp_api.send(:group_snapshot_id, '12345', 'demo_group_snapshot')).to eq(nil)
+    end
+  end
+
+  context 'volume_snapshot_id:' do
+    it 'returns id when host exits' do
+      response = double(body: "[{\"label\":\"demo_snapshot_volume\",\"id\":\"111111\"}]")
+
+      expect(@netapp_api).to receive(:request).with(:get, '/devmgr/v2/storage-systems/12345/snapshot-volumes').and_return(response)
+      expect(@netapp_api.send(:volume_snapshot_id, '12345', 'demo_snapshot_volume')).to eq('111111')
+    end
+
+    it 'returns nil when no hosts exist' do
+      response = double(body: '[]')
+
+      expect(@netapp_api).to receive(:request).with(:get, '/devmgr/v2/storage-systems/12345/snapshot-volumes').and_return(response)
+      expect(@netapp_api.send(:volume_snapshot_id, '12345', 'demo_snapshot_volume')).to eq(nil)
+    end
+
+    it 'returns nil when the required host does not exist' do
+      response = double(body: "[{\"label\":\"demo_snapshot_volume_1\",\"id\":\"111111\"}]")
+
+      expect(@netapp_api).to receive(:request).with(:get, '/devmgr/v2/storage-systems/12345/snapshot-volumes').and_return(response)
+      expect(@netapp_api.send(:volume_snapshot_id, '12345', 'demo_snapshot_volume')).to eq(nil)
+    end
+  end
+
+  context 'thin_volume_id:' do
+    it 'returns id when host exits' do
+      response = double(body: "[{\"name\":\"demo_thin_volume\",\"id\":\"111111\"}]")
+
+      expect(@netapp_api).to receive(:request).with(:get, '/devmgr/v2/storage-systems/12345/thin-volumes').and_return(response)
+      expect(@netapp_api.send(:thin_volume_id, '12345', 'demo_thin_volume')).to eq('111111')
+    end
+
+    it 'returns nil when no hosts exist' do
+      response = double(body: '[]')
+
+      expect(@netapp_api).to receive(:request).with(:get, '/devmgr/v2/storage-systems/12345/thin-volumes').and_return(response)
+      expect(@netapp_api.send(:thin_volume_id, '12345', 'demo_thin_volume')).to eq(nil)
+    end
+
+    it 'returns nil when the required host does not exist' do
+      response = double(body: "[{\"name\":\"demo_thin_volume_1\",\"id\":\"111111\"}]")
+
+      expect(@netapp_api).to receive(:request).with(:get, '/devmgr/v2/storage-systems/12345/thin-volumes').and_return(response)
+      expect(@netapp_api.send(:thin_volume_id, '12345', 'demo_thin_volume')).to eq(nil)
+    end
+  end
 end
