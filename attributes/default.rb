@@ -1,12 +1,10 @@
-# template
-
 # Mandatory Parameters
 
-# default['netapp']['https'] = false
-# default['netapp']['user'] = 'root'
-# default['netapp']['password'] = 'secret'
-# default['netapp']['fqdn'] = 'example.com'
-# default['netapp']['basic_auth'] = true
+default['netapp']['https'] = false
+default['netapp']['user'] = 'rw'
+default['netapp']['password'] = 'rw'
+default['netapp']['fqdn'] = 'localhost'
+default['netapp']['basic_auth'] = true
 
 ########### Web Proxy Port (optional)#################
 

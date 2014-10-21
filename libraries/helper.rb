@@ -22,17 +22,11 @@ module NetAppEHelper
     # Validate the mandatory parameters and create a netapp api object
     validate_node_attributes
 
-    begin
-      # Check if user has given a timeout value
-      timeout_set = true if node['netapp']['api']['timeout']
-    rescue
-      timeout_set = false
+    if node['netapp']['api']
+      if node['netapp']['api']['timeout']
+        return NetApp::ESeries::Api.new(node['netapp']['user'], node['netapp']['password'], url, node['netapp']['basic_auth'], node['netapp']['api']['timeout']) if node['netapp']['api']['timeout']
+      end
     end
-
-    if timeout_set
-      NetApp::ESeries::Api.new(node['netapp']['user'], node['netapp']['password'], url, node['netapp']['basic_auth'], node['netapp']['api']['timeout']) if node['netapp']['api']['timeout']
-    else
-      NetApp::ESeries::Api.new(node['netapp']['user'], node['netapp']['password'], url, node['netapp']['basic_auth'])
-    end
+    NetApp::ESeries::Api.new(node['netapp']['user'], node['netapp']['password'], url, node['netapp']['basic_auth'])
   end
 end

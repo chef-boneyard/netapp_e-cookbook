@@ -12,6 +12,6 @@ Documentation:
 ClassLength:
   Enabled: false
 CyclomaticComplexity:
-  Enabled: false
+  Max: 10
 PerceivedComplexity:
-  Enabled: false
+  Max: 10
