@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: netapp-e-series
-# Recipe:: proxy
+# Recipe:: volume
 #
 # Copyright 2014, Chef Software, Inc.
 #
@@ -17,23 +17,25 @@
 # limitations under the License.
 #
 
-case node['platform']
-when 'ubuntu', 'centos', 'redhat', 'fedora'
-  # Default installation path is /opt/netapp/ . Skip installation if this directory exists.
-  return if File.directory? '/opt/netapp/'
+netapp_e_volume 'myvol1' do
+  storage_system '10.250.117.112'
+  pool_id '0400000060080E50003220A80000006F52D8010D'
+  size_unit 'b'
+  size 100
+  segment_size 0
 
-  remote_file 'web_proxy' do
-    source 'https://example.com/webservice-01.00.7000.0003.bin'
-    path '/tmp/webservice-01.00.7000.0003.bin'
-    mode '0777'
-    action :create
-  end
+  action :create
+end
 
-  bash 'install_web_proxy' do
-    code '/tmp/webservice-01.00.7000.0003.bin -i silent'
-  end
+netapp_e_volume 'myvol1' do
+  storage_system '10.250.117.112'
+  new_name 'myvol2'
 
-  file '/tmp/webservice-01.00.7000.0003.bin' do
-    action :delete
-  end
+  action :update
+end
+
+netapp_e_volume 'myvol2' do
+  storage_system '10.250.117.112'
+
+  action :delete
 end

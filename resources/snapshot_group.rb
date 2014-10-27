@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: netapp-e-series
-# Recipe:: proxy
+# Resource:: snapshot_group
 #
 # Copyright 2014, Chef Software, Inc.
 #
@@ -17,23 +17,15 @@
 # limitations under the License.
 #
 
-case node['platform']
-when 'ubuntu', 'centos', 'redhat', 'fedora'
-  # Default installation path is /opt/netapp/ . Skip installation if this directory exists.
-  return if File.directory? '/opt/netapp/'
+actions :create, :delete
+default_action :create
 
-  remote_file 'web_proxy' do
-    source 'https://example.com/webservice-01.00.7000.0003.bin'
-    path '/tmp/webservice-01.00.7000.0003.bin'
-    mode '0777'
-    action :create
-  end
+attribute :name, kind_of: String, required: true, name_attribute: true
+attribute :storage_system, kind_of: String, required: true
 
-  bash 'install_web_proxy' do
-    code '/tmp/webservice-01.00.7000.0003.bin -i silent'
-  end
-
-  file '/tmp/webservice-01.00.7000.0003.bin' do
-    action :delete
-  end
-end
+attribute :base_mappable_object_id, kind_of: String
+attribute :repository_percentage, kind_of: Integer
+attribute :warning_threshold, kind_of: Integer
+attribute :auto_delete_limit, kind_of: Integer
+attribute :full_policy, kind_of: String, equal_to: %w(unknown failbasewrites purgepit)
+attribute :storage_pool_id, kind_of: String

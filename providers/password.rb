@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: netapp-e-series
-# Recipe:: proxy
+# Provider:: password
 #
 # Copyright 2014, Chef Software, Inc.
 #
@@ -17,23 +17,17 @@
 # limitations under the License.
 #
 
-case node['platform']
-when 'ubuntu', 'centos', 'redhat', 'fedora'
-  # Default installation path is /opt/netapp/ . Skip installation if this directory exists.
-  return if File.directory? '/opt/netapp/'
+include NetAppEHelper
 
-  remote_file 'web_proxy' do
-    source 'https://example.com/webservice-01.00.7000.0003.bin'
-    path '/tmp/webservice-01.00.7000.0003.bin'
-    mode '0777'
-    action :create
-  end
+action :update do
 
-  bash 'install_web_proxy' do
-    code '/tmp/webservice-01.00.7000.0003.bin -i silent'
-  end
+  request_body = { currentAdminPassword: new_resource.current_admin_password, adminPassword: new_resource.admin_password, newPassword: new_resource.new_password }
 
-  file '/tmp/webservice-01.00.7000.0003.bin' do
-    action :delete
-  end
+  netapp_api = netapp_api_create
+
+  netapp_api.login unless node['netapp']['basic_auth']
+  resource_update_status = netapp_api.change_password(new_resource.name, request_body)
+  netapp_api.logout unless node['netapp']['basic_auth']
+
+  new_resource.updated_by_last_action(true) if resource_update_status
 end

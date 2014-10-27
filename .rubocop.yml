@@ -1,0 +1,17 @@
+AllCops:
+  Exclude:
+    - metadata.rb
+    - ./bundle
+
+LineLength:
+  Enabled: false
+MethodLength:
+  Max: 30
+Documentation:
+  Enabled: false
+ClassLength:
+  Enabled: false
+CyclomaticComplexity:
+  Max: 10
+PerceivedComplexity:
+  Max: 10
