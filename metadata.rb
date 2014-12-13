@@ -1,4 +1,4 @@
-name             'netapp-e-series'
+name             'netapp_e'
 maintainer       'Chef Software, Inc.'
 maintainer_email 'matt@getchef.com'
 license          'Apache 2.0'

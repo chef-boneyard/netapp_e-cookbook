@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: netapp-e-series
+# Cookbook Name:: netapp_e
 # Provider:: disk_pool
 #
 # Copyright 2014, Chef Software, Inc.
