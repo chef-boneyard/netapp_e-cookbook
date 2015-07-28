@@ -242,6 +242,23 @@ class NetApp
         status(response, 200, [200], 'Failed to delete thin volume')
       end
 
+      # Post key/value pair to proxy for inclusion in ASUP bundle
+      def post_key_value(key, value)
+        response = request(:post, "/devmgr/v2/key-values/#{key}", value)
+        status(response, 200, [200], 'Failed to post key/value pair')
+      end
+
+      # Send ASUP key/value pair for tracking
+      def send_asup
+        client_info = {
+            'application'  => 'Chef',
+            'chef-version' => Chef::VERSION,
+            'url'          => @url
+        }.to_json
+
+        post_key_value('Chef', client_info)
+      end
+
       private
 
       # Get the storage-system-id using storage syste ip
