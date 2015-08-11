@@ -4,11 +4,12 @@ require 'excon'
 class NetApp
   class ESeries
     class Api
-      def initialize(user, password, url, basic_auth, connect_timeout = nil)
+      def initialize(user, password, url, basic_auth, asup = true, connect_timeout = nil)
         @user = user
         @password = password
         @url = url
         @basic_auth = basic_auth
+        @asup = asup
         @connect_timeout = connect_timeout
       end
 
@@ -250,13 +251,15 @@ class NetApp
 
       # Send ASUP key/value pair for tracking
       def send_asup
-        client_info = {
-            'application'  => 'Chef',
-            'chef-version' => Chef::VERSION,
-            'url'          => @url
-        }.to_json
+        if @asup
+          client_info = {
+              'application'  => 'Chef',
+              'chef-version' => Chef::VERSION,
+              'url'          => @url
+          }.to_json
 
-        post_key_value('Chef', client_info)
+          post_key_value('Chef', client_info)
+        end
       end
 
       private
