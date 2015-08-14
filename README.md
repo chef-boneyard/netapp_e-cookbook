@@ -21,7 +21,7 @@ The connection is made over HTTPS through the SANtricity Web Services Proxy and 
     ['netapp']['password'] string
     ['netapp']['fqdn'] string
     ['netapp']['basic_auth'] boolean
-    ['netapp']['asup'] boolean, default is 'true'
+    ['netapp']['asup'] boolean
 
 The ASUP option, if set to 'true', will cause a log message to be sent to the proxy. This log message will be included in ASUP bundles that are sent back to NetApp, if configured to do so on the proxy application. If ASUP is not enabled on the proxy or on the attribute listed above, no log message will be sent to NetApp.
 

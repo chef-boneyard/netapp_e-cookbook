@@ -4,7 +4,7 @@ require 'excon'
 class NetApp
   class ESeries
     class Api
-      def initialize(user, password, url, basic_auth, asup = true, connect_timeout = nil)
+      def initialize(user, password, url, basic_auth, asup, connect_timeout = nil)
         @user = user
         @password = password
         @url = url

@@ -2,7 +2,7 @@ require_relative '../libraries/netapp_e_series_api'
 
 describe 'netapp_e_series_api' do
   before do
-    @netapp_api = NetApp::ESeries::Api.new('rw', 'rw', '127.0.0.1', true)
+    @netapp_api = NetApp::ESeries::Api.new('rw', 'rw', '127.0.0.1', true, true)
   end
 
   context 'login:' do

@@ -13,6 +13,7 @@ module NetAppEHelper
     fail unless node['netapp']['password'].class == String
     fail unless node['netapp']['fqdn'].class == String
     fail unless node['netapp']['basic_auth'] == true || node['netapp']['basic_auth'] == false
+    fail unless node['netapp']['asup'] == true || node['netapp']['asup'] == false
   rescue
     Chef::Log.error('One or more mandatory parameters are not provided or are set incorrectly')
     exit
@@ -24,9 +25,9 @@ module NetAppEHelper
 
     if node['netapp']['api']
       if node['netapp']['api']['timeout']
-        return NetApp::ESeries::Api.new(node['netapp']['user'], node['netapp']['password'], url, node['netapp']['basic_auth'], node['netapp']['api']['timeout']) if node['netapp']['api']['timeout']
+        return NetApp::ESeries::Api.new(node['netapp']['user'], node['netapp']['password'], url, node['netapp']['basic_auth'], node['netapp']['asup'], node['netapp']['api']['timeout']) if node['netapp']['api']['timeout']
       end
     end
-    NetApp::ESeries::Api.new(node['netapp']['user'], node['netapp']['password'], url, node['netapp']['basic_auth'])
+    NetApp::ESeries::Api.new(node['netapp']['user'], node['netapp']['password'], url, node['netapp']['basic_auth'], node['netapp']['asup'])
   end
 end
