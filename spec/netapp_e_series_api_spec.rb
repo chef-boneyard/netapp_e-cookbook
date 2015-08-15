@@ -77,7 +77,7 @@ describe 'netapp_e_series_api' do
     end
 
     it 'when basic authentication is set to false' do
-      @netapp_api_no_basic_auth = NetApp::ESeries::Api.new('rw', 'rw', '127.0.0.1', false)
+      @netapp_api_no_basic_auth = NetApp::ESeries::Api.new('rw', 'rw', '127.0.0.1', false, true)
       headers = { 'Accept' => 'application/json', 'Content-Type' => 'application/json', 'cookie' => @cookie }
 
       expect(Excon).to receive(:get).with('127.0.0.1', path: '/devmgr/v2/storage-systems', headers: headers, body: "{\"ip\":\"10.0.0.1\"}", connect_timeout: nil)

@@ -17,21 +17,21 @@ describe 'netapp e series cookbook helper method' do
 
   context 'netapp_api_create:' do
     it 'when timeout is set' do
-      @netapp_e_helper.node['netapp'] = { 'user' => 'rw', 'password' => 'rw', 'basic_auth' =>  true, 'api' => { 'timeout' => 100 } }
+      @netapp_e_helper.node['netapp'] = { 'user' => 'rw', 'password' => 'rw', 'basic_auth' =>  true, 'api' => { 'timeout' => 100 }, 'asup' => true }
 
       expect(@netapp_e_helper).to receive(:validate_node_attributes)
       expect(@netapp_e_helper).to receive(:url).and_return('http://10.0.0.1:8080')
-      expect(NetApp::ESeries::Api).to receive(:new).with('rw', 'rw', 'http://10.0.0.1:8080', true, 100)
+      expect(NetApp::ESeries::Api).to receive(:new).with('rw', 'rw', 'http://10.0.0.1:8080', true, true, 100)
 
       @netapp_e_helper.netapp_api_create
     end
 
     it 'when timeout is not set' do
-      @netapp_e_helper.node['netapp'] = { 'user' => 'rw', 'password' => 'rw', 'basic_auth' =>  true }
+      @netapp_e_helper.node['netapp'] = { 'user' => 'rw', 'password' => 'rw', 'basic_auth' =>  true, 'asup' => true }
 
       expect(@netapp_e_helper).to receive(:validate_node_attributes)
       expect(@netapp_e_helper).to receive(:url).and_return('http://10.0.0.1:8080')
-      expect(NetApp::ESeries::Api).to receive(:new).with('rw', 'rw', 'http://10.0.0.1:8080', true)
+      expect(NetApp::ESeries::Api).to receive(:new).with('rw', 'rw', 'http://10.0.0.1:8080', true, true)
 
       @netapp_e_helper.netapp_api_create
     end
@@ -122,26 +122,62 @@ describe 'netapp e series cookbook helper method' do
       expect { @netapp_e_helper.validate_node_attributes }.to raise_error
     end
 
+    it "exits when default['netapp']['asup'] is not set" do
+      @netapp_e_helper.node['netapp'] = { 'https' => false, 'user' => 'rw', 'password' => 'rw', 'fqdn' => 'example.com' }
+
+      expect { @netapp_e_helper.validate_node_attributes }.to raise_error
+    end
+
+    it "exits when default['netapp']['asup'] is set incorrectly" do
+      @netapp_e_helper.node['netapp'] = { 'https' => false, 'user' => 'rw', 'password' => 'rw', 'fqdn' => 'example.com', 'basic_auth' => true, 'asup' => 'true' }
+
+      expect { @netapp_e_helper.validate_node_attributes }.to raise_error
+    end
+
     it 'succeeds when the attributes are set correctly case-1' do
-      @netapp_e_helper.node['netapp'] = { 'https' => false, 'user' => 'rw', 'password' => 'rw', 'fqdn' => 'example.com', 'basic_auth' => true }
+      @netapp_e_helper.node['netapp'] = { 'https' => false, 'user' => 'rw', 'password' => 'rw', 'fqdn' => 'example.com', 'basic_auth' => true, 'asup' => true }
 
       @netapp_e_helper.validate_node_attributes
     end
 
     it 'succeeds when the attributes are set correctly case-2' do
-      @netapp_e_helper.node['netapp'] = { 'https' => true, 'user' => 'rw', 'password' => 'rw', 'fqdn' => 'example.com', 'basic_auth' => true }
+      @netapp_e_helper.node['netapp'] = { 'https' => true, 'user' => 'rw', 'password' => 'rw', 'fqdn' => 'example.com', 'basic_auth' => true, 'asup' => true }
 
       @netapp_e_helper.validate_node_attributes
     end
 
     it 'succeeds when the attributes are set correctly case-3' do
-      @netapp_e_helper.node['netapp'] = { 'https' => true, 'user' => 'rw', 'password' => 'rw', 'fqdn' => 'example.com', 'basic_auth' => false }
+      @netapp_e_helper.node['netapp'] = { 'https' => true, 'user' => 'rw', 'password' => 'rw', 'fqdn' => 'example.com', 'basic_auth' => false, 'asup' => true }
 
       @netapp_e_helper.validate_node_attributes
     end
 
     it 'succeeds when the attributes are set correctly case-4' do
-      @netapp_e_helper.node['netapp'] = { 'https' => false, 'user' => 'rw', 'password' => 'rw', 'fqdn' => 'example.com', 'basic_auth' => false }
+      @netapp_e_helper.node['netapp'] = { 'https' => false, 'user' => 'rw', 'password' => 'rw', 'fqdn' => 'example.com', 'basic_auth' => false, 'asup' => true }
+
+      @netapp_e_helper.validate_node_attributes
+    end
+
+    it 'succeeds when the attributes are set correctly case-5' do
+      @netapp_e_helper.node['netapp'] = { 'https' => false, 'user' => 'rw', 'password' => 'rw', 'fqdn' => 'example.com', 'basic_auth' => true, 'asup' => false }
+
+      @netapp_e_helper.validate_node_attributes
+    end
+
+    it 'succeeds when the attributes are set correctly case-6' do
+      @netapp_e_helper.node['netapp'] = { 'https' => true, 'user' => 'rw', 'password' => 'rw', 'fqdn' => 'example.com', 'basic_auth' => true, 'asup' => false }
+
+      @netapp_e_helper.validate_node_attributes
+    end
+
+    it 'succeeds when the attributes are set correctly case-7' do
+      @netapp_e_helper.node['netapp'] = { 'https' => true, 'user' => 'rw', 'password' => 'rw', 'fqdn' => 'example.com', 'basic_auth' => false, 'asup' => false }
+
+      @netapp_e_helper.validate_node_attributes
+    end
+
+    it 'succeeds when the attributes are set correctly case-8' do
+      @netapp_e_helper.node['netapp'] = { 'https' => false, 'user' => 'rw', 'password' => 'rw', 'fqdn' => 'example.com', 'basic_auth' => false, 'asup' => false }
 
       @netapp_e_helper.validate_node_attributes
     end
