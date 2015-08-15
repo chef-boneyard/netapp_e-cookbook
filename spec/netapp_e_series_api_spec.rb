@@ -1,4 +1,5 @@
 require_relative '../libraries/netapp_e_series_api'
+require "chef"
 
 describe 'netapp_e_series_api' do
   before do
@@ -722,6 +723,28 @@ describe 'netapp_e_series_api' do
 
       expect(@netapp_api).to receive(:request).with(:get, '/devmgr/v2/storage-systems/12345/thin-volumes').and_return(response)
       expect(@netapp_api.send(:thin_volume_id, '12345', 'demo_thin_volume')).to eq(nil)
+    end
+  end
+
+  context 'test_asup_positive' do
+    it 'send asup to proxy' do
+      response = double
+      request_body = "{\"application\":\"Chef\",\"chef-version\":\"#{Chef::VERSION}\",\"url\":\"127.0.0.1\"}"
+
+      expect(@netapp_api).to receive(:request).with(:post, '/devmgr/v2/key-values/Chef', request_body).and_return(response)
+      expect(@netapp_api).to receive(:status).with(response, 200, [200], 'Failed to post key/value pair')
+
+      @netapp_api.send_asup
+    end
+  end
+
+  context 'test_asup_negative' do
+    before do
+      @netapp_api = NetApp::ESeries::Api.new('rw', 'rw', '127.0.0.1', true, false)
+    end
+
+    it 'does nothing' do
+      @netapp_api.send_asup
     end
   end
 end

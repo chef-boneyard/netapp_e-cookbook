@@ -7,6 +7,7 @@ end
 
 group :development do
   gem 'rspec', '~> 3.1.0'
+  gem 'chef'
 end
 
 gem 'excon', '0.40.0'
