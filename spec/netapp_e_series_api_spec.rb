@@ -1,5 +1,4 @@
 require_relative '../libraries/netapp_e_series_api'
-require "chef"
 
 describe 'netapp_e_series_api' do
   before do
@@ -729,7 +728,8 @@ describe 'netapp_e_series_api' do
   context 'test_asup_positive' do
     it 'send asup to proxy' do
       response = double
-      request_body = "{\"application\":\"Chef\",\"chef-version\":\"#{Chef::VERSION}\",\"url\":\"127.0.0.1\"}"
+      stub_const('Chef::VERSION', '12.4.1')
+      request_body = "{\"application\":\"Chef\",\"chef-version\":\"12.4.1\",\"url\":\"127.0.0.1\"}"
 
       expect(@netapp_api).to receive(:request).with(:post, '/devmgr/v2/key-values/Chef', request_body).and_return(response)
       expect(@netapp_api).to receive(:status).with(response, 200, [200], 'Failed to post key/value pair')
@@ -744,6 +744,8 @@ describe 'netapp_e_series_api' do
     end
 
     it 'does nothing' do
+      expect(@netapp_api).not_to receive(:request)
+
       @netapp_api.send_asup
     end
   end
