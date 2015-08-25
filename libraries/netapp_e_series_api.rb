@@ -4,11 +4,12 @@ require 'excon'
 class NetApp
   class ESeries
     class Api
-      def initialize(user, password, url, basic_auth, connect_timeout = nil)
+      def initialize(user, password, url, basic_auth, asup, connect_timeout = nil)
         @user = user
         @password = password
         @url = url
         @basic_auth = basic_auth
+        @asup = asup
         @connect_timeout = connect_timeout
       end
 
@@ -240,6 +241,25 @@ class NetApp
 
         response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/thin-volumes/#{volume_id}")
         status(response, 200, [200], 'Failed to delete thin volume')
+      end
+
+      # Post key/value pair to proxy for inclusion in ASUP bundle
+      def post_key_value(key, value)
+        response = request(:post, "/devmgr/v2/key-values/#{key}", value)
+        status(response, 200, [200], 'Failed to post key/value pair')
+      end
+
+      # Send ASUP key/value pair for tracking
+      def send_asup
+        if @asup
+          client_info = {
+              'application'  => 'Chef',
+              'chef-version' => Chef::VERSION,
+              'url'          => @url
+          }.to_json
+
+          post_key_value('Chef', client_info)
+        end
       end
 
       private
