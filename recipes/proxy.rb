@@ -23,17 +23,31 @@ when 'ubuntu', 'centos', 'redhat', 'fedora'
   return if File.directory? '/opt/netapp/'
 
   remote_file 'web_proxy' do
-    source 'https://example.com/webservice-01.00.7000.0003.bin'
-    path '/tmp/webservice-01.00.7000.0003.bin'
+    source 'https://example.com/webservice-01.30.7000.0002.bin'
+    path '/tmp/webservice-01.30.7000.0002.bin'
+    mode '0777'
+    action :create
+  end
+
+  cookbook_file '/tmp/installer.properties' do
+    source 'linux_installer.properties'
+    owner 'root'
+    group 'root'
     mode '0777'
     action :create
   end
 
   bash 'install_web_proxy' do
-    code '/tmp/webservice-01.00.7000.0003.bin -i silent'
+    code '/tmp/webservice-01.30.7000.0002.bin -f /tmp/installer.properties'
   end
 
-  file '/tmp/webservice-01.00.7000.0003.bin' do
+  file '/tmp/webservice-01.30.7000.0002.bin' do
     action :delete
   end
+
+  file '/tmp/installer.properties' do
+    action :delete
+  end
+
 end
+
