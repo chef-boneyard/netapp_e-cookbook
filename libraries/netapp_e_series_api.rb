@@ -343,6 +343,37 @@ class NetApp
         end
         nil
       end
+      
+      # Call Mirroring API /devmgr/v2/storage-systems/systemId/Async-mirrors to add a new mirror group
+      def create_mirror_group(storage_system_ip, request_body)
+        sys_id = storage_system_id(storage_system_ip)
+        return false if sys_id.nil?
+        response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/async-mirrors", request_body.to_json)
+        status(response, 201, [201], 'Failed to create storage pool')
+      end
+      
+      # Call Mirroring API to remove mirror group
+      def delete_mirror_group(storage_system_ip, request_body)
+        sys_id = storage_system_id(storage_system_ip)
+        return false if sys_id.nil?
+       
+        mirror_id = mirror_id(sys_id, name)
+        return false if mirror_id.nil?
+
+        response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/async-mirrors/#{mirror_id}")
+        status(response, 200, [200], 'Failed to delete mirror group')
+      end
+      
+     # Get the mirror id using storage-system-ip and async-mirrors 
+      def mirror_id(storage_sys_id, name)
+        response = request(:get, "/devmgr/v2/storage-systems/#{storage_sys_id}/async-mirrors")
+        mirrors = JSON.parse(response.body)
+        mirrors.each do |mirror|
+          return mirror['id'] if mirror['label'] == name
+        end
+        nil
+      end 
+ 
 
       # Determine the status of the resource:
       # True - Resource was updated
