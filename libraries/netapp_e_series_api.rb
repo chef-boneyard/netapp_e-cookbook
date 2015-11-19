@@ -76,6 +76,27 @@ class NetApp
         status(response, 200, [200], 'Failed to delete host')
       end
 
+      # Call Consistency Group API /devmgr/v2/storage-systems/{storage-system-id}/consistency-groups to create consistency group
+      def create_consistency_group(storage_system_ip, request_body)
+        sys_id = storage_system_id(storage_system_ip)
+        return false if sys_id.nil?
+
+        response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/consistency-groups", request_body.to_json)
+        status(response, 201, [201], 'Failed to create consistency group')
+      end
+
+      # Call consistency-group API /devmgr/v2/{storage-system-id}/consistency-groups/{consistency-group-id} to remove the consistency-group
+      def delete_consistency_group(storage_system_ip, name)
+        sys_id = storage_system_id(storage_system_ip)
+        return false if sys_id.nil?
+
+        consistency_grp_id = consistency_group_id(sys_id, name)
+        return false if consistency_grp_id.nil?
+
+        response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/consistency-groups/#{consistency_grp_id}")
+        status(response, 200, [200], 'Failed to delete consistency group')
+      end
+
       # Call host-group API /devmgr/v2/{storage-system-id}/host-groups to add a host-group
       def create_host_group(storage_system_ip, request_body)
         sys_id = storage_system_id(storage_system_ip)
@@ -290,6 +311,16 @@ class NetApp
         host_groups = JSON.parse(response.body)
         host_groups.each do |host_group|
           return host_group['id'] if host_group['label'] == name
+        end
+        nil
+      end
+
+      # Get the consistency-group-id using storage-system-ip and consistency-group name
+      def consistency_group_id(storage_sys_id, name)
+        response = request(:get, "/devmgr/v2/storage-systems/#{storage_sys_id}/consistency-groups")
+        consistency_groups = JSON.parse(response.body)
+        consistency_groups.each do |consistency_group|
+          return consistency_group['id'] if consistency_group['label'] == name
         end
         nil
       end
