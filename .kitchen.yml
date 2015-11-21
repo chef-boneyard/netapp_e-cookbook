@@ -6,10 +6,11 @@ provisioner:
   name: chef_zero
 
 platforms:
+  - name: centos-6.4
   - name: centos-7.1
 
 suites:
   - name: default
     run_list:
-      - recipe[netapp_e::proxy]
+      - recipe[netapp_e::default]
     attributes:

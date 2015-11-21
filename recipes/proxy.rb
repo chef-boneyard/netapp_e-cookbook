@@ -17,20 +17,24 @@
 # limitations under the License.
 #
 
+executable_name = node['netapp']['installer']['source_url'].split('/').last
+
 case node['platform']
 when 'ubuntu', 'centos', 'redhat', 'fedora'
-  # Default installation path is /opt/netapp/ . Skip installation if this directory exists.
-  return if File.directory? '/opt/netapp/'
-
-  remote_file 'web_proxy' do
-    source 'https://example.com/webservice-01.30.7000.0002.bin'
-    path '/tmp/webservice-01.30.7000.0002.bin'
-    mode '0777'
-    action :create
+  # Default installation path is /opt/netapp/santricity_web_services_proxy. 
+  # Skip installation if this directory exists.
+  return if File.directory? node['netapp']['installation_directory']
+  
+  template "#{Chef::Config[:file_cache_path]}/installer.properties" do
+    source 'installer_properties.erb'
+    owner 'root'
+    group 'root'
+    mode '0755'
   end
 
-  cookbook_file '/tmp/installer.properties' do
-    source 'linux_installer.properties'
+  remote_file 'web_proxy' do
+    source node['netapp']['installer']['source_url']
+    path "#{Chef::Config[:file_cache_path]}/#{executable_name}"
     owner 'root'
     group 'root'
     mode '0777'
@@ -38,43 +42,44 @@ when 'ubuntu', 'centos', 'redhat', 'fedora'
   end
 
   bash 'install_web_proxy' do
-    code '/tmp/webservice-01.30.7000.0002.bin -f /tmp/installer.properties'
+    code "#{Chef::Config[:file_cache_path]}/#{executable_name} -f /tmp/installer.properties"
   end
 
-  file '/tmp/webservice-01.30.7000.0002.bin' do
+  file "#{Chef::Config[:file_cache_path]}/#{executable_name}" do
     action :delete
   end
 
-  file '/tmp/installer.properties' do
+  file "#{Chef::Config[:file_cache_path]}/installer.properties" do
     action :delete
   end
 
 when 'windows'
-  # Default installation path is C:\Program Files\NetApp\ . Skip installation if this directory exists.
-  return if File.directory? 'C:\Program Files\NetApp\\'
+  # Default installation path is C:\Program Files\NetApp\SANtricity Web Services Proxy. 
+  # Skip installation if this directory exists.
+  return if File.directory? node['netapp']['installation_directory']
 
-  cookbook_file 'C:\installer.properties' do
-    source 'windows_installer.properties'
+  cookbook_file "#{Chef::Config[:file_cache_path]}\installer.properties" do
+    source 'installer_properties.erb'
     rights :full_control, 'Everyone' 
     action :create
   end
 
   remote_file 'web_proxy' do
-    source 'https://googledrive.com/host/0B4gqXBcuZgSEUDBwYkxYWTRJZ1k/webservice-01.30.3000.0003.exe'
-    path 'C:\webservice-01.30.3000.0003.exe'
+    source node['netapp']['installer']['source_url']
+    path "#{Chef::Config[:file_cache_path]}\\#{executable_name}"
     rights :full_control, 'Everyone' 
     action :create
   end
 
   execute 'install_web_proxy' do
-    command 'C:\webservice-01.30.3000.0003.exe -f C:\installer.properties'
+    command "#{Chef::Config[:file_cache_path]}\\#{executable_name} -f #{Chef::Config[:file_cache_path]}\installer.properties"
   end
 
-  file 'C:\webservice-01.30.3000.0003.exe' do
+  file "#{Chef::Config[:file_cache_path]}\\#{executable_name}" do
     action :delete
   end
 
-  file 'C:\installer.properties' do
+  file "#{Chef::Config[:file_cache_path]}\installer.properties" do
     action :delete
   end
 
