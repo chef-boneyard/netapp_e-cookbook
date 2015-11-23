@@ -1,5 +1,5 @@
 # Cookbook Name:: netapp_e
-# Recipe:: volume
+# Recipe:: consistency_group
 #
 # Copyright 2014, Chef Software, Inc.
 #
@@ -15,13 +15,13 @@
 # See the License for the specific language governing permissions and
 #
 
-netapp_e_consistentcy_group 'my_consistency_group' do
+netapp_e_consistency_group 'my_consistency_group' do
   storage_system '10.250.117.112'
 
   action :create
 end
 
-netapp_e_consistentcy_group 'my_consistency_group' do
+netapp_e_consistency_group 'my_consistency_group' do
   storage_system '10.250.117.112'
 
   action :delete

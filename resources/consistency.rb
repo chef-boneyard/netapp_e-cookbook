@@ -1,6 +1,6 @@
 #
 # cookbook Name:: netapp_e
-# Resource:: volume
+# Resource:: consistency_group
 #
 # Copyright 2014, Chef Software, Inc.
 #

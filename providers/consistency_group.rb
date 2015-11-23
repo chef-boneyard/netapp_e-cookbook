@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: netapp_e
-# Provider:: consistent_group
+# Provider:: consistency_group
 #
 # Copyright 2014, Chef Software, Inc.
 #
