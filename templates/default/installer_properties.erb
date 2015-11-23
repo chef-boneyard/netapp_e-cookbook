@@ -1,0 +1,59 @@
+INSTALLER_UI=silent 
+
+LICENSE_ACCEPTED=TRUE
+
+#Choose Install Folder
+#---------------------
+
+USER_INSTALL_DIR=<%= node['netapp']['installation_directory'] %>
+
+#Auto Update Feature
+#-------------------
+
+<% if node['netapp']['autoupdate']==true %>
+ENABLE_AUTO_UPDATES=1
+DISABLE_AUTO_UPDATES=0
+<% else %>
+ENABLE_AUTO_UPDATES=0
+DISABLE_AUTO_UPDATES=1
+<% end %>
+
+#AutoSupport
+#-----------
+
+<% if node['netapp']['asup']==true %>
+ENABLE_ASUP=1
+DISABLE_ASUP=0
+<% else %>
+ENABLE_ASUP=0
+DISABLE_ASUP=1
+<% end %>
+
+#Enter the SSL and Non SSL Jetty Port Numbers
+#--------------------------------------------
+
+JETTYPORT_SSL=<%= node['netapp']['ssl_port'] %>
+
+JETTYPORT=<%= node['netapp']['port'] %>
+
+#Install
+#-------
+
+<%if node['platform']=='windows' %>
+-fileOverwrite_<%= node['netapp']['installation_directory'] %>/eula.html=Yes
+-fileOverwrite_<%= node['netapp']['installation_directory'] %>/uninstall_web_services_proxy/uninstall_web_services_proxy.lax=Yes
+-fileOverwrite_<%= node['netapp']['installation_directory'] %>/uninstall_web_services_proxy/resource/iawin64_x64.dll=Yes
+-fileOverwrite_<%= node['netapp']['installation_directory'] %>/uninstall_web_services_proxy/resource/win64_32_x64.exe=Yes
+-fileOverwrite_<%= node['netapp']['installation_directory'] %>/uninstall_web_services_proxy/resource/remove.exe=Yes
+-fileOverwrite_<%= node['netapp']['installation_directory'] %>/uninstall_web_services_proxy/resource/invoker.exe=Yes
+-fileOverwrite_<%= node['netapp']['installation_directory'] %>/uninstall_web_services_proxy/uninstall_web_services_proxy.ico=Yes
+-fileOverwrite_<%= node['netapp']['installation_directory'] %>/securepasswords.lax=Yes
+-fileOverwrite_<%= node['netapp']['installation_directory'] %>/UpdateJREPath.bat=Yes
+<% else %>
+-fileOverwrite_<%= node['netapp']['installation_directory'] %>/eula.html=Yes
+-fileOverwrite_<%= node['netapp']['installation_directory'] %>/uninstall_web_services_proxy/uninstall_web_services_proxy.lax=Yes
+-fileOverwrite_<%= node['netapp']['installation_directory'] %>/uninstall_web_services_proxy/uninstall_web_services_proxy.ico=Yes
+-fileOverwrite_<%= node['netapp']['installation_directory'] %>/securepasswords.lax=Yes
+-fileOverwrite_<%= node['netapp']['installation_directory'] %>/UpdateJREPath.sh=Yes
+-fileOverwrite_/etc/init.d/web_services_proxy=Yes
+<% end %>
