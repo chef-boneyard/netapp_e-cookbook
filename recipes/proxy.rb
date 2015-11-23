@@ -21,7 +21,7 @@ executable_name = node['netapp']['installer']['source_url'].split('/').last
 
 case node['platform']
 when 'ubuntu', 'centos', 'redhat', 'fedora'
-  # Default installation path is /opt/netapp/santricity_web_services_proxy. 
+  # Default installation path is /opt/netapp/santricity_web_services_proxy.
   # Skip installation if this directory exists.
   return if File.directory? node['netapp']['installation_directory']
   
@@ -42,7 +42,7 @@ when 'ubuntu', 'centos', 'redhat', 'fedora'
   end
 
   bash 'install_web_proxy' do
-    code "#{Chef::Config[:file_cache_path]}/#{executable_name} -f /tmp/installer.properties"
+    code "#{Chef::Config[:file_cache_path]}/#{executable_name} -f #{Chef::Config[:file_cache_path]}/installer.properties"
   end
 
   file "#{Chef::Config[:file_cache_path]}/#{executable_name}" do
@@ -54,11 +54,11 @@ when 'ubuntu', 'centos', 'redhat', 'fedora'
   end
 
 when 'windows'
-  # Default installation path is C:\Program Files\NetApp\SANtricity Web Services Proxy. 
+  # Default installation path is C://Program Files//NetApp//SANtricity Web Services Proxy.
   # Skip installation if this directory exists.
   return if File.directory? node['netapp']['installation_directory']
 
-  cookbook_file "#{Chef::Config[:file_cache_path]}\installer.properties" do
+  template "#{Chef::Config[:file_cache_path]}//installer.properties" do
     source 'installer_properties.erb'
     rights :full_control, 'Everyone' 
     action :create
@@ -66,20 +66,20 @@ when 'windows'
 
   remote_file 'web_proxy' do
     source node['netapp']['installer']['source_url']
-    path "#{Chef::Config[:file_cache_path]}\\#{executable_name}"
+    path "#{Chef::Config[:file_cache_path]}//#{executable_name}"
     rights :full_control, 'Everyone' 
     action :create
   end
 
   execute 'install_web_proxy' do
-    command "#{Chef::Config[:file_cache_path]}\\#{executable_name} -f #{Chef::Config[:file_cache_path]}\installer.properties"
+    command "#{Chef::Config[:file_cache_path]}//#{executable_name} -f #{Chef::Config[:file_cache_path]}//installer.properties"
   end
 
-  file "#{Chef::Config[:file_cache_path]}\\#{executable_name}" do
+  file "#{Chef::Config[:file_cache_path]}//#{executable_name}" do
     action :delete
   end
 
-  file "#{Chef::Config[:file_cache_path]}\installer.properties" do
+  file "#{Chef::Config[:file_cache_path]}//installer.properties" do
     action :delete
   end
 

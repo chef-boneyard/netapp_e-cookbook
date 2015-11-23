@@ -40,15 +40,15 @@ JETTYPORT=<%= node['netapp']['port'] %>
 #-------
 
 <%if node['platform']=='windows' %>
--fileOverwrite_<%= node['netapp']['installation_directory'] %>\eula.html=Yes
--fileOverwrite_<%= node['netapp']['installation_directory'] %>\uninstall_web_services_proxy\uninstall_web_services_proxy.lax=Yes
--fileOverwrite_<%= node['netapp']['installation_directory'] %>\uninstall_web_services_proxy\resource\iawin64_x64.dll=Yes
--fileOverwrite_<%= node['netapp']['installation_directory'] %>\uninstall_web_services_proxy\resource\win64_32_x64.exe=Yes
--fileOverwrite_<%= node['netapp']['installation_directory'] %>\uninstall_web_services_proxy\resource\remove.exe=Yes
--fileOverwrite_<%= node['netapp']['installation_directory'] %>\uninstall_web_services_proxy\resource\invoker.exe=Yes
--fileOverwrite_<%= node['netapp']['installation_directory'] %>\uninstall_web_services_proxy\uninstall_web_services_proxy.ico=Yes
--fileOverwrite_<%= node['netapp']['installation_directory'] %>\securepasswords.lax=Yes
--fileOverwrite_<%= node['netapp']['installation_directory'] %>\UpdateJREPath.bat=Yes
+-fileOverwrite_<%= node['netapp']['installation_directory'] %>/eula.html=Yes
+-fileOverwrite_<%= node['netapp']['installation_directory'] %>/uninstall_web_services_proxy/uninstall_web_services_proxy.lax=Yes
+-fileOverwrite_<%= node['netapp']['installation_directory'] %>/uninstall_web_services_proxy/resource/iawin64_x64.dll=Yes
+-fileOverwrite_<%= node['netapp']['installation_directory'] %>/uninstall_web_services_proxy/resource/win64_32_x64.exe=Yes
+-fileOverwrite_<%= node['netapp']['installation_directory'] %>/uninstall_web_services_proxy/resource/remove.exe=Yes
+-fileOverwrite_<%= node['netapp']['installation_directory'] %>/uninstall_web_services_proxy/resource/invoker.exe=Yes
+-fileOverwrite_<%= node['netapp']['installation_directory'] %>/uninstall_web_services_proxy/uninstall_web_services_proxy.ico=Yes
+-fileOverwrite_<%= node['netapp']['installation_directory'] %>/securepasswords.lax=Yes
+-fileOverwrite_<%= node['netapp']['installation_directory'] %>/UpdateJREPath.bat=Yes
 <% else %>
 -fileOverwrite_<%= node['netapp']['installation_directory'] %>/eula.html=Yes
 -fileOverwrite_<%= node['netapp']['installation_directory'] %>/uninstall_web_services_proxy/uninstall_web_services_proxy.lax=Yes
