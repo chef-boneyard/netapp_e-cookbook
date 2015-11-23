@@ -101,6 +101,37 @@ class NetApp
         status(response, 200, [200], 'Failed to delete host group')
       end
 
+      # Call volume copy pair API /devmgr/v2/storage-systems/systemId/volume-copy-jobs to create a new volume pair
+      def create_volume_copy(storage_system_ip, request_body)
+        sys_id = storage_system_id(storage_system_ip)
+        return false if sys_id.nil?
+
+        response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/volume-copy-jobs", request_body.to_json)
+        status(response, 200, [200], 'Failed to create volume copy pair')
+      end
+
+      # Call volume copy pair API to delete a volume pair
+      def delete_volume_copy(storage_system_ip, name)
+        sys_id = storage_system_id(storage_system_ip)
+        return false if sys_id.nil?
+
+        volumepairId = volume_pair_id(sys_id, name)
+        return false if volumepairId.nil?
+
+        response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/volume-copy-jobs/#{volumepairId}")
+        status(response, 200, [200], 'Failed to delete volume copy pair')
+      end
+
+      # Get the volume copy pair id using storage-system-ip and volume-pair name
+      def volume_pair_id(storage_sys_id, name)
+        response = request(:get, "/devmgr/v2/storage-systems/#{storage_sys_id}/volume-copy-jobs")
+        volume_pairs = JSON.parse(response.body)
+        volume_pairs.each do |volume_pair|
+          return volume_pair['id'] if volume_pair['label'] == name
+        end
+        nil
+      end
+
       # Call storage-pool API /devmgr/v2/{storage-system-id}/storage-pools to create a volume group or a disk pool.
       # Disk pool can be created only with raid level 'raidDiskPool'.
       def create_storage_pool(storage_system_ip, request_body)
