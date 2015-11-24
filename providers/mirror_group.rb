@@ -21,9 +21,9 @@ include NetAppEHelper
 
 action :create do
   # Validations
-  fail ArgumentError, 'Attribute secondaryArrayId is required for mirror group creation' unless new_resource.secondaryArrayId
+  fail ArgumentError, 'Attribute secondary_array_id is required for mirror group creation' unless new_resource.secondary_array_id
 
-  request_body = { secondaryArrayId: new_resource.secondaryArrayId,name: new_resource.name }
+  request_body = { secondaryArrayId: new_resource.secondary_array_id, name: new_resource.name }
 
   netapp_api = netapp_api_create
 
@@ -35,7 +35,6 @@ action :create do
 end
 
 action :delete do
-
   netapp_api = netapp_api_create
 
   netapp_api.login unless node['netapp']['basic_auth']

@@ -12,5 +12,5 @@ platforms:
 suites:
   - name: default
     run_list:
-      - recipe[netapp_e::mirror_group]
+      - recipe[netapp_e::default]
     attributes:
