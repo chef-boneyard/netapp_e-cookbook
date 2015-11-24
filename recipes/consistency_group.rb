@@ -15,14 +15,14 @@
 # See the License for the specific language governing permissions and
 #
 
-netapp_e_consistency_group 'my_consistency_group' do
-  storage_system '10.250.117.112'
+netapp_e_consistency_group node['netapp']['consistency_group']['name'] do
+  storage_system node['netapp']['storage_system_ip']
 
   action :create
 end
 
-netapp_e_consistency_group 'my_consistency_group' do
-  storage_system '10.250.117.112'
+netapp_e_consistency_group node['netapp']['consistency_group']['name'] do
+  storage_system node['netapp']['storage_system_ip']
 
   action :delete
 end

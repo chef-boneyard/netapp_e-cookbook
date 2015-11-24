@@ -83,7 +83,7 @@ class NetApp
         return false if sys_id.nil?
 
         response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/consistency-groups", request_body.to_json)
-        status(response, 201, [201], 'Failed to create consistency group')
+        status(response, 200, [200], 'Failed to create consistency group')
       end
 
       # Call consistency-group API /devmgr/v2/{storage-system-id}/consistency-groups/{consistency-group-id} to remove the consistency-group
@@ -95,7 +95,7 @@ class NetApp
         return false if consistency_grp_id.nil?
 
         response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/consistency-groups/#{consistency_grp_id}")
-        status(response, 200, [200], 'Failed to delete consistency group')
+        status(response, 204, [204], 'Failed to delete consistency group')
       end
 
       # Call host-group API /devmgr/v2/{storage-system-id}/host-groups to add a host-group
