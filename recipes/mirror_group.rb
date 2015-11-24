@@ -1,14 +1,14 @@
 
-netapp_e_mirror_group 'mirror_group' do
+netapp_e_mirror_group node['netapp']['mirror_group']['name']  do
 
-  storage_system '10.113.1.130'
-  secondaryArrayId 'e9f486b8-8634-4f58-9563-c57561633376'
-
+  storage_system node['netapp']['storage_system_ip']
+  secondaryArrayId node['netapp']['mirror_group']['secondaryArrayId'] 
   action :create
 end
 
-netapp_e_mirror_group 'mirror_group' do
-  storage_system '10.113.1.130'
+netapp_e_mirror_group node['netapp']['mirror_group']['name'] do
+  storage_system node['netapp']['storage_system_ip'] 
 
   action :delete
 end
+
