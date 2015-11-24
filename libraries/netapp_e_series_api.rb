@@ -82,6 +82,9 @@ class NetApp
         sys_id = storage_system_id(storage_system_ip)
         return false if sys_id.nil?
 
+        consistency_grp_id = consistency_group_id(sys_id, request_body[:name])
+        return false unless consistency_grp_id.nil?
+
         response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/consistency-groups", request_body.to_json)
         status(response, 200, [200], 'Failed to create consistency group')
       end
