@@ -353,7 +353,7 @@ class NetApp
       end
       
       # Call Mirroring API to remove mirror group
-      def delete_mirror_group(storage_system_ip, request_body)
+      def delete_mirror_group(storage_system_ip, name)
         sys_id = storage_system_id(storage_system_ip)
         return false if sys_id.nil?
        

@@ -24,4 +24,3 @@ attribute :name, kind_of: String, required: true, name_attribute: true
 attribute :storage_system, kind_of: String, required: true
 
 attribute :secondaryArrayId, kind_of: String
-attribute :syncIntervalMinutes, kind_of: Integer 

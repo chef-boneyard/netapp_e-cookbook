@@ -23,7 +23,7 @@ action :create do
   # Validations
   fail ArgumentError, 'Attribute secondaryArrayId is required for mirror group creation' unless new_resource.secondaryArrayId
 
-  request_body = { secondaryArrayId: new_resource.secondaryArrayId, syncIntervalMinutes: new_resource.syncIntervalMinutes, name: new_resource.name }
+  request_body = { secondaryArrayId: new_resource.secondaryArrayId,name: new_resource.name }
 
   netapp_api = netapp_api_create
 
