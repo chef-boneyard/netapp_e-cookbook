@@ -210,6 +210,30 @@ class NetApp
         status(response, 200, [200], 'Failed to delete volume snapshot')
       end
 
+      # Call Mirroring API /devmgr/v2/storage-systems/systemId/Async-mirrors to add a new mirror group
+      def create_mirror_group(storage_system_ip, request_body)
+        sys_id = storage_system_id(storage_system_ip)
+        return false if sys_id.nil?
+
+        mirror_group_id = mirror_group_id(sys_id, request_body[:name])
+        return false unless mirror_group_id.nil?
+
+        response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/async-mirrors", request_body.to_json)
+        status(response, 201, [201], 'Failed to create mirror group')
+      end
+
+      # Call Mirroring API to remove mirror group
+      def delete_mirror_group(storage_system_ip, name)
+        sys_id = storage_system_id(storage_system_ip)
+        return false if sys_id.nil?
+
+        mirror_group_id = mirror_group_id(sys_id, name)
+        return false if mirror_group_id.nil?
+
+        response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/async-mirrors/#{mirror_group_id}")
+        status(response, 200, [200], 'Failed to delete mirror group')
+      end
+
       # Call iscsi API /devmgr/v2/{storage-system-id}//iscsi/target-settings to update iscsi settings.
       def update_iscsi(storage_system_ip, request_body)
         sys_id = storage_system_id(storage_system_ip)
@@ -340,6 +364,17 @@ class NetApp
         volumes = JSON.parse(response.body)
         volumes.each do |volume|
           return volume['id'] if volume['name'] == name
+        end
+        nil
+      end
+
+
+      # Get the mirror id using storage-system-ip and async-mirrors
+      def mirror_group_id(storage_sys_id, name)
+        response = request(:get, "/devmgr/v2/storage-systems/#{storage_sys_id}/async-mirrors")
+        mirrors = JSON.parse(response.body)
+        mirrors.each do |mirror|
+          return mirror['id'] if mirror['label'] == name
         end
         nil
       end
