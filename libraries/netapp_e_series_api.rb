@@ -344,6 +344,13 @@ class NetApp
         nil
       end
 
+      def create_mirror_group(storage_system_ip, request_body)
+        sys_id = storage_system_id(storage_system_ip)
+        return false if sys_id.nil?
+        response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/async-mirrors", request_body.to_json)
+        status(response, 201, [201], 'Failed to create storage pool')
+      end
+
       # Determine the status of the resource:
       # True - Resource was updated
       # False - Resource exists in the desired state.
