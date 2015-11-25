@@ -21,5 +21,6 @@ actions :create, :delete
 default_action :create
 
 attribute :name, kind_of: String, required: true, name_attribute: true
-attribute :sourceId, kind_of: String, required: true
-attribute :targetId, kind_of: String, required: true
+attribute :storage_system, kind_of: String, required: true
+attribute :source_id, kind_of: String, required: true
+attribute :target_id, kind_of: String, required: true

@@ -17,16 +17,14 @@
 # limitations under the License.
 #
 
-netapp_e_volume_copy 'my_volume_copy_pair' do
-  storage_system '10.250.117.112'
-  sourceId '00000'
-  targetId '11111'
-
+netapp_e_volume_copy node['netapp']['volume_copy']['name'] do
+  storage_system node['netapp']['storage_system_ip']
+  source_id node['netapp']['volume_copy']['source_id']
+  target_id node['netapp']['volume_copy']['target_id']
   action :create
 end
 
-netapp_e_volume_copy 'my_volume_copy_pair' do
-  storage_system '10.250.117.112'
-
+netapp_e_volume_copy node['netapp']['volume_copy']['name'] do
+  storage_system node['netapp']['storage_system_ip']
   action :delete
 end

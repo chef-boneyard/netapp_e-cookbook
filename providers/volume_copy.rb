@@ -21,10 +21,10 @@ include NetAppEHelper
 
 action :create do
   # Validations
-  fail ArgumentError, 'Attribute sourceId is required for volume copy creation' unless new_resource.sourceId
-  fail ArgumentError, 'Attribute targetId is required for volume copy creation' unless new_resource.targetId
+  fail ArgumentError, 'Attribute source_id is required for volume copy creation' unless new_resource.source_id
+  fail ArgumentError, 'Attribute target_id is required for volume copy creation' unless new_resource.target_id
 
-  request_body = { sourceId: new_resource.sourceId, targetId: new_resource.targetId, name: new_resource.name }
+  request_body = { sourceId: new_resource.source_id, targetId: new_resource.target_id, name: new_resource.name }
 
   netapp_api = netapp_api_create
 
@@ -36,7 +36,6 @@ action :create do
 end
 
 action :delete do
-
   netapp_api = netapp_api_create
 
   netapp_api.login unless node['netapp']['basic_auth']
