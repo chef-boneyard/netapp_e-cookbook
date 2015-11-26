@@ -145,6 +145,17 @@ class NetApp
         status(response, 204, [204], 'Failed to delete volume copy pair')
       end
 
+      #Update Web Proxy Service
+      def web_proxy_update()
+        update_status = check_update()
+        return false if update_status.nil?
+        
+        response = request(:post, "/devmgr/v2/upgrade/download")
+		status(response, 200, [200], 'Failed to Download the latest version')
+        response = request(:post, "/devmgr/v2/upgrade/reload")
+        status(response, 200, [200], 'Failed to install latest version')
+      end	
+	  
       # Call storage-pool API /devmgr/v2/{storage-system-id}/storage-pools to create a volume group or a disk pool.
       # Disk pool can be created only with raid level 'raidDiskPool'.
       def create_storage_pool(storage_system_ip, request_body)
@@ -398,6 +409,20 @@ class NetApp
         end
         nil
       end
+
+      # Check if Web Proxy update is needed or the current version is the latest
+      def check_update()
+        response = request(:get, "/devmgr/v2/upgrade")
+        version_details = JSON.parse(response.body)  
+        installed_version = version_details['currentVersions'][0]['version']
+		if not version_details['stagedVersions']
+          update_version = version_details['stagedVersions'][0]['version']
+		else  
+          update_version = installed_version
+        end		  
+        return true if installed_version != update_version
+		
+      end 
 
       # Get the host-group-id using storage-system-ip and host-group name
       def host_group_id(storage_sys_id, name)
