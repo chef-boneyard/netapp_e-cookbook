@@ -50,3 +50,9 @@ default['netapp']['ssd_cache']['enable_existing_volumes'] = false  # optional pa
 # host group
 default['netapp']['host_group']['name'] = 'testy_host_group'
 # default['netapp']['host_group']['hosts'] = ['8400000060080E50001F6D3800300DFE565E8364','8400000060080E50001F69B400300EDE565E8283'] # optional parameter
+
+# firmware upgrade
+default['netapp']['firmware']['cfw_file'] = '<path_to_the_file>'
+default['netapp']['firmware']['nvsram_file'] = '<path_to_the_file>'
+default['netapp']['firmware']['stage_firmware'] = false
+default['netapp']['firmware']['skip_mel_check'] = false
