@@ -17,25 +17,24 @@
 # limitations under the License.
 #
 
-netapp_e_volume 'myvol1' do
-  storage_system '10.250.117.112'
-  pool_id '0400000060080E50003220A80000006F52D8010D'
-  size_unit 'b'
-  size 100
-  segment_size 0
+netapp_e_volume node['netapp']['volume']['name'] do
+  storage_system node['netapp']['storage_system_ip']
+  pool_id node['netapp']['volume']['pool_id']
+  size_unit node['netapp']['volume']['size_unit']
+  size node['netapp']['volume']['size']
+  segment_size node['netapp']['volume']['segment_size']
 
   action :create
 end
 
-netapp_e_volume 'myvol1' do
-  storage_system '10.250.117.112'
-  new_name 'myvol2'
-
+netapp_e_volume node['netapp']['volume']['name'] do
+  storage_system node['netapp']['storage_system_ip']
+  new_name 'my_vol2'
   action :update
 end
 
-netapp_e_volume 'myvol2' do
-  storage_system '10.250.117.112'
+netapp_e_volume node['netapp']['volume']['name'] do
+  storage_system node['netapp']['storage_system_ip']
 
   action :delete
 end

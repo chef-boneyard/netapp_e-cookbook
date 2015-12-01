@@ -56,3 +56,15 @@ default['netapp']['firmware']['cfw_file'] = '<path_to_the_file>'
 default['netapp']['firmware']['nvsram_file'] = '<path_to_the_file>'
 default['netapp']['firmware']['stage_firmware'] = false
 default['netapp']['firmware']['skip_mel_check'] = false
+
+# volume group
+default['netapp']['volume_group']['name'] = 'volume_group'
+default['netapp']['volume_group']['disk_drive_id'] = ['010000005001E8200002D1880000000000000000']
+default['netapp']['volume_group']['raid_level'] = '0'
+
+# volume
+default['netapp']['volume']['name'] = 'MyVolume'
+default['netapp']['volume']['pool_id'] = '0400000060080E50001F69B400000C9E565D3F33'
+default['netapp']['volume']['size_unit'] = 'bytes'
+default['netapp']['volume']['size'] = 1048576
+default['netapp']['volume']['segment_size'] = 128

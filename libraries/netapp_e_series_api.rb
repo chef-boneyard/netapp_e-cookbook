@@ -124,26 +124,26 @@ class NetApp
       # Call storage-pool API /devmgr/v2/{storage-system-id}/storage-pools to create a volume group or a disk pool.
       # Disk pool can be created only with raid level 'raidDiskPool'.
       def create_storage_pool(storage_system_ip, request_body)
-        sys_id = storage_system_id(storage_system_ip)
-        return false if sys_id.nil?
+	    sys_id = storage_system_id(storage_system_ip)
+	    return false if sys_id.nil?
 
         pool_id = storage_pool_id(sys_id, request_body[:name])
-        return false unless pool_id.nil?
+		return false unless pool_id.nil?
 
         response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/storage-pools", request_body.to_json)
-        status(response, 201, [201], 'Failed to create storage pool')
+        status(response, 200, [200], 'Failed to create storage pool')
       end
 
       # Call storage-pool API /devmgr/v2/{storage-system-id}/storage-pools/{storage-pool-id} to delete a volume group or a disk pool.
       def delete_storage_pool(storage_system_ip, name)
-        sys_id = storage_system_id(storage_system_ip)
-        return false if sys_id.nil?
+	    sys_id = storage_system_id(storage_system_ip)
+		return false if sys_id.nil?
 
         pool_id = storage_pool_id(sys_id, name)
-        return false if pool_id.nil?
+		return false if pool_id.nil?
 
         response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/storage-pools/#{pool_id}")
-        status(response, 200, [200], 'Failed to delete storage pool')
+		status(response, 204, [204], 'Failed to delete storage pool')
       end
 
       # Call volume API /devmgr/v2/{storage-system-id}/volumes to create a new volume.
@@ -155,7 +155,7 @@ class NetApp
         return false unless vol_id.nil?
 
         response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/volumes", request_body.to_json)
-        status(response, 201, [201], 'Failed to create volume')
+        status(response, 200, [200], 'Failed to create volume')
       end
 
       # Call volume API /devmgr/v2/{storage-system-id}/volumes/{volume-id} to update volume attributes.
@@ -180,7 +180,7 @@ class NetApp
         return false if vol_id.nil?
 
         response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/volumes/#{vol_id}")
-        status(response, 200, [200], 'Failed to delete volume')
+        status(response, 204, [204], 'Failed to delete volume')
       end
 
       # Call group snapshot API /devmgr/v2/{storage-system-id}/group-snapshots/ create a group snapshot.
@@ -389,7 +389,7 @@ class NetApp
       def storage_pool_id(storage_sys_id, name)
         response = request(:get, "/devmgr/v2/storage-systems/#{storage_sys_id}/storage-pools")
         storage_pools = JSON.parse(response.body)
-        storage_pools.each do |pool|
+		storage_pools.each do |pool|
           return pool['id'] if pool['label'] == name
         end
         nil
