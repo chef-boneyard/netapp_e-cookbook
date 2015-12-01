@@ -389,7 +389,7 @@ class NetApp
       def storage_pool_id(storage_sys_id, name)
         response = request(:get, "/devmgr/v2/storage-systems/#{storage_sys_id}/storage-pools")
         storage_pools = JSON.parse(response.body)
-        storage_pools.each do |pool|
+		storage_pools.each do |pool|
           return pool['id'] if pool['label'] == name
         end
         nil
