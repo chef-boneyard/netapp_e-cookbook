@@ -834,7 +834,6 @@ describe 'netapp_e_series_api' do
       request_body = "{\"name\":\"demo_volume_copy\"}"
 
       expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
-      expect(@netapp_api).to receive(:volume_pair_id).with('12345', 'demo_volume_copy').and_return(nil)
       expect(@netapp_api).to receive(:request).with(:post, '/devmgr/v2/storage-systems/12345/volume-copy-jobs', request_body).and_return(response)
       expect(@netapp_api).to receive(:status).with(response, 200, [200], 'Failed to create volume copy pair')
       @netapp_api.create_volume_copy('10.0.0.1', name: 'demo_volume_copy')
@@ -845,50 +844,44 @@ describe 'netapp_e_series_api' do
       expect(@netapp_api.create_volume_copy('10.0.0.1', name: 'demo_volume_copy')).to eq(false)
     end
 
-    it 'return false when volume copy exist while create' do
-      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
-      expect(@netapp_api).to receive(:volume_pair_id).with('12345', 'demo_volume_copy').and_return('111111')
-      expect(@netapp_api.create_volume_copy('10.0.0.1', name: 'demo_volume_copy')).to eq(false)
-    end
-
     it 'is deleted' do
       response = double
       expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
-      expect(@netapp_api).to receive(:volume_pair_id).with('12345', '1800000060080E50001F6D3800000BAB565CF495').and_return('111111')
+      expect(@netapp_api).to receive(:volume_pair_id).with('12345', '111111').and_return('111111')
       expect(@netapp_api).to receive(:request).with(:delete, '/devmgr/v2/storage-systems/12345/volume-copy-jobs/111111').and_return(response)
       expect(@netapp_api).to receive(:status).with(response, 204, [204], 'Failed to delete volume copy pair')
-      @netapp_api.delete_volume_copy('10.0.0.1', '1800000060080E50001F6D3800000BAB565CF495')
+      @netapp_api.delete_volume_copy('10.0.0.1', '111111')
     end
 
     it 'return false when the Storage system does not exist while delete' do
       expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return(nil)
-      expect(@netapp_api.delete_volume_copy('10.0.0.1', '1800000060080E50001F6D3800000BAB565CF495')).to eq(false)
+      expect(@netapp_api.delete_volume_copy('10.0.0.1', '111111')).to eq(false)
     end
 
     it 'return false when the volume copy does not exist while delete' do
       expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
-      expect(@netapp_api).to receive(:volume_pair_id).with('12345', '1800000060080E50001F6D3800000BAB565CF495').and_return(nil)
-      expect(@netapp_api.delete_volume_copy('10.0.0.1', '1800000060080E50001F6D3800000BAB565CF495')).to eq(false)
+      expect(@netapp_api).to receive(:volume_pair_id).with('12345', '111111').and_return(nil)
+      expect(@netapp_api.delete_volume_copy('10.0.0.1', '111111')).to eq(false)
     end
   end
 
   context 'volume_pair_id' do
     it 'returns id when volume pair exist' do
-      response = double(body: "[{\"id\":\"111111\"}]")
+      response = double(body: "[{\"id\":\"11111\"}]")
       expect(@netapp_api).to receive(:request).with(:get, '/devmgr/v2/storage-systems/12345/volume-copy-jobs').and_return(response)
-      expect(@netapp_api.send(:volume_pair_id, '12345', '1800000060080E50001F6D3800000BAB565CF495')).to eq('111111')
+      expect(@netapp_api.send(:volume_pair_id, '12345', '11111')).to eq('11111')
     end
 
     it 'returns nil when no volume pair exist' do
       response = double(body: '[]')
       expect(@netapp_api).to receive(:request).with(:get, '/devmgr/v2/storage-systems/12345/volume-copy-jobs').and_return(response)
-      expect(@netapp_api.send(:volume_pair_id, '12345', '1800000060080E50001F6D3800000BAB565CF495')).to eq(nil)
+      expect(@netapp_api.send(:volume_pair_id, '12345', '111111')).to eq(nil)
     end
 
     it 'returns nil when the required volume pair does not exist' do
-      response = double(body: "[{\"id\":\"111111\"}]")
+      response = double(body: '[]')
       expect(@netapp_api).to receive(:request).with(:get, '/devmgr/v2/storage-systems/12345/volume-copy-jobs').and_return(response)
-      expect(@netapp_api.send(:volume_pair_id, '12345', '1800000060080E50001F6D3800000BAB565CF495')).to eq(nil)
+      expect(@netapp_api.send(:volume_pair_id, '12345', '111111')).to eq(nil)
     end
   end
 end

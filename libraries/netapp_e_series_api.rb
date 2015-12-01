@@ -106,9 +106,6 @@ class NetApp
         sys_id = storage_system_id(storage_system_ip)
         return false if sys_id.nil?
 
-        volume_pair_id = volume_pair_id(sys_id, request_body[:name])
-        return false unless volume_pair_id.nil?
-
         response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/volume-copy-jobs", request_body.to_json)
         status(response, 200, [200], 'Failed to create volume copy pair')
       end
@@ -427,7 +424,7 @@ class NetApp
             break
           end
         end
-        request_fail ? (fail "#{failure_message}.\n\n#{response.body}") : resource_update_status
+        request_fail ? (fail "Status #{response.status} #{failure_message}.\n\n#{response.body}") : resource_update_status
       end
 
       # Make a call to the web proxy

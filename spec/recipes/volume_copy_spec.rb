@@ -7,7 +7,7 @@ describe 'netapp_e::volume_copy' do
       node.set['netapp']['volume_copy']['name'] = 'test'
       node.set['netapp']['volume_copy']['source_id'] = 'e9f486b8-8634-4f58-9563-c57561633376'
       node.set['netapp']['volume_copy']['target_id'] = 'sewrkwejrwejr3472398423p432402'
-	  node.set['netapp']['volume_copy']['vc_id'] = '1800000060080E50001F6D3800000BAB565CF495'
+      node.set['netapp']['volume_copy']['vc_id'] = '1800000060080E50001F6D3800000BAB565CF495'
     end.converge(described_recipe)
   end
 
