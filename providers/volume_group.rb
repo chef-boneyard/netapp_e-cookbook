@@ -36,7 +36,6 @@ action :create do
 end
 
 action :delete do
-
   netapp_api = netapp_api_create
 
   netapp_api.login unless node['netapp']['basic_auth']

@@ -25,11 +25,8 @@ netapp_e_volume_group node['netapp']['volume_group']['name'] do
   action :create
 end
 
-=begin
 netapp_e_volume_group node['netapp']['volume_group']['name'] do
   storage_system node['netapp']['storage_system_ip']
 
   action :delete
 end
-=end
-
