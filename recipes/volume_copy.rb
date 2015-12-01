@@ -24,7 +24,7 @@ netapp_e_volume_copy node['netapp']['volume_copy']['name'] do
   action :create
 end
 
-netapp_e_volume_copy node['netapp']['volume_copy']['name'] do
+netapp_e_volume_copy node['netapp']['volume_copy']['vc_id'] do
   storage_system node['netapp']['storage_system_ip']
   action :delete
 end

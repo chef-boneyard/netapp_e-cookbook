@@ -39,7 +39,7 @@ action :delete do
   netapp_api = netapp_api_create
 
   netapp_api.login unless node['netapp']['basic_auth']
-  resource_update_status = netapp_api.delete_volume_copy(new_resource.storage_system, new_resource.name)
+  resource_update_status = netapp_api.delete_volume_copy(new_resource.storage_system, new_resource.vc_id)
   netapp_api.logout unless node['netapp']['basic_auth']
 
   new_resource.updated_by_last_action(true) if resource_update_status
