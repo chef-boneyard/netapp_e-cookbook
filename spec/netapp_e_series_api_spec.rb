@@ -813,4 +813,76 @@ describe 'netapp_e_series_api' do
       expect(@netapp_api.send(:mirror_group_id, '12345', 'demo_mirror_group')).to eq(nil)
     end
   end
+
+  context 'ssd_cache' do
+    it 'is created' do
+      response = double
+      request_body = "{\"driveRefs\":[\"111111\"]}"
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
+      expect(@netapp_api).to receive(:request).with(:post, '/devmgr/v2/storage-systems/12345/flash-cache', request_body).and_return(response)
+      expect(@netapp_api).to receive(:status).with(response, 200, [200], 'Failed to create ssd/flash cache')
+      @netapp_api.create_ssd_cache('10.0.0.1', driveRefs: ['111111'])
+    end
+
+    it 'return false when storage system does not exist while create' do
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return(nil)
+      expect(@netapp_api.create_ssd_cache('10.0.0.1', driveRefs: ['111111'])).to eq(false)
+    end
+
+    it 'is deleted' do
+      response = double
+
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
+      expect(@netapp_api).to receive(:request).with(:delete, '/devmgr/v2/storage-systems/12345/flash-cache').and_return(response)
+      expect(@netapp_api).to receive(:status).with(response, 200, [200], 'Failed to delete ssd/flash cache')
+
+      @netapp_api.delete_ssd_cache('10.0.0.1')
+    end
+
+    it 'return false when storage system does not exist while delete' do
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return(nil)
+      expect(@netapp_api.delete_ssd_cache('10.0.0.1')).to eq(false)
+    end
+
+    it 'add drives to ssd/flash cache' do
+      response = double
+
+      request_body = "{\"driveRefs\":[\"111111\"]}"
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
+      expect(@netapp_api).to receive(:request).with(:post, '/devmgr/v2/storage-systems/12345/flash-cache/addDrives', request_body).and_return(response)
+      expect(@netapp_api).to receive(:status).with(response, 200, [200], 'Failed to add drives in ssd/flash cache')
+      @netapp_api.update_ssd_cache('10.0.0.1', driveRefs: ['111111'])
+    end
+
+    it 'return false when storage system does not exist while update' do
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return(nil)
+      expect(@netapp_api.update_ssd_cache('10.0.0.1', driveRefs: ['111111'])).to eq(false)
+    end
+
+    it 'is resumed' do
+      response = double
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
+      expect(@netapp_api).to receive(:request).with(:post, '/devmgr/v2/storage-systems/12345/flash-cache/resume').and_return(response)
+      expect(@netapp_api).to receive(:status).with(response, 200, [200], 'Failed to resume ssd/flash cache')
+      @netapp_api.resume_ssd_cache('10.0.0.1')
+    end
+
+    it 'return false when storage system does not exist while resume' do
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return(nil)
+      expect(@netapp_api.resume_ssd_cache('10.0.0.1')).to eq(false)
+    end
+
+    it 'is suspended' do
+      response = double
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
+      expect(@netapp_api).to receive(:request).with(:post, '/devmgr/v2/storage-systems/12345/flash-cache/suspend').and_return(response)
+      expect(@netapp_api).to receive(:status).with(response, 200, [200], 'Failed to suspend ssd/flash cache')
+      @netapp_api.suspend_ssd_cache('10.0.0.1')
+    end
+
+    it 'return false when storage system does not exist while suspend' do
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return(nil)
+      expect(@netapp_api.suspend_ssd_cache('10.0.0.1')).to eq(false)
+    end
+  end
 end
