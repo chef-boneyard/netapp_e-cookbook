@@ -102,6 +102,7 @@ if defined?(ChefSpec)
   def delete_netapp_e_mirror_group(resource_name)
     ChefSpec::Matchers::ResourceMatcher.new(:netapp_e_mirror_group, :delete, resource_name)
   end
+<<<<<<< HEAD
 
   def create_netapp_e_volume_copy(resource_name)
     ChefSpec::Matchers::ResourceMatcher.new(:netapp_e_volume_copy, :create, resource_name)
@@ -130,4 +131,6 @@ if defined?(ChefSpec)
   def suspend_netapp_e_ssd_cache(resource_name)
     ChefSpec::Matchers::ResourceMatcher.new(:netapp_e_ssd_cache, :suspend, resource_name)
   end
+=======
+>>>>>>> Revert "Lwrp for ssd cache"
 end

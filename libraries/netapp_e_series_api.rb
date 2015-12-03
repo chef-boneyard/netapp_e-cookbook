@@ -304,46 +304,6 @@ class NetApp
         post_key_value('Chef', client_info) if @asup
       end
 
-      def create_ssd_cache(storage_system_ip, request_body)
-        sys_id = storage_system_id(storage_system_ip)
-        return false if sys_id.nil?
-
-        response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/flash-cache", request_body.to_json)
-        status(response, 200, [200], 'Failed to create ssd/flash cache')
-      end
-
-      def delete_ssd_cache(storage_system_ip)
-        sys_id = storage_system_id(storage_system_ip)
-        return false if sys_id.nil?
-
-        response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/flash-cache")
-        status(response, 200, [200], 'Failed to delete ssd/flash cache')
-      end
-
-      def update_ssd_cache(storage_system_ip, request_body)
-        sys_id = storage_system_id(storage_system_ip)
-        return false if sys_id.nil?
-
-        response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/flash-cache/addDrives", request_body.to_json)
-        status(response, 200, [200], 'Failed to add drives in ssd/flash cache')
-      end
-
-      def resume_ssd_cache(storage_system_ip)
-        sys_id = storage_system_id(storage_system_ip)
-        return false if sys_id.nil?
-
-        response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/flash-cache/resume")
-        status(response, 200, [200], 'Failed to resume ssd/flash cache')
-      end
-
-      def suspend_ssd_cache(storage_system_ip)
-        sys_id = storage_system_id(storage_system_ip)
-        return false if sys_id.nil?
-
-        response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/flash-cache/suspend")
-        status(response, 200, [200], 'Failed to suspend ssd/flash cache')
-      end
-
       private
 
       # Get the storage-system-id using storage syste ip
