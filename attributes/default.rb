@@ -35,3 +35,8 @@ default['netapp']['volume_copy']['target_id'] = '0200000060080E50001F69B40000170
 # default['netapp']['volume_copy']['copy_priority'] = 'priority2'    # optional parameter, defaults to 'priority2'
 # default['netapp']['volume_copy']['target_write_protected'] = false # optional parameter, defaults to false
 # default['netapp']['volume_copy']['online_copy'] = false            # optional parameter, defaults to false
+
+# ssd cache / flash cache
+default['netapp']['ssd_cache']['drive_refs'] = %w(123, 234) # Need to pass drive refs its a array of string
+default['netapp']['ssd_cache']['name'] = 'flashCache'
+default['netapp']['ssd_cache']['enable_existing_volumes'] = false
