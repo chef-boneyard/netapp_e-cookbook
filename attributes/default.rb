@@ -88,3 +88,7 @@ default['netapp']['host']['groupid'] = '8500000060080E50001F69B400360CBE565E35E3
 # iscsi updation
 default['netapp']['iscsi']['alias_name'] = 'demo_alias'
 default['netapp']['iscsi']['enable_chap_authentication'] = false
+
+# iscsi updation
+default['netapp']['iscsi']['alias_name'] = 'demo_alias'
+default['netapp']['iscsi']['enable_chap_authentication'] = false
