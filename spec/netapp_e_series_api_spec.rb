@@ -827,7 +827,6 @@ describe 'netapp_e_series_api' do
       expect(@netapp_api.send(:mirror_group_id, '12345', 'demo_mirror_group')).to eq(nil)
     end
   end
-<<<<<<< HEAD
 
   context 'volume_copy' do
     it 'is created' do
@@ -958,6 +957,4 @@ describe 'netapp_e_series_api' do
       expect(@netapp_api.suspend_ssd_cache('10.0.0.1')).to eq(false)
     end
   end
-=======
->>>>>>> Revert "Lwrp for ssd cache"
 end

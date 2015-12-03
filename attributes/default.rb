@@ -27,7 +27,6 @@ default['netapp']['ssl_port'] = 8443
 default['netapp']['storage_system_ip'] = '10.113.1.18'
 default['netapp']['mirror_group']['name'] = 'mirror_group'
 default['netapp']['mirror_group']['secondary_array_id'] = 'e9f486b8-8634-4f58-9563-c57561633376'
-<<<<<<< HEAD
 
 # Attributes for volume copy
 default['netapp']['volume_copy']['vc_id'] = '1800000060080E50001F6D3800000BAB565CF495'  # required for delete operation
@@ -41,5 +40,3 @@ default['netapp']['volume_copy']['target_id'] = '0200000060080E50001F69B40000170
 default['netapp']['ssd_cache']['drive_refs'] = %w(123, 234) # Need to pass drive refs its a array of string
 default['netapp']['ssd_cache']['name'] = 'flashCache'
 default['netapp']['ssd_cache']['enable_existing_volumes'] = false
-=======
->>>>>>> Revert "Lwrp for ssd cache"
