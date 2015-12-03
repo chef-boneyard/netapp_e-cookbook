@@ -24,7 +24,7 @@ when 'ubuntu', 'centos', 'redhat', 'fedora'
   # Default installation path is /opt/netapp/santricity_web_services_proxy.
   # Skip installation if this directory exists.
   return if File.directory? node['netapp']['installation_directory']
-  
+
   template "#{Chef::Config[:file_cache_path]}/installer.properties" do
     source 'installer_properties.erb'
     owner 'root'
@@ -60,14 +60,14 @@ when 'windows'
 
   template "#{Chef::Config[:file_cache_path]}//installer.properties" do
     source 'installer_properties.erb'
-    rights :full_control, 'Everyone' 
+    rights :full_control, 'Everyone'
     action :create
   end
 
   remote_file 'web_proxy' do
     source node['netapp']['installer']['source_url']
     path "#{Chef::Config[:file_cache_path]}//#{executable_name}"
-    rights :full_control, 'Everyone' 
+    rights :full_control, 'Everyone'
     action :create
   end
 
@@ -84,4 +84,3 @@ when 'windows'
   end
 
 end
-

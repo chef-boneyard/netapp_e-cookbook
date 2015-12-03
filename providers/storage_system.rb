@@ -28,7 +28,7 @@ action :create do
   resource_update_status = netapp_api.create_storage_system(request_body)
   netapp_api.logout unless node['netapp']['basic_auth']
 
-  netapp_api.send_asup()
+  netapp_api.send_asup
 
   new_resource.updated_by_last_action(true) if resource_update_status
 end
