@@ -276,14 +276,12 @@ class NetApp
 
       # Send ASUP key/value pair for tracking
       def send_asup
-        if @asup
-          client_info = { 'application'  => 'Chef',
-                          'chef-version' => Chef::VERSION,
-                          'url'          => @url
-                        }.to_json
+        client_info = { 'application'  => 'Chef',
+                        'chef-version' => Chef::VERSION,
+                        'url'          => @url
+                      }.to_json
 
-          post_key_value('Chef', client_info)
-        end
+        post_key_value('Chef', client_info) if @asup
       end
 
       private
