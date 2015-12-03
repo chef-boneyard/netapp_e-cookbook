@@ -84,3 +84,7 @@ default['netapp']['host']['ports'] = [{ 'type' => 'fc', 'port' => '4983294832', 
                                       { 'type' => 'fc', 'port' => '2101001B32A2D180', 'label' => 'esx_140b' }
                                      ]
 default['netapp']['host']['groupid'] = '8500000060080E50001F69B400360CBE565E35E3'
+
+# iscsi updation
+default['netapp']['iscsi']['alias_name'] = 'demo_alias'
+default['netapp']['iscsi']['enable_chap_authentication'] = false
