@@ -73,12 +73,14 @@ default['netapp']['volume']['segment_size'] = 128
 # optional parameter for volume
 # default['netapp']['volume']['data_assurance_enabled'] = false
 
-#Host group
+# Host group
 default['netapp']['host']['name'] = 'Demo_Host_1'
 default['netapp']['host']['host_default'] = false
 default['netapp']['host']['code'] = 'VmwTPPGFLUA'
 default['netapp']['host']['host_used'] = true
 default['netapp']['host']['index'] = 0
 default['netapp']['host']['host_type_name'] = 'VmwTPPGFLUA'
-default['netapp']['host']['ports'] = [{"type"=> "fc","port"=> "2101001B32A2D70E","label"=> "esx_140a"},{"type"=> "fc","port"=> "2101001B32A2D180","label"=> "esx_140b"}]
+default['netapp']['host']['ports'] = [{ 'type' => 'fc', 'port' => '4983294832', 'label' => 'esx_140a' },
+                                      { 'type' => 'fc', 'port' => '2101001B32A2D180', 'label' => 'esx_140b' }
+                                     ]
 default['netapp']['host']['groupid'] = '8500000060080E50001F69B400360CBE565E35E3'
