@@ -23,7 +23,7 @@ default['netapp']['ssl_port'] = 8443
 ############ timeout (optional) ######################
 # default['netapp']['api']['timeout'] = 60000
 
-default['netapp']['storage_system_ip'] = '10.113.1.18'
+default['netapp']['storage_system_ip'] = '127.0.0.1'
 
 # mirror group
 default['netapp']['storage_system_ip'] = '10.113.1.18'
