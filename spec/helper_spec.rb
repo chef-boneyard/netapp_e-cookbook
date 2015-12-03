@@ -19,19 +19,26 @@ describe 'netapp e series cookbook helper method' do
     it 'when timeout is set' do
       @netapp_e_helper.node['netapp'] = { 'user' => 'rw', 'password' => 'rw', 'basic_auth' =>  true, 'api' => { 'timeout' => 100 }, 'asup' => true }
 
+      params = {  user: 'rw', password: 'rw',
+                  url: 'http://10.0.0.1:8080', basic_auth: true,
+                  asup: true, timeout: 100
+                }
       expect(@netapp_e_helper).to receive(:validate_node_attributes)
       expect(@netapp_e_helper).to receive(:url).and_return('http://10.0.0.1:8080')
-      expect(NetApp::ESeries::Api).to receive(:new).with('rw', 'rw', 'http://10.0.0.1:8080', true, true, 100)
+      expect(NetApp::ESeries::Api).to receive(:new).with(params)
 
       @netapp_e_helper.netapp_api_create
     end
 
     it 'when timeout is not set' do
       @netapp_e_helper.node['netapp'] = { 'user' => 'rw', 'password' => 'rw', 'basic_auth' =>  true, 'asup' => true }
-
+      params = {  user: 'rw', password: 'rw',
+                  url: 'http://10.0.0.1:8080', basic_auth: true,
+                  asup: true
+                }
       expect(@netapp_e_helper).to receive(:validate_node_attributes)
       expect(@netapp_e_helper).to receive(:url).and_return('http://10.0.0.1:8080')
-      expect(NetApp::ESeries::Api).to receive(:new).with('rw', 'rw', 'http://10.0.0.1:8080', true, true)
+      expect(NetApp::ESeries::Api).to receive(:new).with(params)
 
       @netapp_e_helper.netapp_api_create
     end

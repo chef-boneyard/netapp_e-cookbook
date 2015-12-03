@@ -2,7 +2,12 @@ require_relative '../libraries/netapp_e_series_api'
 
 describe 'netapp_e_series_api' do
   before do
-    @netapp_api = NetApp::ESeries::Api.new('rw', 'rw', '127.0.0.1', true, true)
+    params = {  user: 'rw', password: 'rw',
+                url: '127.0.0.1', basic_auth: true,
+                asup: true
+              }
+
+    @netapp_api = NetApp::ESeries::Api.new(params)
   end
 
   context 'login:' do
@@ -77,7 +82,12 @@ describe 'netapp_e_series_api' do
     end
 
     it 'when basic authentication is set to false' do
-      @netapp_api_no_basic_auth = NetApp::ESeries::Api.new('rw', 'rw', '127.0.0.1', false, true)
+      params = {  user: 'rw', password: 'rw',
+                  url: '127.0.0.1', basic_auth: false,
+                  asup: true
+                }
+
+      @netapp_api_no_basic_auth = NetApp::ESeries::Api.new(params)
       headers = { 'Accept' => 'application/json', 'Content-Type' => 'application/json', 'cookie' => @cookie }
 
       expect(Excon).to receive(:get).with('127.0.0.1', path: '/devmgr/v2/storage-systems', headers: headers, body: "{\"ip\":\"10.0.0.1\"}", connect_timeout: nil)
@@ -740,12 +750,16 @@ describe 'netapp_e_series_api' do
 
   context 'test_asup_negative' do
     before do
-      @netapp_api = NetApp::ESeries::Api.new('rw', 'rw', '127.0.0.1', true, false)
+      params = {  user: 'rw', password: 'rw',
+                  url: '127.0.0.1', basic_auth: true,
+                  asup: false
+                }
+
+      @netapp_api = NetApp::ESeries::Api.new(params)
     end
 
     it 'does nothing' do
       expect(@netapp_api).not_to receive(:request)
-
       @netapp_api.send_asup
     end
   end
