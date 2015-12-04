@@ -19,7 +19,6 @@
 
 netapp_e_storage_system node['netapp']['storage_system_ip'] do
   password node['netapp']['storage_system']['password']
-
   action :create
 end
 

@@ -119,7 +119,7 @@ describe 'netapp_e_series_api' do
 
       expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
       expect(@netapp_api).to receive(:request).with(:delete, '/devmgr/v2/storage-systems/12345').and_return(response)
-      expect(@netapp_api).to receive(:status).with(response, 200, [200], 'Storage Deletion Failed')
+      expect(@netapp_api).to receive(:status).with(response, 204, [204], 'Storage Deletion Failed')
 
       @netapp_api.delete_storage_system('10.0.0.1')
     end
