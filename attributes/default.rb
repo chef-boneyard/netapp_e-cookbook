@@ -31,7 +31,6 @@ default['netapp']['storage_system']['password'] = 'Netapp123' # optional paramet
 # default['netapp']['storage_system']['meta_tags'] = ['ABC111XYZ','Y999'] # optional parameter
 
 # mirror group
-<<<<<<< HEAD
 default['netapp']['mirror_group']['name'] = 'mirror_group'
 default['netapp']['mirror_group']['secondary_array_id'] = 'e9f486b8-8634-4f58-9563-c57561633376'
 
