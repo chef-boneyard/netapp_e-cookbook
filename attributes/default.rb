@@ -89,6 +89,10 @@ default['netapp']['host']['groupid'] = '8500000060080E50001F69B400360CBE565E35E3
 default['netapp']['iscsi']['alias_name'] = 'demo_alias'
 default['netapp']['iscsi']['enable_chap_authentication'] = false
 
-# iscsi updation
-default['netapp']['iscsi']['alias_name'] = 'demo_alias'
-default['netapp']['iscsi']['enable_chap_authentication'] = false
+# thin Volumes
+default['netapp']['thin_volume']['pool_id'] = '0400000060080E50003222300000025853F33C1A'
+default['netapp']['thin_volume']['name'] = 'demo_thin_volume'
+default['netapp']['thin_volume']['size_unit'] = 'bytes'
+default['netapp']['thin_volume']['virtual_size'] = 4
+default['netapp']['thin_volume']['repository_size'] = 4
+default['netapp']['thin_volume']['max_repository_size'] = 128

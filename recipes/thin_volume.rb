@@ -17,19 +17,19 @@
 # limitations under the License.
 #
 
-netapp_e_thin_volume 'demo_thin_volume' do
-  storage_system '10.250.117.112'
-  pool_id '0400000060080E50003222300000025853F33C1A'
-  size_unit 'gb'
-  virtual_size 4
-  repository_size 4
-  max_repository_size 128
+netapp_e_thin_volume node['netapp']['thin_volume']['name'] do
+  storage_system node['netapp']['storage_system_ip']
+  pool_id node['netapp']['thin_volume']['pool_id']
+  size_unit node['netapp']['thin_volume']['size_unit']
+  virtual_size node['netapp']['thin_volume']['virtual_size']
+  repository_size node['netapp']['thin_volume']['repository_size']
+  max_repository_size node['netapp']['thin_volume']['max_repository_size']
 
   action :create
 end
 
-netapp_e_thin_volume 'demo_thin_volume' do
-  storage_system '10.250.117.112'
+netapp_e_thin_volume node['netapp']['thin_volume']['name'] do
+  storage_system node['netapp']['storage_system_ip']
 
   action :delete
 end
