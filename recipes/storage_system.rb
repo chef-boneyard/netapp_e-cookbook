@@ -17,12 +17,12 @@
 # limitations under the License.
 #
 
-netapp_e_storage_system '10.250.117.112' do
-  password 'Netapp123'
+netapp_e_storage_system node['netapp']['storage_system_ip'] do
+  password node['netapp']['storage_system']['password']
 
   action :create
 end
 
-netapp_e_storage_system '10.250.117.112' do
+netapp_e_storage_system node['netapp']['storage_system_ip'] do
   action :delete
 end
