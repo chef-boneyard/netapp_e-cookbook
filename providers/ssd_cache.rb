@@ -31,7 +31,7 @@ action :create do
   netapp_api.login unless node['netapp']['basic_auth']
   resource_update_status = netapp_api.create_ssd_cache(new_resource.storage_system, request_body)
 
-  new_resource.update_last_action(true) if resource_update_status
+  new_resource.updated_by_last_action(true) if resource_update_status
 end
 
 action :delete do
@@ -39,7 +39,7 @@ action :delete do
   netapp_api.login unless node['netapp']['basic_auth']
   resource_update_status = netapp_api.delete_ssd_cache(new_resource.storage_system)
 
-  new_resource.update_last_action(true) if resource_update_status
+  new_resource.updated_by_last_action(true) if resource_update_status
 end
 
 action :update do
@@ -52,7 +52,7 @@ action :update do
   netapp_api.login unless node['netapp']['basic_auth']
   resource_update_status = netapp_api.update_ssd_cache(new_resource.storage_system, request_body)
 
-  new_resource.update_last_action(true) if resource_update_status
+  new_resource.updated_by_last_action(true) if resource_update_status
 end
 
 action :resume do
@@ -60,7 +60,7 @@ action :resume do
   netapp_api.login unless node['netapp']['basic_auth']
   resource_update_status = netapp_api.resume_ssd_cache(new_resource.storage_system)
 
-  new_resource.update_last_action(true) if resource_update_status
+  new_resource.updated_by_last_action(true) if resource_update_status
 end
 
 action :suspend do
@@ -68,5 +68,5 @@ action :suspend do
   netapp_api.login unless node['netapp']['basic_auth']
   resource_update_status = netapp_api.suspend_ssd_cache(new_resource.storage_system)
 
-  new_resource.update_last_action(true) if resource_update_status
+  new_resource.updated_by_last_action(true) if resource_update_status
 end
