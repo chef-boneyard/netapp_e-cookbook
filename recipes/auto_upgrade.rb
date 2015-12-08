@@ -20,5 +20,5 @@
 
 netapp_api = netapp_api_create
 netapp_api.login unless node['netapp']['basic_auth']
-resource_update_status = netapp_api.web_proxy_update
+netapp_api.web_proxy_update
 netapp_api.logout unless node['netapp']['basic_auth']
