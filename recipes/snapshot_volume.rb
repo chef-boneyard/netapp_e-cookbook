@@ -19,7 +19,7 @@
 
 netapp_e_snapshot_volume node['netapp']['snapshot_volume']['name'] do
   storage_system node['netapp']['storage_system_ip']
-  snapshot_image_id node['netapp']['snapshot_volume']['snapshot_image_id'] 
+  snapshot_image_id node['netapp']['snapshot_volume']['snapshot_image_id']
   full_threshold node['netapp']['snapshot_volume']['full_threshold']
   view_mode node['netapp']['snapshot_volume']['view_mode']
   repository_percentage node['netapp']['snapshot_volume']['repository_percentage']
