@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: netapp_e
-# Provider:: storage_system
+# Provider:: volume_group
 #
 # Copyright 2014, Chef Software, Inc.
 #
@@ -20,15 +20,16 @@
 include NetAppEHelper
 
 action :create do
-  request_body = { controllerAddresses: Array.new << new_resource.name, password: new_resource.password, wwn: new_resource.wwn, metaTags: new_resource.meta_tags }
+  # Validations
+  fail ArgumentError, 'Attribute secondary_array_id is required for mirror group creation' unless new_resource.secondary_array_id
+
+  request_body = { secondaryArrayId: new_resource.secondary_array_id, name: new_resource.name }
 
   netapp_api = netapp_api_create
 
   netapp_api.login unless node['netapp']['basic_auth']
-  resource_update_status = netapp_api.create_storage_system(request_body)
+  resource_update_status = netapp_api.create_mirror_group(new_resource.storage_system, request_body)
   netapp_api.logout unless node['netapp']['basic_auth']
-
-  netapp_api.send_asup
 
   new_resource.updated_by_last_action(true) if resource_update_status
 end
@@ -37,7 +38,7 @@ action :delete do
   netapp_api = netapp_api_create
 
   netapp_api.login unless node['netapp']['basic_auth']
-  resource_update_status = netapp_api.delete_storage_system(new_resource.name)
+  resource_update_status = netapp_api.delete_mirror_group(new_resource.storage_system, new_resource.name)
   netapp_api.logout unless node['netapp']['basic_auth']
 
   new_resource.updated_by_last_action(true) if resource_update_status

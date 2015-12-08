@@ -2,7 +2,12 @@ require_relative '../libraries/netapp_e_series_api'
 
 describe 'netapp_e_series_api' do
   before do
-    @netapp_api = NetApp::ESeries::Api.new('rw', 'rw', '127.0.0.1', true, true)
+    params = {  user: 'rw', password: 'rw',
+                url: '127.0.0.1', basic_auth: true,
+                asup: true
+              }
+
+    @netapp_api = NetApp::ESeries::Api.new(params)
   end
 
   context 'login:' do
@@ -77,7 +82,12 @@ describe 'netapp_e_series_api' do
     end
 
     it 'when basic authentication is set to false' do
-      @netapp_api_no_basic_auth = NetApp::ESeries::Api.new('rw', 'rw', '127.0.0.1', false, true)
+      params = {  user: 'rw', password: 'rw',
+                  url: '127.0.0.1', basic_auth: false,
+                  asup: true
+                }
+
+      @netapp_api_no_basic_auth = NetApp::ESeries::Api.new(params)
       headers = { 'Accept' => 'application/json', 'Content-Type' => 'application/json', 'cookie' => @cookie }
 
       expect(Excon).to receive(:get).with('127.0.0.1', path: '/devmgr/v2/storage-systems', headers: headers, body: "{\"ip\":\"10.0.0.1\"}", connect_timeout: nil)
@@ -740,13 +750,81 @@ describe 'netapp_e_series_api' do
 
   context 'test_asup_negative' do
     before do
-      @netapp_api = NetApp::ESeries::Api.new('rw', 'rw', '127.0.0.1', true, false)
+      params = {  user: 'rw', password: 'rw',
+                  url: '127.0.0.1', basic_auth: true,
+                  asup: false
+                }
+
+      @netapp_api = NetApp::ESeries::Api.new(params)
     end
 
     it 'does nothing' do
       expect(@netapp_api).not_to receive(:request)
-
       @netapp_api.send_asup
+    end
+  end
+
+  context 'mirror_group' do
+    it 'is created' do
+      response = double
+      request_body = "{\"name\":\"demo_mirror_group\"}"
+
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
+      expect(@netapp_api).to receive(:mirror_group_id).with('12345', 'demo_mirror_group').and_return(nil)
+      expect(@netapp_api).to receive(:request).with(:post, '/devmgr/v2/storage-systems/12345/async-mirrors', request_body).and_return(response)
+      expect(@netapp_api).to receive(:status).with(response, 201, [201], 'Failed to create mirror group')
+      @netapp_api.create_mirror_group('10.0.0.1', name: 'demo_mirror_group')
+    end
+
+    it 'return false when storage system does not exist while create' do
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return(nil)
+      expect(@netapp_api.create_mirror_group('10.0.0.1', name: 'demo_mirror_group')).to eq(false)
+    end
+
+    it 'return false when mirror group exists while create' do
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
+      expect(@netapp_api).to receive(:mirror_group_id).with('12345', 'demo_mirror_group').and_return('111111')
+      expect(@netapp_api.create_mirror_group('10.0.0.1', name: 'demo_mirror_group')).to eq(false)
+    end
+
+    it 'is deleted' do
+      response = double
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
+      expect(@netapp_api).to receive(:mirror_group_id).with('12345', 'demo_mirror_group').and_return('111111')
+      expect(@netapp_api).to receive(:request).with(:delete, '/devmgr/v2/storage-systems/12345/async-mirrors/111111').and_return(response)
+      expect(@netapp_api).to receive(:status).with(response, 200, [200], 'Failed to delete mirror group')
+      @netapp_api.delete_mirror_group('10.0.0.1', 'demo_mirror_group')
+    end
+
+    it 'return false when the Storage system does not exist while delete' do
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return(nil)
+      expect(@netapp_api.delete_mirror_group('10.0.0.1', 'demo_mirror_group')).to eq(false)
+    end
+
+    it 'return false when the mirror group does not exist while delete' do
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
+      expect(@netapp_api).to receive(:mirror_group_id).with('12345', 'demo_mirror_group').and_return(nil)
+      expect(@netapp_api.delete_mirror_group('10.0.0.1', 'demo_mirror_group')).to eq(false)
+    end
+  end
+
+  context 'mirror_group_id' do
+    it 'returns id when group exist' do
+      response = double(body: "[{\"label\":\"demo_mirror_group\",\"id\":\"111111\"}]")
+      expect(@netapp_api).to receive(:request).with(:get, '/devmgr/v2/storage-systems/12345/async-mirrors').and_return(response)
+      expect(@netapp_api.send(:mirror_group_id, '12345', 'demo_mirror_group')).to eq('111111')
+    end
+
+    it 'returns nil when no mirror group exist' do
+      response = double(body: '[]')
+      expect(@netapp_api).to receive(:request).with(:get, '/devmgr/v2/storage-systems/12345/async-mirrors').and_return(response)
+      expect(@netapp_api.send(:mirror_group_id, '12345', 'demo_mirror_group')).to eq(nil)
+    end
+
+    it 'returns nil when the required mirror group does not exist' do
+      response = double(body: "[{\"label\":\"demo_mirror_group_1\",\"id\":\"111111\"}]")
+      expect(@netapp_api).to receive(:request).with(:get, '/devmgr/v2/storage-systems/12345/async-mirrors').and_return(response)
+      expect(@netapp_api.send(:mirror_group_id, '12345', 'demo_mirror_group')).to eq(nil)
     end
   end
 end
