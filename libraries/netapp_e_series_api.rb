@@ -276,7 +276,6 @@ class NetApp
 
       # Send ASUP key/value pair for tracking
       def send_asup
-
         client_info = { 'application'  => 'Chef',
                         'chef-version' => Chef::VERSION,
                         'url'          => @url
