@@ -192,7 +192,7 @@ class NetApp
         return false unless snapshot_id.nil?
 
         response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/snapshot-groups", request_body.to_json)
-        status(response, 201, [201], 'Failed to create group snapshot')
+        status(response, 200, [200], 'Failed to create group snapshot')
       end
 
       # Call group snapshot API /devmgr/v2/{storage-system-id}/group-snapshots/{group-snapshot-id} delete a group snapshot.
@@ -204,7 +204,7 @@ class NetApp
         return false if snapshot_id.nil?
 
         response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/snapshot-groups/#{snapshot_id}")
-        status(response, 200, [200], 'Failed to delete group snapshot')
+        status(response, 204, [204], 'Failed to delete group snapshot')
       end
 
       # Call volume snapshot API /devmgr/v2/{storage-system-id}/volume-snapshots create a volume snapshot.
