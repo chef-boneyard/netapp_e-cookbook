@@ -15,5 +15,7 @@ CyclomaticComplexity:
   Enabled: false
 PerceivedComplexity:
   Max: 15
-Metrics/AbcSize:
+AbcSize:
+  Enabled: false
+NumericLiterals:
   Enabled: false
