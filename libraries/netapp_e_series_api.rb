@@ -130,7 +130,7 @@ class NetApp
         pool_id = storage_pool_id(sys_id, request_body[:name])
         return false unless pool_id.nil?
 
-        response = request(:post, '/devmgr/v2/storage-systems/#{sys_id}/storage-pools', request_body.to_json)
+        response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/storage-pools", request_body.to_json)
         status(response, 200, [200], 'Failed to create storage pool')
       end
 
@@ -142,7 +142,7 @@ class NetApp
         pool_id = storage_pool_id(sys_id, name)
         return false if pool_id.nil?
 
-        response = request(:delete, '/devmgr/v2/storage-systems/#{sys_id}/storage-pools/#{pool_id}')
+        response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/storage-pools/#{pool_id}")
         status(response, 204, [204], 'Failed to delete storage pool')
       end
 
