@@ -14,9 +14,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 #
-
 netapp_e_consistency_group node['netapp']['consistency_group']['name'] do
   storage_system node['netapp']['storage_system_ip']
+  full_Warn_Threshold_Percent node['netapp']['consistency_group']['full_Warn_Threshold_Percent']
+  auto_Delete_Threshold node['netapp']['consistency_group']['auto_Delete_Threshold']
+  repository_FullPolicy node['netapp']['consistency_group']['repository_FullPolicy']
+  rollback_Priority node['netapp']['consistency_group']['rollback_Priority']
 
   action :create
 end

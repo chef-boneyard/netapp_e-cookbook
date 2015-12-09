@@ -22,3 +22,7 @@ default_action :create
 
 attribute :name, kind_of: String, required: true, name_attribute: true
 attribute :storage_system, kind_of: String, required: true
+attribute :full_Warn_Threshold_Percent, kind_of: Integer, default: 75
+attribute :auto_Delete_Threshold, kind_of: Integer, default: 32
+attribute :repository_FullPolicy, kind_of: String, default: 'purgepit'
+attribute :rollback_Priority, kind_of: String, default: 'highest'

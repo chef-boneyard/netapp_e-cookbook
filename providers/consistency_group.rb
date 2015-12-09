@@ -22,7 +22,7 @@ include NetAppEHelper
 action :create do
   # Validations
 
-  request_body = { name: new_resource.name }
+  request_body = { name: new_resource.name, fullWarnThresholdPercent: new_resource.full_Warn_Threshold_Percent, autoDeleteThreshold: new_resource.auto_Delete_Threshold, repositoryFullPolicy: new_resource.repository_FullPolicy, rollbackPriority: new_resource.rollback_Priority }
 
   netapp_api = netapp_api_create
 
