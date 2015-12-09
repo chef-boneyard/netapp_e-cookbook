@@ -1,8 +1,8 @@
 #
 # Cookbook Name:: netapp_e
-# Provider:: volume_group
+# Provider:: mirror_group
 #
-# Copyright 2014, Chef Software, Inc.
+# Copyright 2015, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ action :create do
   # Validations
   fail ArgumentError, 'Attribute secondary_array_id is required for mirror group creation' unless new_resource.secondary_array_id
 
-  request_body = { secondaryArrayId: new_resource.secondary_array_id, name: new_resource.name }
+  request_body = { secondaryArrayId: new_resource.secondary_array_id, name: new_resource.name, syncIntervalMinutes: new_resource.sync_interval_minutes, manualSync: new_resource.manual_sync, recoveryWarnThresholdMinutes: new_resource.recovery_warn_threshold_minutes, repoUtilizationWarnThreshold: new_resource.repo_utilization_warn_threshold, syncWarnThresholdMinutes: new_resource.syncWarn_threshold_minutes }
 
   netapp_api = netapp_api_create
 
