@@ -23,7 +23,7 @@ netapp_e_volume node['netapp']['volume']['name'] do
   size_unit node['netapp']['volume']['size_unit']
   size node['netapp']['volume']['size']
   segment_size node['netapp']['volume']['segment_size']
-
+  data_assurance_enabled node['netapp']['volume']['data_assurance_enabled']
   action :create
 end
 

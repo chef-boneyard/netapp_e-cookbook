@@ -28,3 +28,4 @@ attribute :size_unit, kind_of: String, equal_to: %w(bytes b kb mb gb tb pb eb zb
 attribute :size, kind_of: Integer
 attribute :segment_size, kind_of: Integer
 attribute :new_name, kind_of: String
+attribute :data_assurance_enabled, kind_of: [TrueClass, FalseClass], default: false

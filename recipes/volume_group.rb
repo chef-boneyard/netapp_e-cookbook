@@ -21,7 +21,7 @@ netapp_e_volume_group node['netapp']['volume_group']['name'] do
   storage_system node['netapp']['storage_system_ip']
   raid_level node['netapp']['volume_group']['raid_level']
   disk_drive_ids node['netapp']['volume_group']['disk_drive_id']
-
+  erase_secured_drives node['netapp']['volume_group']['erase_secured_drives']
   action :create
 end
 
