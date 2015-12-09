@@ -22,5 +22,5 @@ default_action :create
 
 attribute :storage_system, kind_of: String, required: true, name_attribute: true
 attribute :drive_refs, kind_of: Array, required: true
-attribute :name, kind_of: String
-attribute :enable_existing_volumes, kind_of: [TrueClass, FalseClass]
+attribute :name, kind_of: String, default: 'flashCache'
+attribute :enable_existing_volumes, kind_of: [TrueClass, FalseClass], default: false

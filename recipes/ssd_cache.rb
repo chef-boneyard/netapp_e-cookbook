@@ -18,6 +18,8 @@
 #
 
 netapp_e_ssd_cache node['netapp']['storage_system_ip'] do
+  name node['netapp']['ssd_cache']['name']
+  enable_existing_volumes node['netapp']['ssd_cache']['enable_existing_volumes']
   drive_refs node['netapp']['ssd_cache']['drive_refs']
   action :create
 end

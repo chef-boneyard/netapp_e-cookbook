@@ -38,5 +38,5 @@ default['netapp']['volume_copy']['target_id'] = '0200000060080E50001F69B40000170
 
 # ssd cache / flash cache
 default['netapp']['ssd_cache']['drive_refs'] = %w(123, 234) # Need to pass drive refs its a array of string
-default['netapp']['ssd_cache']['name'] = 'flashCache'
-default['netapp']['ssd_cache']['enable_existing_volumes'] = false
+default['netapp']['ssd_cache']['name'] = 'flashCache'              # optional parameter
+default['netapp']['ssd_cache']['enable_existing_volumes'] = false  # optional parameter
