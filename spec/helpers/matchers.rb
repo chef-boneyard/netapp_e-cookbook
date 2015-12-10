@@ -142,4 +142,8 @@ if defined?(ChefSpec)
   def delete_netapp_e_consistency_group(resource_name)
     ChefSpec::Matchers::ResourceMatcher.new(:netapp_e_consistency_group, :delete, resource_name)
   end
+
+  def update_netapp_e_network_configuration(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new(:netapp_e_network_configuration, :update, resource_name)
+  end
 end

@@ -181,6 +181,15 @@ class NetApp
         status(response, 204, [204], 'Failed to delete storage pool')
       end
 
+      # Call network API /devmgr/v2/storage-systems/#{storage_sys_id}/configuration/ethernet-interfaces to update Network Configurations.
+      def update_network_configuration(storage_system_ip, request_body)
+        sys_id = storage_system_id(storage_system_ip)
+        return false if sys_id.nil?
+
+        response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/configuration/ethernet-interfaces", request_body.to_json)
+        status(response, 200, [200], 'Failed to update Network Parameters')
+      end
+
       # Call volume API /devmgr/v2/{storage-system-id}/volumes to create a new volume.
       def create_volume(storage_system_ip, request_body)
         sys_id = storage_system_id(storage_system_ip)

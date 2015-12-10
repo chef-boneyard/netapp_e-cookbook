@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: netapp_e
-# Provider:: password
+# Provider:: volume_group
 #
 # Copyright 2014, Chef Software, Inc.
 #
@@ -20,12 +20,14 @@
 include NetAppEHelper
 
 action :update do
-  request_body = { currentAdminPassword: new_resource.current_admin_password, adminPassword: new_resource.admin_password, newPassword: new_resource.new_password }
+  request_body = { controllerRef: new_resource.controller_ref, interfaceRef: new_resource.interface_ref }
 
+  new_resource.update_parameters.each do |key, value|
+    request_body[key] = value if new_resource.update_parameters[key] != ''
+  end
   netapp_api = netapp_api_create
-
   netapp_api.login unless node['netapp']['basic_auth']
-  resource_update_status = netapp_api.change_password(new_resource.name, request_body)
+  resource_update_status = netapp_api.update_network_configuration(new_resource.storage_system, request_body)
   netapp_api.logout unless node['netapp']['basic_auth']
 
   new_resource.updated_by_last_action(true) if resource_update_status
