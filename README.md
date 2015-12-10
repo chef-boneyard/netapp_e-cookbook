@@ -12,6 +12,10 @@ You may download it from [NetApp](http://mysupport.netapp.com/NOW/download/softw
 
 You need to rename the directory to netapp_e from netapp_e-cookbook in order to use the resources.
 
+#### NetApp SANtricity Web Service Proxy Upgrade
+
+Use 'auto_upgrade' recipe to upgrade your NetApp SANtricity Web Service Proxy
+
 NetApp E-Series connection
 -----------------
 The connection is made over HTTPS through the SANtricity Web Services Proxy and the connection settings are managed by attributes.
@@ -37,7 +41,7 @@ NetApp E-Series Recipes
 
 proxy
 -----
-This recipe will install the SANtricity proxy service on Red Hat Linux 6. It doesn't support windows installation currently. It is unavailable for direct download from NetApp's website so you will need to mirror it locally and provide this URL as an attribute.
+This recipe will install the SANtricity proxy service on Red Hat Linux 6 & 7, Windows Server 2012 R2 currently. It is unavailable for direct download from NetApp's website so you will need to mirror it locally and provide this URL as an attribute.
 
 NetApp SANtricity Web Services Proxy 1.0	64-bit Linux	103 MB	webservice-01.00.7000.0003.bin
 
@@ -74,19 +78,19 @@ This resource has the following attributes:
 
 ### Example ###
 
-````ruby
+```ruby
 netapp_e_storage_system '192.168.1.1' do
   password 'Netapp123'
 
   action :create
 end
-````
+```
 
-````ruby
+```ruby
 netapp_e_storage_system '192.168.1.1' do
   action :delete
 end
-````
+```
 
 
 netapp_e_disk_pool
@@ -108,20 +112,20 @@ This resource has the following attributes:
 
 ### Example ###
 
-````ruby
+```ruby
 netapp_e_disk_pool 'my_disk_pool' do
   storage_system '192.168.1.1'
   disk_drive_ids %w(010000005000C5004B993D9B0000000000000000 010000005000CCA016B152540000000000000000)
   action :create
 end
-````
+```
 
-````ruby
+```ruby
 netapp_e_disk_pool 'my_disk_pool' do
   storage_system '192.168.1.1'
   action :delete
 end
-````
+```
 
 netapp_e_volume_group
 -----------
@@ -143,21 +147,21 @@ This resource has the following attributes:
 
 ### Example ###
 
-````ruby
+```ruby
 netapp_e_volume_group 'my_volume_group' do
   storage_system '192.168.1.1'
   disk_drive_ids %w(010000005000C5004B993D9B0000000000000000 010000005000CCA016B152540000000000000000)
   raid_level '0'
   action :create
 end
-````
+```
 
-````ruby
+```ruby
 netapp_e_volume_group 'my_volume_group' do
   storage_system '192.168.1.1'
   action :delete
 end
-````
+```
 
 netapp_e_volume
 -----------
@@ -181,7 +185,7 @@ This resource has the following attributes:
 
 ### Example ###
 
-````ruby
+```ruby
 netapp_e_volume 'my_volume' do
   storage_system '192.168.1.1'
   pool_id '0400000060080E50003220A80000006F52D8010D'
@@ -191,15 +195,15 @@ netapp_e_volume 'my_volume' do
 
   action :create
 end
-````
+```
 
-````ruby
+```ruby
 netapp_e_volume 'my_volume' do
   storage_system '192.168.1.1'
 
   action :delete
 end
-````
+```
 
 netapp_e_thin_volume
 -----------
@@ -229,7 +233,7 @@ This resource has the following attributes:
 
 ### Example ###
 
-````ruby
+```ruby
 netapp_e_thin_volume 'my_thin_volume' do
   storage_system '192.168.1.1'
   pool_id '0400000060080E50003222300000025853F33C1A'
@@ -240,15 +244,15 @@ netapp_e_thin_volume 'my_thin_volume' do
 
   action :create
 end
-````
+```
 
-````ruby
+```ruby
 netapp_e_thin_volume 'my_thin_volume' do
   storage_system '192.168.1.1'
 
   action :delete
 end
-````
+```
 
 netapp_e_snapshot_group
 -----------
@@ -274,7 +278,7 @@ This resource has the following attributes:
 
 ### Example ###
 
-````ruby
+```ruby
 netapp_e_snapshot_group 'my_snapshot_group' do
   storage_system '192.168.1.1'
   base_mappable_object_id '0200000060080E500032223000000388543E09C1'
@@ -286,15 +290,15 @@ netapp_e_snapshot_group 'my_snapshot_group' do
 
   action :create
 end
-````
+```
 
-````ruby
+```ruby
 netapp_e_snapshot_group 'my_snapshot_group' do
   storage_system '192.168.1.1'
 
   action :delete
 end
-````
+```
 
 netapp_e_snapshot_volume
 -----------
@@ -319,7 +323,7 @@ This resource has the following attributes:
 
 ### Example ###
 
-````ruby
+```ruby
 netapp_e_snapshot_volume 'my_snapshot_volume' do
   storage_system '192.168.1.1'
   snapshot_image_id '3400000060080E5000322230006303BB543F6228'
@@ -330,15 +334,15 @@ netapp_e_snapshot_volume 'my_snapshot_volume' do
 
   action :create
 end
-````
+```
 
-````ruby
+```ruby
 netapp_e_snapshot_volume 'my_snapshot_volume' do
   storage_system '192.168.1.1'
 
   action :delete
 end
-````
+```
 
 netapp_e_host
 -----------
@@ -365,7 +369,7 @@ This resource has the following attributes:
 
 ### Example ###
 
-````ruby
+```ruby
 netapp_e_host 'my_host' do
   storage_system '192.168.1.1'
   host_default false
@@ -376,15 +380,15 @@ netapp_e_host 'my_host' do
 
   action :create
 end
-````
+```
 
-````ruby
+```ruby
 netapp_e_host 'my_host' do
   storage_system '192.168.1.1'
 
   action :delete
 end
-````
+```
 
 netapp_e_host_group
 -----------
@@ -410,21 +414,21 @@ This resource has the following attributes:
 
 ### Example ###
 
-````ruby
+```ruby
 netapp_e_host_group 'my_host_group' do
   storage_system '192.168.1.1'
 
   action :create
 end
-````
+```
 
-````ruby
+```ruby
 netapp_e_host_group 'my_host_group' do
   storage_system '192.168.1.1'
 
   action :delete
 end
-
+```
 
 netapp_e_iscsi
 -----------
@@ -438,21 +442,21 @@ This resource has the following actions:
 ### Attributes ###
 This resource has the following attributes:
 
-* `storageSystem` IP address string, name attribute. Required. IP address of the storage system being managed by the proxy.
+* `storage_system` IP address string, name attribute. Required. IP address of the storage system being managed by the proxy.
 * `iscsi_alias` string. Required. The iSCSI target alias.
 * `enable_chap_authentication` boolean. Enable Challenge-Handshake Authentication Protocol (CHAP), defaults to false.
 * `chap_secret` string. Enable Challenge-Handshake Authentication Protocol (CHAP) using the provided password. A secure password will be generated and returned if CHAP is enabled and this field is not provided.
 
 ### Example ###
 
-````ruby
+```ruby
 netapp_e_iscsi '192.168.1.1' do
   iscsi_alias 'my_alias'
   enable_chap_authentication false
 
   action :update
 end
-````
+```
 
 
 netapp_e_password
@@ -474,7 +478,7 @@ This resource has the following attributes:
 
 ### Example ###
 
-````ruby
+```ruby
 netapp_e_password '192.168.1.1' do
   current_admin_password ''
   admin_password true
@@ -482,7 +486,303 @@ netapp_e_password '192.168.1.1' do
 
   action :update
 end
-````
+```
+
+
+netapp_e_consistency_group
+-----------
+
+Management of consistency group
+
+### Actions ###
+This resource has the following actions:
+
+* `:create` Default.
+* `:delete' Removes the consistency group.
+
+### Attributes ###
+This resource has the following attributes:
+
+* `name` string. Required, name_attribute. The user-label to assign to the new consistency group.
+* `storage_system` IP address string. Required IP address of the storage system being managed by the proxy.
+
+### Example ###
+Set default attributes in attributes/default.rb
+
+```ruby
+default['netapp']['storage_system_ip'] = '192.168.1.1'
+default['netapp']['consistency_group']['name'] = 'my_consistency_group'
+```
+
+Recipe
+
+```ruby
+netapp_e_consistency_group node['netapp']['consistency_group']['name'] do
+  storage_system node['netapp']['storage_system_ip']
+
+  action :create
+end
+```
+
+```ruby
+netapp_e_consistency_group node['netapp']['consistency_group']['name'] do
+  storage_system node['netapp']['storage_system_ip']
+
+  action :delete
+end
+```
+
+
+netapp_e_mirror_group
+-----------
+
+Management of mirror group
+
+### Actions ###
+This resource has the following actions:
+
+* `:create` Default.
+* `:delete' Removes the mirror group.
+
+### Attributes ###
+This resource has the following attributes:
+
+* `name` string. Required, name_attribute. The user-label to assign to the new new async mirror group.
+* `storage_system` Required, IP address string. Required IP address of the storage system being managed by the proxy.
+* `secondary_array_id` Required, Id string. The id of the secondary array.
+* `sync_interval_minutes` integer. Sync interval in (minutes).
+* `manual_sync` boolean. Set the synchronization method to manual, causing other synchronization values to be ignored.
+*  `recovery_warn_threshold_minutes` integer. Recovery point warning threshold (minutes). The user will be warned when the age of the last good failures point exceeds this value.
+* `report_utilization_warn_threshold` integer. Recovery point warning threshold (minutes).
+* `interface_type` string. The intended protocol to use if both Fibre and iSCSI are available. = ['[fibre', 'iscsi]']
+* `sync_warn_threshold_minutes` integer. The threshold (in minutes) for notifying the user that periodic synchronization has taken too long to complete.
+
+### Example ###
+Set default attributes in attributes/default.rb
+
+```ruby
+default['netapp']['storage_system_ip'] = '192.168.1.1'
+default['netapp']['mirror_group']['name'] = 'mirror_group'
+default['netapp']['mirror_group']['secondary_array_id'] = '3400000060080E5000322230006303BB543F6228'
+```
+
+Recipe
+
+```ruby
+netapp_e_mirror_group node['netapp']['mirror_group']['name']  do
+  storage_system node['netapp']['storage_system_ip']
+  secondary_array_id node['netapp']['mirror_group']['secondary_array_id']
+
+  action :create
+end
+```
+
+```ruby
+netapp_e_mirror_group node['netapp']['mirror_group']['name'] do
+  storage_system node['netapp']['storage_system_ip']
+
+  action :delete
+end
+```
+
+
+netapp_e_volume_copies
+-----------
+
+Management of volume copies
+
+### Actions ###
+This resource has the following actions:
+
+* `:create` Default.
+* `:delete` Removes the mirror group.
+
+### Attributes ###
+This resource has the following attributes:
+
+* `storage_system` IP address string, Required, name attribute. Required. IP address of the storage system being managed by the proxy.
+* `source_id` ID string. Required, The identifier of the source volume for the copy job.
+* `target_id` ID string. Required, The identifier of the target volume for the copy job.
+* `vc_id` Volume copy ID string, Required for deletion of volume copy.
+
+### Example ###
+Set default attributes in attributes/default.rb
+
+```ruby
+default['netapp']['storage_system_ip'] = '192.168.1.1'
+default['netapp']['volume_copy']['name'] = 'my_volume_copy'
+default['netapp']['volume_copy']['vc_id'] = '1800000060080E50001F6D3800000BAB565CF495'
+default['netapp']['volume_copy']['source_id'] = '0200000060080E50001F6D3800000BA7565CDA7A'
+default['netapp']['volume_copy']['target_id'] = '0200000060080E50001F69B400000C85565CD969'
+```
+
+Recipe
+
+```ruby
+netapp_e_volume_copy node['netapp']['volume_copy']['name'] do
+  storage_system node['netapp']['storage_system_ip']
+  source_id node['netapp']['volume_copy']['source_id']
+  target_id node['netapp']['volume_copy']['target_id']
+
+  action :create
+end
+```
+
+```ruby
+netapp_e_volume_copy node['netapp']['volume_copy']['vc_id'] do
+  storage_system node['netapp']['storage_system_ip']
+
+  action :delete
+end
+```
+
+
+netapp_e_ssd_cache
+-----------
+
+Management of ssd/flash cache
+
+### Actions ###
+This resource has the following actions:
+
+* `:create` Default.
+* `:delete` Removes the ssd/flash cache.
+* `:update` Add drives to an existing flash/ssd cache
+* `:resume` Resume suspended flash/ssd cache
+* `:suspend` Suspend the flash/ssd cache
+
+
+### Attributes ###
+This resource has the following attributes:
+
+* `storage_system` IP address string, Required, name attribute. Required. IP address of the storage system being managed by the proxy.
+* `drive_refs` ID string. Required, A list of one or more drive refs belonging to SSD drives that will be utilized in the Flash/SSD Cache,
+* `name` string, The user label for the Flash/SSD Cache.
+* `enable_existing_volumes` If true, all existing volumes that are mapped will have FLASH/SSD cache enabled.
+
+### Example ###
+Set default attributes in attributes/default.rb
+
+```ruby
+default['netapp']['storage_system_ip'] = '192.168.1.1'
+default['netapp']['ssd_cache']['drive_refs'] = %w(123, 234)
+default['netapp']['ssd_cache']['name'] = 'flashCache'
+default['netapp']['ssd_cache']['enable_existing_volumes'] = false
+```
+
+```ruby
+netapp_e_ssd_cache node['netapp']['storage_system_ip'] do
+  drive_refs node['netapp']['ssd_cache']['drive_refs']
+  action :create
+end
+```
+
+```ruby
+netapp_e_ssd_cache node['netapp']['storage_system_ip'] do
+  action :delete
+end
+```
+
+```ruby
+netapp_e_ssd_cache node['netapp']['storage_system_ip'] do
+  drive_refs node['netapp']['ssd_cache']['drive_refs']
+  action :update
+end
+```
+
+```ruby
+netapp_e_ssd_cache node['netapp']['storage_system_ip'] do
+  action :resume
+end
+```
+
+```ruby
+netapp_e_ssd_cache node['netapp']['storage_system_ip'] do
+  action :suspend
+end
+```
+
+
+netapp_e_firmware
+-----------
+
+Initiate a Cotnroller Firmware upgrade opeation
+
+### Actions ###
+This resource has the following actions:
+
+* `:upgrade` Default.
+
+
+### Attributes ###
+This resource has the following attributes:
+
+* `storage_system` IP address string, Required, name attribute. Required. IP address of the storage system being managed by the proxy.
+* 'cfw_file' string
+* 'nvsram_file' string
+* 'stage_firmware' false
+* 'skip_mel_check' false Skip check of the MEL events for issues with the storage-system.
+
+### Example ###
+Set default attributes in attributes/default.rb
+
+```ruby
+default['netapp']['storage_system_ip'] = '192.168.1.1'
+default['netapp']['firmware']['cfw_file'] = '<path_to_the_file>'
+default['netapp']['firmware']['nvsram_file'] = '<path_to_the_file>'
+default['netapp']['firmware']['stage_firmware'] = false
+default['netapp']['firmware']['skip_mel_check'] = false
+```
+
+```ruby
+netapp_e_firmware node['netapp']['storage_system_ip'] do
+  cfw_file node['netapp']['firmware']['cfw_file']
+  nvsram_file node['netapp']['firmware']['nvsram_file']
+  stage_firmware node['netapp']['firmware']['stage_firmware']
+  skip_mel_check node['netapp']['firmware']['skip_mel_check']
+
+  action :upgrade
+end
+```
+
+
+netapp_e_network_configuration
+-----------
+
+Update the ethernet management connection configuration. This operation can lead to an inaccessible controller if performed incorrectly or if incorrect ip addresses, gateway addresses, etc, are provided. Configuration is performed by connecting to the alternate controller, so it must be accessible for the operation to succeed.
+
+### Actions ###
+This resource has the following actions:
+
+* `:update` Default.
+
+
+### Attributes ###
+This resource has the following attributes:
+
+* `controller_ref` string, Required
+* `interface_ref`  string, Required. Reference to the Ethernet interface to configure.
+* `update_parameters` hash, All optional parameters can be passed in this.
+
+### Example ###
+Set default attributes in attributes/default.rb
+
+```ruby
+default['netapp']['network_configuration']['controller_ref'] = '0700123343435345435535325555'
+default['netapp']['network_configuration']['interface_ref'] = '280007003123124354345345354353452000000000000'
+default['netapp']['network_configuration']['update_parameters'] = { 'enableRemoteAccess' => false, 'ipv4GatewayAddress' => '', 'ipv6GatewayAddress' => '', 'ipv4Address' => '', 'ipv6LocalAddress' => '', 'ipv4Enabled' = false, 'ipv4AddressConfigMethod' => 'configDhcp', 'ipv6Enabled' => false, 'ipv6AddressConfigMethod' => 'configStatic' }
+```
+
+```ruby
+netapp_e_network_configuration 'network_configuration_update' do
+  storage_system node['netapp']['storage_system_ip']
+  controller_ref node['netapp']['network_configuration']['controller_ref']
+  interface_ref node['netapp']['network_configuration']['interface_ref']
+  update_parameters node.default['netapp']['network_configuration']['update_parameters']
+
+  action :update
+end
+```
 
 
 Contributing
