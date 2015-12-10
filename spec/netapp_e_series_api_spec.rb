@@ -831,17 +831,17 @@ describe 'netapp_e_series_api' do
   context 'volume_copy' do
     it 'is created' do
       response = double
-      request_body = "{\"name\":\"demo_volume_copy\"}"
+      request_body = "{\"sourceId\":\"111\",\"targetId\":\"555\"}"
 
       expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
       expect(@netapp_api).to receive(:request).with(:post, '/devmgr/v2/storage-systems/12345/volume-copy-jobs', request_body).and_return(response)
       expect(@netapp_api).to receive(:status).with(response, 200, [200], 'Failed to create volume copy pair')
-      @netapp_api.create_volume_copy('10.0.0.1', name: 'demo_volume_copy')
+      @netapp_api.create_volume_copy('10.0.0.1', {sourceId: '111', targetId: '555'})
     end
 
     it 'return false when storage system does not exist while create' do
       expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return(nil)
-      expect(@netapp_api.create_volume_copy('10.0.0.1', name: 'demo_volume_copy')).to eq(false)
+      expect(@netapp_api.create_volume_copy('10.0.0.1', {sourceId: '111', targetId: '555'})).to eq(false)
     end
 
     it 'is deleted' do
