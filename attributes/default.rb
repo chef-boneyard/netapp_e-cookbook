@@ -122,7 +122,7 @@ default['netapp']['snapshot_volume']['repository_pool_id'] = '0400000060080E5000
 
 # consistency group
 default['netapp']['consistency_group']['name'] = 'consistency_group'
-default['netapp']['consistency_group']['full_Warn_Threshold_Percent'] = 75
-default['netapp']['consistency_group']['auto_Delete_Threshold'] = 32
-default['netapp']['consistency_group']['repository_FullPolicy'] = 'purgepit'
-default['netapp']['consistency_group']['rollback_Priority'] = 'highest'
+default['netapp']['consistency_group']['full_warn_threshold_percent'] = 75
+default['netapp']['consistency_group']['auto_delete_threshold'] = 32
+default['netapp']['consistency_group']['repository_full_policy'] = 'purgepit'
+default['netapp']['consistency_group']['rollback_priority'] = 'highest'

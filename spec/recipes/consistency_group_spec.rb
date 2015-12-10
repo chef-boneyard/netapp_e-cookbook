@@ -4,7 +4,7 @@ describe 'netapp_e::consistency_group' do
   let(:chef_run) do
     ChefSpec::SoloRunner.new(step_into: ['consistency_group']) do |node|
       node.set['netapp']['consistency_group']['name'] = 'test'
-      node.set['netapp']['storage_system_ip'] = '10.100.2.11'
+      node.set['netapp']['storage_system_ip'] = '192.168.1.1'
     end.converge(described_recipe)
   end
 
