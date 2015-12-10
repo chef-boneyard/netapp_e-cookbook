@@ -17,10 +17,12 @@
 # limitations under the License.
 #
 
-netapp_e_volume_copy node['netapp']['volume_copy']['name'] do
-  storage_system node['netapp']['storage_system_ip']
+netapp_e_volume_copy node['netapp']['storage_system_ip'] do
   source_id node['netapp']['volume_copy']['source_id']
   target_id node['netapp']['volume_copy']['target_id']
+  copy_priority node['netapp']['volume_copy']['copy_priority']
+  target_write_protected node['netapp']['volume_copy']['target_write_protected']
+  online_copy node['netapp']['volume_copy']['online_copy']
   action :create
 end
 

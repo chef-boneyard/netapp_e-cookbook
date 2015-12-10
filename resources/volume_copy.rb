@@ -20,8 +20,10 @@
 actions :create, :delete
 default_action :create
 
-attribute :name, kind_of: String, required: true, name_attribute: true
+attribute :storage_system, kind_of: String, required: true, name_attribute: true
 attribute :vc_id, kind_of: String, required: true, name_attribute: true
-attribute :storage_system, kind_of: String, required: true
 attribute :source_id, kind_of: String, required: true
 attribute :target_id, kind_of: String, required: true
+attribute :copy_priority, kind_of: String, default: 'priority2'
+attribute :target_write_protected, kind_of: [TrueClass, FalseClass], default: false
+attribute :online_copy, kind_of: [TrueClass, FalseClass], default: false
