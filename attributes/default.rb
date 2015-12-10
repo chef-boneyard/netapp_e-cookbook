@@ -126,3 +126,9 @@ default['netapp']['consistency_group']['full_warn_threshold_percent'] = 75
 default['netapp']['consistency_group']['auto_delete_threshold'] = 32
 default['netapp']['consistency_group']['repository_full_policy'] = 'purgepit'
 default['netapp']['consistency_group']['rollback_priority'] = 'highest'
+
+# Disk Pool
+default['netapp']['disk_pool']['name'] = 'demo_disk_pool'
+default['netapp']['disk_pool']['raid_level'] = 'raidDiskPool'
+# Minimum 11 drive id's need to be provided when using raidLevel value raidDiskPool
+default['netapp']['disk_pool']['disk_drive_ids'] = %w(010000005000C5004B993D9B0000000000000000 010000005000CCA016B152540000000000000000 010000005000CCA016B19B600000000000000000 010000005000CCA016B2BCB00000000000000000 010000005000CCA016B2F5FC0000000000000000 010000005000CCA016B3B0980000000000000000 010000005000CCA0225C24B80000000000000000 010000005000CCA0225CD88C0000000000000000 010000005000CCA0225F50100000000000000000 010000005000CCA02260F2EC0000000000000000 010000005000CCA02260F3080000000000000000)
