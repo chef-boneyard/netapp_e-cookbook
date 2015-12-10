@@ -16,10 +16,10 @@
 #
 netapp_e_consistency_group node['netapp']['consistency_group']['name'] do
   storage_system node['netapp']['storage_system_ip']
-  full_Warn_Threshold_Percent node['netapp']['consistency_group']['full_warn_threshold_percent']
-  auto_Delete_Threshold node['netapp']['consistency_group']['auto_delete_threshold']
-  repository_FullPolicy node['netapp']['consistency_group']['repository_full_policy']
-  rollback_Priority node['netapp']['consistency_group']['rollback_priority']
+  full_warn_threshold_percent node['netapp']['consistency_group']['full_warn_threshold_percent']
+  auto_delete_threshold node['netapp']['consistency_group']['auto_delete_threshold']
+  repository_full_policy node['netapp']['consistency_group']['repository_full_policy']
+  rollback_priority node['netapp']['consistency_group']['rollback_priority']
 
   action :create
 end

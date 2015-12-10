@@ -5,6 +5,10 @@ describe 'netapp_e::consistency_group' do
     ChefSpec::SoloRunner.new(step_into: ['consistency_group']) do |node|
       node.set['netapp']['consistency_group']['name'] = 'test'
       node.set['netapp']['storage_system_ip'] = '192.168.1.1'
+      node.set['netapp']['consistency_group']['full_warn_threshold_percent'] = 75
+      node.set['netapp']['consistency_group']['auto_delete_threshold'] = 32
+      node.set['netapp']['consistency_group']['repository_full_policy'] = 'purgepit'
+      node.set['netapp']['consistency_group']['rollback_priority'] = 'highest'
     end.converge(described_recipe)
   end
 
