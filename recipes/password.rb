@@ -17,10 +17,10 @@
 # limitations under the License.
 #
 
-netapp_e_password '10.250.117.112' do
-  current_admin_password 'netapp123'
-  admin_password true
-  new_password ''
+netapp_e_password node['netapp']['storage_system_ip'] do
+  current_admin_password node['netapp']['storage_system']['current_admin_password']
+  admin_password node['netapp']['storage_system']['admin_password']
+  new_password node['netapp']['storage_system']['new_password']
 
   action :update
 end
