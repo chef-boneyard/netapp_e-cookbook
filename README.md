@@ -78,16 +78,23 @@ This resource has the following attributes:
 
 ### Example ###
 
-```ruby
-netapp_e_storage_system '192.168.1.1' do
-  password 'Netapp123'
+Set default attributes in attributes/default.rb
 
+```ruby
+default['netapp']['storage_system_ip'] = '192.168.1.1'
+default['netapp']['storage_system']['password'] = 'Netapp123'
+```
+Recipe
+
+```ruby
+netapp_e_storage_system node['netapp']['storage_system_ip'] do
+  password node['netapp']['storage_system']['password']
   action :create
 end
 ```
 
 ```ruby
-netapp_e_storage_system '192.168.1.1' do
+netapp_e_storage_system node['netapp']['storage_system_ip'] do
   action :delete
 end
 ```
@@ -109,20 +116,34 @@ This resource has the following attributes:
 * `name` string. Required, name_attibute. The user-label to assign to the new disk storage pool.
 * `storage_system` IP address string. Required. IP address of the storage system being managed by the proxy.
 * `disk_drive_ids` array of strings. The identifiers of the disk drives to use for creating the storage pool. Required for disk_pool creation.
+* `raid_level` String, Required. The RAID configuration for the new storage pool. = ['raidUnsupported', 'raidAll', 'raid0', 'raid1', 'raid3', 'raid5', 'raid6', 'raidDiskPool', '__UNDEFINED'],
 
 ### Example ###
 
+Set default attributes in attributes/default.rb
+
 ```ruby
-netapp_e_disk_pool 'my_disk_pool' do
-  storage_system '192.168.1.1'
-  disk_drive_ids %w(010000005000C5004B993D9B0000000000000000 010000005000CCA016B152540000000000000000)
+default['netapp']['storage_system_ip'] = '192.168.1.1'
+default['netapp']['disk_pool']['name'] = 'demo_disk_pool'
+default['netapp']['disk_pool']['raid_level'] = 'raidDiskPool'
+default['netapp']['disk_pool']['disk_drive_ids'] = %w(010000005000C5004B993D9B0000000000000000 010000005000CCA016B152540000000000000000)
+```
+Recipe
+
+```ruby
+netapp_e_disk_pool node['netapp']['disk_pool']['name'] do
+  storage_system node['netapp']['storage_system_ip']
+  disk_drive_ids node['netapp']['disk_pool']['disk_drive_ids']
+  raid_level node['netapp']['disk_pool']['raid_level']
+
   action :create
 end
 ```
 
 ```ruby
-netapp_e_disk_pool 'my_disk_pool' do
-  storage_system '192.168.1.1'
+netapp_e_disk_pool node['netapp']['disk_pool']['name'] do
+  storage_system node['netapp']['storage_system_ip']
+
   action :delete
 end
 ```
@@ -147,18 +168,30 @@ This resource has the following attributes:
 
 ### Example ###
 
+Set default attributes in attributes/default.rb
+
 ```ruby
-netapp_e_volume_group 'my_volume_group' do
-  storage_system '192.168.1.1'
-  disk_drive_ids %w(010000005000C5004B993D9B0000000000000000 010000005000CCA016B152540000000000000000)
-  raid_level '0'
+default['netapp']['storage_system_ip'] = '192.168.1.1'
+default['netapp']['volume_group']['name'] = 'volume_group_test'
+default['netapp']['volume_group']['disk_drive_id'] = ['010000005001E8200002D1880000000000000000']
+default['netapp']['volume_group']['raid_level'] = '0'
+```
+Recipe
+
+```ruby
+netapp_e_volume_group node['netapp']['volume_group']['name'] do
+  storage_system node['netapp']['storage_system_ip']
+  raid_level node['netapp']['volume_group']['raid_level']
+  disk_drive_ids node['netapp']['volume_group']['disk_drive_id']
+
   action :create
 end
 ```
 
 ```ruby
-netapp_e_volume_group 'my_volume_group' do
-  storage_system '192.168.1.1'
+netapp_e_volume_group node['netapp']['volume_group']['name'] do
+  storage_system node['netapp']['storage_system_ip']
+
   action :delete
 end
 ```
@@ -185,21 +218,31 @@ This resource has the following attributes:
 
 ### Example ###
 
+Set default attributes in attributes/default.rb
+
 ```ruby
-netapp_e_volume 'my_volume' do
-  storage_system '192.168.1.1'
-  pool_id '0400000060080E50003220A80000006F52D8010D'
-  size_unit 'gb'
-  size 100
-  segment_size 0
+default['netapp']['storage_system_ip'] = '192.168.1.1'
+default['netapp']['volume']['name'] = 'my_volume'
+default['netapp']['volume']['pool_id'] = '040d0001F69B400000C9E565D3F33'
+default['netapp']['volume']['size_unit'] = 'bytes'
+default['netapp']['volume']['size'] = 1048576
+default['netapp']['volume']['segment_size'] = 128
+```
+Recipe
+
+```ruby
+netapp_e_volume node['netapp']['volume']['name'] do
+  storage_system node['netapp']['storage_system_ip']
+  pool_id node['netapp']['volume']['pool_id']
+  size_unit node['netapp']['volume']['size_unit']
+  size node['netapp']['volume']['size']
+  segment_size node['netapp']['volume']['segment_size']
 
   action :create
 end
-```
 
-```ruby
-netapp_e_volume 'my_volume' do
-  storage_system '192.168.1.1'
+netapp_e_volume node['netapp']['volume']['name'] do
+  storage_system node['netapp']['storage_system_ip']
 
   action :delete
 end
@@ -233,26 +276,38 @@ This resource has the following attributes:
 
 ### Example ###
 
+Set default attributes in attributes/default.rb
+
 ```ruby
-netapp_e_thin_volume 'my_thin_volume' do
-  storage_system '192.168.1.1'
-  pool_id '0400000060080E50003222300000025853F33C1A'
-  size_unit 'gb'
-  virtual_size 4
-  repository_size 4
-  max_repository_size 128
+default['netapp']['storage_system_ip'] = '192.168.1.1'
+default['netapp']['thin_volume']['pool_id'] = '0400000060080E50003222300000025853F33C1A'
+default['netapp']['thin_volume']['name'] = 'my_thin_volume'
+default['netapp']['thin_volume']['size_unit'] = 'bytes'
+default['netapp']['thin_volume']['virtual_size'] = 4
+default['netapp']['thin_volume']['repository_size'] = 4
+default['netapp']['thin_volume']['max_repository_size'] = 128
+```
+Recipe
+
+```ruby
+netapp_e_thin_volume node['netapp']['thin_volume']['name'] do
+  storage_system node['netapp']['storage_system_ip']
+  pool_id node['netapp']['thin_volume']['pool_id']
+  size_unit node['netapp']['thin_volume']['size_unit']
+  virtual_size node['netapp']['thin_volume']['virtual_size']
+  repository_size node['netapp']['thin_volume']['repository_size']
+  max_repository_size node['netapp']['thin_volume']['max_repository_size']
 
   action :create
 end
-```
 
-```ruby
-netapp_e_thin_volume 'my_thin_volume' do
-  storage_system '192.168.1.1'
+netapp_e_thin_volume node['netapp']['thin_volume']['name'] do
+  storage_system node['netapp']['storage_system_ip']
 
   action :delete
 end
 ```
+
 
 netapp_e_snapshot_group
 -----------
@@ -278,23 +333,35 @@ This resource has the following attributes:
 
 ### Example ###
 
+Set default attributes in attributes/default.rb
+
 ```ruby
-netapp_e_snapshot_group 'my_snapshot_group' do
-  storage_system '192.168.1.1'
-  base_mappable_object_id '0200000060080E500032223000000388543E09C1'
-  repository_percentage 100
-  warning_threshold 0
-  auto_delete_limit 32
-  full_policy 'failbasewrites'
-  storage_pool_id '0400000060080E50003220A80000006F52D8010D'
+default['netapp']['storage_system_ip'] = '192.168.1.1'
+default['netapp']['snapshot_group']['name'] = 'demo_snapshot_group'
+default['netapp']['snapshot_group']['base_mappable_object_id'] = '0200000060080E50001F69B40000151856611C78'
+default['netapp']['snapshot_group']['repository_percentage'] = 20
+default['netapp']['snapshot_group']['warning_threshold'] = 80
+default['netapp']['snapshot_group']['auto_delete_limit'] = 30
+default['netapp']['snapshot_group']['full_policy'] = 'unknown'
+default['netapp']['snapshot_group']['storage_pool_id'] = '0400000060080E50001F69B4000015175660AFB0'
+```
+Recipe
+
+```ruby
+netapp_e_snapshot_group node['netapp']['snapshot_group']['name'] do
+  storage_system node['netapp']['storage_system_ip']
+  base_mappable_object_id node['netapp']['snapshot_group']['base_mappable_object_id']
+  repository_percentage node['netapp']['snapshot_group']['repository_percentage']
+  warning_threshold node['netapp']['snapshot_group']['warning_threshold']
+  auto_delete_limit node['netapp']['snapshot_group']['auto_delete_limit']
+  full_policy node['netapp']['snapshot_group']['full_policy']
+  storage_pool_id node['netapp']['snapshot_group']['storage_pool_id']
 
   action :create
 end
-```
 
-```ruby
-netapp_e_snapshot_group 'my_snapshot_group' do
-  storage_system '192.168.1.1'
+netapp_e_snapshot_group node['netapp']['snapshot_group']['name'] do
+  storage_system node['netapp']['storage_system_ip']
 
   action :delete
 end
@@ -323,22 +390,33 @@ This resource has the following attributes:
 
 ### Example ###
 
+Set default attributes in attributes/default.rb
+
 ```ruby
-netapp_e_snapshot_volume 'my_snapshot_volume' do
-  storage_system '192.168.1.1'
-  snapshot_image_id '3400000060080E5000322230006303BB543F6228'
-  full_threshold 0
-  view_mode 'readWrite'
-  repository_percentage 100
-  repository_pool_id '0400000060080E50003222300000025853F33C1A'
+default['netapp']['storage_system_ip'] = '192.168.1.1'
+default['netapp']['snapshot_volume']['name'] = 'demo_snapshot_volume'
+default['netapp']['snapshot_volume']['snapshot_image_id'] = '3400000060080E5000322230006303BB543F6228'
+default['netapp']['snapshot_volume']['full_threshold'] = 0
+default['netapp']['snapshot_volume']['view_mode'] = 'readWrite'
+default['netapp']['snapshot_volume']['repository_percentage'] = 10_000_000_000
+default['netapp']['snapshot_volume']['repository_pool_id'] = '0400000060080E50003222300000025853F33C1A'
+```
+Recipe
+
+```ruby
+netapp_e_snapshot_volume node['netapp']['snapshot_volume']['name'] do
+  storage_system node['netapp']['storage_system_ip']
+  snapshot_image_id node['netapp']['snapshot_volume']['snapshot_image_id']
+  full_threshold node['netapp']['snapshot_volume']['full_threshold']
+  view_mode node['netapp']['snapshot_volume']['view_mode']
+  repository_percentage node['netapp']['snapshot_volume']['repository_percentage']
+  repository_pool_id node['netapp']['snapshot_volume']['repository_pool_id']
 
   action :create
 end
-```
 
-```ruby
-netapp_e_snapshot_volume 'my_snapshot_volume' do
-  storage_system '192.168.1.1'
+netapp_e_snapshot_volume node['netapp']['snapshot_volume']['name'] do
+  storage_system node['netapp']['storage_system_ip']
 
   action :delete
 end
@@ -369,22 +447,37 @@ This resource has the following attributes:
 
 ### Example ###
 
+Set default attributes in attributes/default.rb
+
 ```ruby
-netapp_e_host 'my_host' do
-  storage_system '192.168.1.1'
-  host_default false
-  code 'demo_code'
-  host_used true
-  index 0
-  host_type_name 'dc'
+default['netapp']['storage_system_ip'] = '192.168.1.1'
+default['netapp']['host']['name'] = 'Demo_Host_1'
+default['netapp']['host']['host_default'] = false
+default['netapp']['host']['code'] = 'VmwTPPGFLUA'
+default['netapp']['host']['host_used'] = true
+default['netapp']['host']['index'] = 0
+default['netapp']['host']['host_type_name'] = 'VmwTPPGFLUA'
+default['netapp']['host']['ports'] = [{ 'type' => 'fc', 'port' => '4983294832', 'label' => 'esx_140a' }]
+default['netapp']['host']['groupid'] = '8500000060080E50001F69B400360CBE565E35E3'
+```
+Recipe
+
+```ruby
+netapp_e_host node['netapp']['host']['name'] do
+  storage_system node['netapp']['storage_system_ip']
+  host_default node['netapp']['host']['host_default']
+  code node['netapp']['host']['code']
+  host_used node['netapp']['host']['host_used']
+  index node['netapp']['host']['index']
+  host_type_name node['netapp']['host']['host_type_name']
+  ports node['netapp']['host']['ports']
+  group_id node['netapp']['host']['groupid']
 
   action :create
 end
-```
 
-```ruby
-netapp_e_host 'my_host' do
-  storage_system '192.168.1.1'
+netapp_e_host node['netapp']['host']['name'] do
+  storage_system node['netapp']['storage_system_ip']
 
   action :delete
 end
@@ -400,11 +493,6 @@ This resource has the following actions:
 * `:create` Default.
 * `:delete` Removes the host group
 
-attribute :name, kind_of: String, required: true, name_attribute: true
-attribute :storage_system, kind_of: String, required: true
-
-attribute :hosts, kind_of: Array
-
 ### Attributes ###
 This resource has the following attributes:
 
@@ -414,18 +502,23 @@ This resource has the following attributes:
 
 ### Example ###
 
-```ruby
-netapp_e_host_group 'my_host_group' do
-  storage_system '192.168.1.1'
+Set default attributes in attributes/default.rb
 
+```ruby
+default['netapp']['storage_system_ip'] = '192.168.1.1'
+default['netapp']['host_group']['name'] = 'testy_host_group'
+```
+Recipe
+
+```ruby
+netapp_e_host_group node['netapp']['host_group']['name'] do
+  storage_system node['netapp']['storage_system_ip']
+  hosts node['netapp']['host_group']['hosts']
   action :create
 end
-```
 
-```ruby
-netapp_e_host_group 'my_host_group' do
-  storage_system '192.168.1.1'
-
+netapp_e_host_group node['netapp']['host_group']['name'] do
+  storage_system node['netapp']['storage_system_ip']
   action :delete
 end
 ```
@@ -449,10 +542,20 @@ This resource has the following attributes:
 
 ### Example ###
 
+Set default attributes in attributes/default.rb
+
 ```ruby
-netapp_e_iscsi '192.168.1.1' do
-  iscsi_alias 'my_alias'
-  enable_chap_authentication false
+default['netapp']['storage_system_ip'] = '192.168.1.1'
+default['netapp']['iscsi']['alias_name'] = 'demo_alias'
+default['netapp']['iscsi']['enable_chap_authentication'] = false
+```
+
+Recipe
+
+```ruby
+netapp_e_iscsi node['netapp']['storage_system_ip'] do
+  iscsi_alias node['netapp']['iscsi']['alias_name']
+  enable_chap_authentication node['netapp']['iscsi']['enable_chap_authentication']
 
   action :update
 end
@@ -498,7 +601,7 @@ Management of consistency group
 This resource has the following actions:
 
 * `:create` Default.
-* `:delete' Removes the consistency group.
+* `:delete` Removes the consistency group.
 
 ### Attributes ###
 This resource has the following attributes:
@@ -542,7 +645,7 @@ Management of mirror group
 This resource has the following actions:
 
 * `:create` Default.
-* `:delete' Removes the mirror group.
+* `:delete` Removes the mirror group.
 
 ### Attributes ###
 This resource has the following attributes:
@@ -669,6 +772,7 @@ default['netapp']['ssd_cache']['drive_refs'] = %w(123, 234)
 default['netapp']['ssd_cache']['name'] = 'flashCache'
 default['netapp']['ssd_cache']['enable_existing_volumes'] = false
 ```
+Recipe
 
 ```ruby
 netapp_e_ssd_cache node['netapp']['storage_system_ip'] do
@@ -733,6 +837,7 @@ default['netapp']['firmware']['nvsram_file'] = '<path_to_the_file>'
 default['netapp']['firmware']['stage_firmware'] = false
 default['netapp']['firmware']['skip_mel_check'] = false
 ```
+Recipe
 
 ```ruby
 netapp_e_firmware node['netapp']['storage_system_ip'] do
@@ -772,6 +877,7 @@ default['netapp']['network_configuration']['controller_ref'] = '0700123343435345
 default['netapp']['network_configuration']['interface_ref'] = '280007003123124354345345354353452000000000000'
 default['netapp']['network_configuration']['update_parameters'] = { 'enableRemoteAccess' => false, 'ipv4GatewayAddress' => '', 'ipv6GatewayAddress' => '', 'ipv4Address' => '', 'ipv6LocalAddress' => '', 'ipv4Enabled' = false, 'ipv4AddressConfigMethod' => 'configDhcp', 'ipv6Enabled' => false, 'ipv6AddressConfigMethod' => 'configStatic' }
 ```
+Recipe
 
 ```ruby
 netapp_e_network_configuration 'network_configuration_update' do
