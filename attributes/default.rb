@@ -24,6 +24,14 @@ default['netapp']['ssl_port'] = 8443
 # default['netapp']['api']['timeout'] = 60000
 
 # mirror group
-default['netapp']['storage_system_ip'] = '10.113.1.130'
+default['netapp']['storage_system_ip'] = '10.113.1.18'
 default['netapp']['mirror_group']['name'] = 'mirror_group'
 default['netapp']['mirror_group']['secondary_array_id'] = 'e9f486b8-8634-4f58-9563-c57561633376'
+
+# Attributes for volume copy
+default['netapp']['volume_copy']['vc_id'] = '1800000060080E50001F6D3800000BAB565CF495'  # required for delete operation
+default['netapp']['volume_copy']['source_id'] = '0200000060080E50001F69B40000170A5666342B'
+default['netapp']['volume_copy']['target_id'] = '0200000060080E50001F69B40000170B56663452'
+# default['netapp']['volume_copy']['copy_priority'] = 'priority2'    # optional parameter, defaults to 'priority2'
+# default['netapp']['volume_copy']['target_write_protected'] = false # optional parameter, defaults to false
+# default['netapp']['volume_copy']['online_copy'] = false            # optional parameter, defaults to false

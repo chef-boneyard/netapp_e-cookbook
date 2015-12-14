@@ -102,4 +102,12 @@ if defined?(ChefSpec)
   def delete_netapp_e_mirror_group(resource_name)
     ChefSpec::Matchers::ResourceMatcher.new(:netapp_e_mirror_group, :delete, resource_name)
   end
+
+  def create_netapp_e_volume_copy(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new(:netapp_e_volume_copy, :create, resource_name)
+  end
+
+  def delete_netapp_e_volume_copy(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new(:netapp_e_volume_copy, :delete, resource_name)
+  end
 end
