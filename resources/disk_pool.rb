@@ -22,5 +22,5 @@ default_action :create
 
 attribute :name, kind_of: String, required: true, name_attribute: true
 attribute :storage_system, kind_of: String, required: true
-
+attribute :raid_level, kind_of: String
 attribute :disk_drive_ids, kind_of: Array
