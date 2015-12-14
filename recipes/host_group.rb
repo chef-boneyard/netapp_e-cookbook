@@ -17,14 +17,14 @@
 # limitations under the License.
 #
 
-netapp_e_host_group 'demo_group' do
-  storage_system '10.250.117.112'
+netapp_e_host_group node['netapp']['host_group']['name'] do
+  storage_system node['netapp']['storage_system_ip']
+  hosts node['netapp']['host_group']['hosts']
 
   action :create
 end
 
-netapp_e_host_group 'demo_group' do
-  storage_system '10.250.117.112'
-
+netapp_e_host_group node['netapp']['host_group']['name'] do
+  storage_system node['netapp']['storage_system_ip']
   action :delete
 end

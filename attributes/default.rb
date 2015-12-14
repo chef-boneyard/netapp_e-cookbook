@@ -23,6 +23,8 @@ default['netapp']['ssl_port'] = 8443
 ############ timeout (optional) ######################
 # default['netapp']['api']['timeout'] = 60000
 
+default['netapp']['storage_system_ip'] = '127.0.0.1'
+
 # mirror group
 default['netapp']['storage_system_ip'] = '10.113.1.18'
 default['netapp']['mirror_group']['name'] = 'mirror_group'
@@ -40,3 +42,7 @@ default['netapp']['volume_copy']['target_id'] = '0200000060080E50001F69B40000170
 default['netapp']['ssd_cache']['drive_refs'] = %w(123, 234) # Need to pass drive refs its a array of string
 default['netapp']['ssd_cache']['name'] = 'flashCache'              # optional parameter
 default['netapp']['ssd_cache']['enable_existing_volumes'] = false  # optional parameter
+
+# host group
+default['netapp']['host_group']['name'] = 'testy_host_group'
+# default['netapp']['host_group']['hosts'] = ['8400000060080E50001F6D3800300DFE565E8364','8400000060080E50001F69B400300EDE565E8283'] # optional parameter
