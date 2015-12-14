@@ -41,7 +41,7 @@ class NetApp
         return false if sys_id.nil?
 
         response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}")
-        status(response, 200, [200], 'Storage Deletion Failed')
+        status(response, 204, [204], 'Storage Deletion Failed')
       end
 
       # Call storage system API /devmgr/v2/{storage-system-id}/passwords to change the password of the storage system

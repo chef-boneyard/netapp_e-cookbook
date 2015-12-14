@@ -25,8 +25,12 @@ default['netapp']['ssl_port'] = 8443
 
 default['netapp']['storage_system_ip'] = '127.0.0.1'
 
+# storage system
+default['netapp']['storage_system']['password'] = 'Netapp123' # optional parameter
+# default['netapp']['storage_system']['wwn'] = '60080E50001F6D380000000056322C8A' # optional parameter
+# default['netapp']['storage_system']['meta_tags'] = ['ABC111XYZ','Y999'] # optional parameter
+
 # mirror group
-default['netapp']['storage_system_ip'] = '10.113.1.18'
 default['netapp']['mirror_group']['name'] = 'mirror_group'
 default['netapp']['mirror_group']['secondary_array_id'] = 'e9f486b8-8634-4f58-9563-c57561633376'
 
