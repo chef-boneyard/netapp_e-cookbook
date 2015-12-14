@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: netapp_e
-# Provider:: volume
+# Provider:: firmware
 #
 # Copyright 2015, Chef Software, Inc.
 #

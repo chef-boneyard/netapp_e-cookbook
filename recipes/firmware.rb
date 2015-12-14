@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: netapp_e
-# Recipe:: host
+# Recipe:: firmware
 #
 # Copyright 2015, Chef Software, Inc.
 #

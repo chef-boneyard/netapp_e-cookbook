@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: netapp_e
-# Resource:: firmware_upgrade
+# Resource:: firmware
 #
 # Copyright 2015, Chef Software, Inc.
 #
