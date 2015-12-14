@@ -71,7 +71,7 @@ This resource has the following actions:
 ### Attributes ###
 This resource has the following attributes:
 
-* `storage_system` string. Required, name_attibute. IP address of the storage system.
+* `storage_system` string. Required, name_attribute. IP address of the storage system.
 * `password` string. The SYMbol password for the storage system.
 * `wwn` string. The world wide name for the storage system. This is only needed for in-band management with an in-band agent that is managing more than a single storage system.
 * `meta_tags` array of strings. Optional meta tags to associate to this storage system
@@ -113,7 +113,7 @@ This resource has the following actions:
 ### Attributes ###
 This resource has the following attributes:
 
-* `name` string. Required, name_attibute. The user-label to assign to the new disk storage pool.
+* `name` string. Required, name_attribute. The user-label to assign to the new disk storage pool.
 * `storage_system` IP address string. Required. IP address of the storage system being managed by the proxy.
 * `disk_drive_ids` array of strings. The identifiers of the disk drives to use for creating the storage pool. Required for disk_pool creation.
 * `raid_level` String, Required. The RAID configuration for the new storage pool. = ['raidUnsupported', 'raidAll', 'raid0', 'raid1', 'raid3', 'raid5', 'raid6', 'raidDiskPool', '__UNDEFINED'],
@@ -161,7 +161,7 @@ This resource has the following actions:
 ### Attributes ###
 This resource has the following attributes:
 
-* `name` string. Required, name_attibute. The user-label to assign to the new storage pool.
+* `name` string. Required, name_attribute. The user-label to assign to the new storage pool.
 * `storage_system` IP address string. Required. IP address of the storage system being managed by the proxy.
 * `disk_drive_ids` array of strings. The identifiers of the disk drives to use for creating the storage pool.  Required for disk_pool creation.
 * `raid_level` string. The RAID configuration for the new storage pool. Possible values: 'Unsupported', 'All', '0', '1', '3', '5', '6' or 'DiskPool'. Required for volume_group creation.
@@ -209,7 +209,7 @@ This resource has the following actions:
 ### Attributes ###
 This resource has the following attributes:
 
-* `volume_name` string. Required, name_attibute. The user-label to assign to the new volume.
+* `volume_name` string. Required, name_attribute. The user-label to assign to the new volume.
 * `storage_system` IP address string. Required. IP address of the storage system being managed by the proxy.
 * `pool_id` string. The identifier of the storage pool from which the volume will be allocated. Required for volume creation.
 * `size_unit` string. Unit for "size". Possible values: 'bytes', 'b', 'kb', 'mb', 'gb', 'tb', 'pb, 'eb', 'zb', 'yb' . Required for volume creation.
@@ -261,7 +261,7 @@ This resource has the following actions:
 ### Attributes ###
 This resource has the following attributes:
 
-* `name` string. Required, name_attibute. The user-label to assign to the new thin volume.
+* `name` string. Required, name_attribute. The user-label to assign to the new thin volume.
 * `storage_system` IP address string. Required. IP address of the storage system being managed by the proxy.
 * `pool_id` string. The identifier of the storage pool from which the volume will be allocated. Required for thin volume creation.
 * `size_unit` string. Unit for "size". Possible values: 'bytes', 'b', 'kb', 'mb', 'gb', 'tb', 'pb, 'eb', 'zb', 'yb' . Required for thin volume creation.
@@ -322,7 +322,7 @@ This resource has the following actions:
 ### Attributes ###
 This resource has the following attributes:
 
-* `name` string. Required, name_attibute. The user-label to assign to the new group snapshot.
+* `name` string. Required, name_attribute. The user-label to assign to the new group snapshot.
 * `storage_system` IP address string. Required. IP address of the storage system being managed by the proxy.
 * `base_mappable_object_id` string. The identifier of the volume, thin volume, or PIT View for the new snapshot group. Required for group snapshot creation.
 * `repository_percentage` integer. The size of the repository in relation to the size of the base volume. Required for group snapshot creation.
@@ -380,7 +380,7 @@ This resource has the following actions:
 ### Attributes ###
 This resource has the following attributes:
 
-* `name` string. Required, name_attibute. The name of the new snapshot volume.
+* `name` string. Required, name_attribute. The name of the new snapshot volume.
 * `storage_system` IP address string. Required. IP address of the storage system being managed by the proxy.
 * `snapshot_image_id` string. The identifier of the snapshot image used to create the new snapshot volume. Required for volume snapshot creation.
 * `full_threshold` Integer. The repository utilization warning threshold percentage. Required for volume snapshot creation.
@@ -435,7 +435,7 @@ This resource has the following actions:
 ### Attributes ###
 This resource has the following attributes:
 
-* `name` string. Required, name_attibute. The user-label to assign to the new host.
+* `name` string. Required, name_attribute. The user-label to assign to the new host.
 * `storage_system` IP address string. Required. IP address of the storage system being managed by the proxy.
 * `group_id` string. Host group id.
 * `ports` array. A list of host ports.
@@ -496,7 +496,7 @@ This resource has the following actions:
 ### Attributes ###
 This resource has the following attributes:
 
-* `name` string. Required, name_attibute. The user-label to assign to the new host group.
+* `name` string. Required, name_attribute. The user-label to assign to the new host group.
 * `storage_system` IP address string. Required. IP address of the storage system being managed by the proxy.
 * `hosts` string. List of hostRefs to assign to the HostGroup.
 
@@ -535,7 +535,7 @@ This resource has the following actions:
 ### Attributes ###
 This resource has the following attributes:
 
-* `storage_system` IP address string, name attribute. Required. IP address of the storage system being managed by the proxy.
+* `storage_system` IP address string, Required, name attribute. IP address of the storage system being managed by the proxy.
 * `iscsi_alias` string. Required. The iSCSI target alias.
 * `enable_chap_authentication` boolean. Enable Challenge-Handshake Authentication Protocol (CHAP), defaults to false.
 * `chap_secret` string. Enable Challenge-Handshake Authentication Protocol (CHAP) using the provided password. A secure password will be generated and returned if CHAP is enabled and this field is not provided.
@@ -574,7 +574,7 @@ This resource has the following actions:
 ### Attributes ###
 This resource has the following attributes:
 
-* `storage_system` IP address string, name attribute. Required. IP address of the storage system being managed by the proxy.
+* `storage_system` IP address string, Required, name attribute. IP address of the storage system being managed by the proxy.
 * `current_admin_password` string. Required. The current admin password
 * `admin_password` boolean. Required. If this is true, this call will set the admin password, if false, it sets the RO password
 * `new_password` string. Required. The new password
@@ -607,7 +607,7 @@ This resource has the following actions:
 This resource has the following attributes:
 
 * `name` string. Required, name_attribute. The user-label to assign to the new consistency group.
-* `storage_system` IP address string. Required IP address of the storage system being managed by the proxy.
+* `storage_system` IP address string. Required. IP address of the storage system being managed by the proxy.
 
 ### Example ###
 Set default attributes in attributes/default.rb
@@ -651,7 +651,7 @@ This resource has the following actions:
 This resource has the following attributes:
 
 * `name` string. Required, name_attribute. The user-label to assign to the new new async mirror group.
-* `storage_system` Required, IP address string. Required IP address of the storage system being managed by the proxy.
+* `storage_system` Required, IP address string. IP address of the storage system being managed by the proxy.
 * `secondary_array_id` Required, Id string. The id of the secondary array.
 * `sync_interval_minutes` integer. Sync interval in (minutes).
 * `manual_sync` boolean. Set the synchronization method to manual, causing other synchronization values to be ignored.
@@ -703,7 +703,7 @@ This resource has the following actions:
 ### Attributes ###
 This resource has the following attributes:
 
-* `storage_system` IP address string, Required, name attribute. Required. IP address of the storage system being managed by the proxy.
+* `storage_system` IP address string, Required, name attribute. IP address of the storage system being managed by the proxy.
 * `source_id` ID string. Required, The identifier of the source volume for the copy job.
 * `target_id` ID string. Required, The identifier of the target volume for the copy job.
 * `vc_id` Volume copy ID string, Required for deletion of volume copy.
@@ -758,7 +758,7 @@ This resource has the following actions:
 ### Attributes ###
 This resource has the following attributes:
 
-* `storage_system` IP address string, Required, name attribute. Required. IP address of the storage system being managed by the proxy.
+* `storage_system` IP address string, Required, name attribute. IP address of the storage system being managed by the proxy.
 * `drive_refs` ID string. Required, A list of one or more drive refs belonging to SSD drives that will be utilized in the Flash/SSD Cache,
 * `name` string, The user label for the Flash/SSD Cache.
 * `enable_existing_volumes` If true, all existing volumes that are mapped will have FLASH/SSD cache enabled.
@@ -783,14 +783,14 @@ end
 
 ```ruby
 netapp_e_ssd_cache node['netapp']['storage_system_ip'] do
-  action :delete
+  drive_refs node['netapp']['ssd_cache']['drive_refs']
+  action :update
 end
 ```
 
 ```ruby
 netapp_e_ssd_cache node['netapp']['storage_system_ip'] do
-  drive_refs node['netapp']['ssd_cache']['drive_refs']
-  action :update
+  action :suspend
 end
 ```
 
@@ -802,15 +802,14 @@ end
 
 ```ruby
 netapp_e_ssd_cache node['netapp']['storage_system_ip'] do
-  action :suspend
+  action :delete
 end
 ```
-
 
 netapp_e_firmware
 -----------
 
-Initiate a Cotnroller Firmware upgrade opeation
+Initiate a Controller Firmware upgrade option
 
 ### Actions ###
 This resource has the following actions:
@@ -821,7 +820,7 @@ This resource has the following actions:
 ### Attributes ###
 This resource has the following attributes:
 
-* `storage_system` IP address string, Required, name attribute. Required. IP address of the storage system being managed by the proxy.
+* `storage_system` IP address string, Required, name attribute. IP address of the storage system being managed by the proxy.
 * 'cfw_file' string
 * 'nvsram_file' string
 * 'stage_firmware' false
@@ -854,7 +853,7 @@ end
 netapp_e_network_configuration
 -----------
 
-Update the ethernet management connection configuration. This operation can lead to an inaccessible controller if performed incorrectly or if incorrect ip addresses, gateway addresses, etc, are provided. Configuration is performed by connecting to the alternate controller, so it must be accessible for the operation to succeed.
+Update the ethernet management connection configuration. This operation can lead to an inaccessible controller if performed incorrectly or if incorrect ip addresses, gateway addresses, etc. are provided. Configuration is performed by connecting to the alternate controller, so it must be accessible for the operation to succeed.
 
 ### Actions ###
 This resource has the following actions:
@@ -905,7 +904,7 @@ License and Authors
 - Authors:: Matt Ray (matt@getchef.com)
 
 ```text
-Copyright 2014 Chef Software, Inc.
+Copyright 2015 Chef Software, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
