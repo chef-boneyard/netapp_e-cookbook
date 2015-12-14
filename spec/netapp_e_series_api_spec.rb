@@ -1039,4 +1039,20 @@ describe 'netapp_e_series_api' do
       expect(@netapp_api.delete_consistency_group('10.0.0.1', 'demo_consistency_group')).to eq(false)
     end
   end
+
+  context 'network_configuration' do
+    it 'is updated' do
+      response = double
+      request_body = "{\"controllerRef\":\"07001233434353535325555\"}"
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
+      expect(@netapp_api).to receive(:request).with(:post, '/devmgr/v2/storage-systems/12345/configuration/ethernet-interfaces', request_body).and_return(response)
+      expect(@netapp_api).to receive(:status).with(response, 200, [200], 'Failed to update Network Parameters')
+      @netapp_api.update_network_configuration('10.0.0.1', controllerRef: '07001233434353535325555')
+    end
+
+    it 'return false when storage system does not exist while update' do
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return(nil)
+      expect(@netapp_api.update_network_configuration('10.0.0.1', 'controllerRef' => '07001233434353535325555')).to eq(false)
+    end
+  end
 end

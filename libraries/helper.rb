@@ -1,9 +1,9 @@
 module NetAppEHelper
   def url
     if node['netapp']['https']
-      "https://#{node['netapp']['fqdn']}:#{node['netapp']['port'].nil? ? 8443 :  node['netapp']['port']}"
+      "https://#{node['netapp']['fqdn']}:#{node['netapp']['port'].nil? ? 8443 : node['netapp']['port']}"
     else
-      "http://#{node['netapp']['fqdn']}:#{node['netapp']['port'].nil? ? 8080 :  node['netapp']['port']}"
+      "http://#{node['netapp']['fqdn']}:#{node['netapp']['port'].nil? ? 8080 : node['netapp']['port']}"
     end
   end
 

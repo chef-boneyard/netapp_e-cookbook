@@ -132,3 +132,13 @@ default['netapp']['disk_pool']['name'] = 'demo_disk_pool'
 default['netapp']['disk_pool']['raid_level'] = 'raidDiskPool'
 # Minimum 11 drive id's need to be provided when using raidLevel value raidDiskPool
 default['netapp']['disk_pool']['disk_drive_ids'] = %w(010000005000C5004B993D9B0000000000000000 010000005000CCA016B152540000000000000000 010000005000CCA016B19B600000000000000000 010000005000CCA016B2BCB00000000000000000 010000005000CCA016B2F5FC0000000000000000 010000005000CCA016B3B0980000000000000000 010000005000CCA0225C24B80000000000000000 010000005000CCA0225CD88C0000000000000000 010000005000CCA0225F50100000000000000000 010000005000CCA02260F2EC0000000000000000 010000005000CCA02260F3080000000000000000)
+
+# Manage Controller Network configuration
+default['netapp']['network_configuration']['controller_ref'] = '07001233434353535325555'
+default['netapp']['network_configuration']['interface_ref'] = '28000700312312435434534452000000000000'
+
+# Provide the values for the parameters whose values needs to be updated and keep the rest of the variable values empty
+# Variables where value have been already assigned are the default values used when making the REST call.
+# Variables enableRemoteAccess,ipv4Enabled, ipv6Enabled can have value as false/true
+# Varables ipv4AddressConfigMethod and ipv6AddressConfigMethod can have value configStatic/configDhcp
+default['netapp']['network_configuration']['update_parameters'] = { 'enableRemoteAccess' => false, 'ipv4GatewayAddress' => '', 'ipv6GatewayAddress' => '', 'ipv4Address' => '', 'ipv6LocalAddress' => '', 'ipv4Enabled' => false, 'ipv4AddressConfigMethod' => 'configDhcp', 'ipv6Enabled' => false, 'ipv6AddressConfigMethod' => 'configStatic' }
