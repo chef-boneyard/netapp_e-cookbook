@@ -17,19 +17,19 @@
 # limitations under the License.
 #
 
-netapp_e_snapshot_volume 'demo_snapshot_volume' do
-  storage_system '10.250.117.112'
-  snapshot_image_id '3400000060080E5000322230006303BB543F6228'
-  full_threshold 0
-  view_mode 'readWrite'
-  repository_percentage 10_000_000_000
-  repository_pool_id '0400000060080E50003222300000025853F33C1A'
+netapp_e_snapshot_volume node['netapp']['snapshot_volume']['name'] do
+  storage_system node['netapp']['storage_system_ip']
+  snapshot_image_id node['netapp']['snapshot_volume']['snapshot_image_id']
+  full_threshold node['netapp']['snapshot_volume']['full_threshold']
+  view_mode node['netapp']['snapshot_volume']['view_mode']
+  repository_percentage node['netapp']['snapshot_volume']['repository_percentage']
+  repository_pool_id node['netapp']['snapshot_volume']['repository_pool_id']
 
   action :create
 end
 
-netapp_e_snapshot_volume 'demo_snapshot_volume' do
-  storage_system '10.250.117.112'
+netapp_e_snapshot_volume node['netapp']['snapshot_volume']['name'] do
+  storage_system node['netapp']['storage_system_ip']
 
   action :delete
 end

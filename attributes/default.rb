@@ -105,3 +105,11 @@ default['netapp']['snapshot_group']['warning_threshold'] = 80
 default['netapp']['snapshot_group']['auto_delete_limit'] = 30
 default['netapp']['snapshot_group']['full_policy'] = 'unknown'
 default['netapp']['snapshot_group']['storage_pool_id'] = '0400000060080E50003220A80000006F52D8010D'
+
+# Snapshot Volume
+default['netapp']['snapshot_volume']['name'] = 'demo_snapshot_volume'
+default['netapp']['snapshot_volume']['snapshot_image_id'] = '3400000060080E5000322230006303BB543F6228'
+default['netapp']['snapshot_volume']['full_threshold'] = 0
+default['netapp']['snapshot_volume']['view_mode'] = 'readWrite'
+default['netapp']['snapshot_volume']['repository_percentage'] = 10_000_000_000
+default['netapp']['snapshot_volume']['repository_pool_id'] = '0400000060080E50003222300000025853F33C1A'
