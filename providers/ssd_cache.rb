@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: netapp_e
-# Provider:: host
+# Provider:: ssd_cache
 #
 # Copyright 2015, Chef Software, Inc.
 #
