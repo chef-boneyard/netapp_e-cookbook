@@ -151,7 +151,7 @@ class NetApp
         return false if update_status.nil?
 
         response = request(:post, '/devmgr/v2/upgrade/download')
-        status(response, 200, [200], 'Failed to Download the latest version')
+        status(response, 200, [200], 'Failed to download the latest version')
         response = request(:post, '/devmgr/v2/upgrade/reload')
         status(response, 200, [200], 'Failed to install latest version')
       end
