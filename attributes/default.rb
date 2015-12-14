@@ -142,3 +142,8 @@ default['netapp']['network_configuration']['interface_ref'] = '28000700312312435
 # Variables enableRemoteAccess,ipv4Enabled, ipv6Enabled can have value as false/true
 # Varables ipv4AddressConfigMethod and ipv6AddressConfigMethod can have value configStatic/configDhcp
 default['netapp']['network_configuration']['update_parameters'] = { 'enableRemoteAccess' => false, 'ipv4GatewayAddress' => '', 'ipv6GatewayAddress' => '', 'ipv4Address' => '', 'ipv6LocalAddress' => '', 'ipv4Enabled' => false, 'ipv4AddressConfigMethod' => 'configDhcp', 'ipv6Enabled' => false, 'ipv6AddressConfigMethod' => 'configStatic' }
+
+# Updating Password for Storage System
+default['netapp']['storage_system']['current_admin_password'] = 'rw'
+default['netapp']['storage_system']['admin_password'] = true
+default['netapp']['storage_system']['new_password'] = 'rw'
