@@ -240,7 +240,7 @@ class NetApp
         return false unless mirror_group_id.nil?
 
         response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/async-mirrors", request_body.to_json)
-        status(response, 201, [201], 'Failed to create mirror group')
+        status(response, 200, [200], 'Failed to create mirror group')
       end
 
       # Call Mirroring API to remove mirror group
@@ -252,7 +252,7 @@ class NetApp
         return false if mirror_group_id.nil?
 
         response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/async-mirrors/#{mirror_group_id}")
-        status(response, 200, [200], 'Failed to delete mirror group')
+        status(response, 204, [204], 'Failed to delete mirror group')
       end
 
       # Call iscsi API /devmgr/v2/{storage-system-id}//iscsi/target-settings to update iscsi settings.

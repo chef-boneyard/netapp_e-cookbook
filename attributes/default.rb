@@ -33,6 +33,12 @@ default['netapp']['storage_system']['password'] = 'Netapp123' # optional paramet
 # mirror group
 default['netapp']['mirror_group']['name'] = 'mirror_group'
 default['netapp']['mirror_group']['secondary_array_id'] = 'e9f486b8-8634-4f58-9563-c57561633376'
+# optional parameter for Mirror Group
+# default['netapp']['mirror_group']['sync_interval_minutes'] = 10
+# default['netapp']['mirror_group']['manual_sync'] = false
+# default['netapp']['mirror_group']['recovery_warn_threshold_minutes'] = 20
+# default['netapp']['mirror_group']['repo_utilization_warn_threshold'] = 80
+# default['netapp']['mirror_group']['syncWarn_threshold_minutes'] = 10
 
 # Attributes for volume copy
 default['netapp']['volume_copy']['vc_id'] = '1800000060080E50001F6D3800000BAB565CF495'  # required for delete operation
