@@ -126,7 +126,6 @@ describe 'netapp_e_series_api' do
 
     it 'return false if the storage system does not exist (delete)' do
       expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return(nil)
-
       expect(@netapp_api.delete_storage_system('10.0.0.1')).to eq(false)
     end
   end
@@ -252,7 +251,7 @@ describe 'netapp_e_series_api' do
     end
   end
 
-  context 'storage_pool:' do
+  context 'storage_pool' do
     it 'is created' do
       response = double
       request_body = "{\"name\":\"demo_storage_pool\"}"
@@ -260,14 +259,13 @@ describe 'netapp_e_series_api' do
       expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
       expect(@netapp_api).to receive(:storage_pool_id).with('12345', 'demo_storage_pool').and_return(nil)
       expect(@netapp_api).to receive(:request).with(:post, '/devmgr/v2/storage-systems/12345/storage-pools', request_body).and_return(response)
-      expect(@netapp_api).to receive(:status).with(response, 201, [201], 'Failed to create storage pool')
+      expect(@netapp_api).to receive(:status).with(response, 200, [200], 'Failed to create storage pool')
 
       @netapp_api.create_storage_pool('10.0.0.1', name: 'demo_storage_pool')
     end
 
     it 'return false when storage system does not exist (create)' do
       expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return(nil)
-
       expect(@netapp_api.create_storage_pool('10.0.0.1', name: 'demo_storage_pool')).to eq(false)
     end
 
@@ -284,7 +282,7 @@ describe 'netapp_e_series_api' do
       expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
       expect(@netapp_api).to receive(:storage_pool_id).with('12345', 'demo_storage_pool').and_return('111111')
       expect(@netapp_api).to receive(:request).with(:delete, '/devmgr/v2/storage-systems/12345/storage-pools/111111').and_return(response)
-      expect(@netapp_api).to receive(:status).with(response, 200, [200], 'Failed to delete storage pool')
+      expect(@netapp_api).to receive(:status).with(response, 204, [204], 'Failed to delete storage pool')
 
       @netapp_api.delete_storage_pool('10.0.0.1', 'demo_storage_pool')
     end
@@ -311,7 +309,7 @@ describe 'netapp_e_series_api' do
       expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
       expect(@netapp_api).to receive(:volume_id).with('12345', 'demo_volume').and_return(nil)
       expect(@netapp_api).to receive(:request).with(:post, '/devmgr/v2/storage-systems/12345/volumes', request_body).and_return(response)
-      expect(@netapp_api).to receive(:status).with(response, 201, [201], 'Failed to create volume')
+      expect(@netapp_api).to receive(:status).with(response, 200, [200], 'Failed to create volume')
 
       @netapp_api.create_volume('10.0.0.1', name: 'demo_volume')
     end
@@ -335,7 +333,7 @@ describe 'netapp_e_series_api' do
       expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
       expect(@netapp_api).to receive(:volume_id).with('12345', 'demo_volume').and_return('111111')
       expect(@netapp_api).to receive(:request).with(:delete, '/devmgr/v2/storage-systems/12345/volumes/111111').and_return(response)
-      expect(@netapp_api).to receive(:status).with(response, 200, [200], 'Failed to delete volume')
+      expect(@netapp_api).to receive(:status).with(response, 204, [204], 'Failed to delete volume')
 
       @netapp_api.delete_volume('10.0.0.1', 'demo_volume')
     end

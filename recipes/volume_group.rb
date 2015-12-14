@@ -17,16 +17,16 @@
 # limitations under the License.
 #
 
-netapp_e_volume_group 'my_vol_group' do
-  storage_system '10.250.117.112'
-  raid_level '0'
-  disk_drive_ids ['010000005000CCA016B3C9340000000000000000']
-
+netapp_e_volume_group node['netapp']['volume_group']['name'] do
+  storage_system node['netapp']['storage_system_ip']
+  raid_level node['netapp']['volume_group']['raid_level']
+  disk_drive_ids node['netapp']['volume_group']['disk_drive_id']
+  erase_secured_drives node['netapp']['volume_group']['erase_secured_drives']
   action :create
 end
 
-netapp_e_volume_group 'my_vol_group' do
-  storage_system '10.250.117.112'
+netapp_e_volume_group node['netapp']['volume_group']['name'] do
+  storage_system node['netapp']['storage_system_ip']
 
   action :delete
 end
