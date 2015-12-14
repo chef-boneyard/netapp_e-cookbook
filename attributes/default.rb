@@ -96,3 +96,12 @@ default['netapp']['thin_volume']['size_unit'] = 'bytes'
 default['netapp']['thin_volume']['virtual_size'] = 4
 default['netapp']['thin_volume']['repository_size'] = 4
 default['netapp']['thin_volume']['max_repository_size'] = 128
+
+# Snapshot Group
+default['netapp']['snapshot_group']['name'] = 'demo_snapshot_group'
+default['netapp']['snapshot_group']['base_mappable_object_id'] = '0200000060080E50001F69B40000151856611C78'
+default['netapp']['snapshot_group']['repository_percentage'] = 20
+default['netapp']['snapshot_group']['warning_threshold'] = 80
+default['netapp']['snapshot_group']['auto_delete_limit'] = 30
+default['netapp']['snapshot_group']['full_policy'] = 'unknown'
+default['netapp']['snapshot_group']['storage_pool_id'] = '0400000060080E50003220A80000006F52D8010D'
