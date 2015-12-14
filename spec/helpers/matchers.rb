@@ -130,4 +130,8 @@ if defined?(ChefSpec)
   def suspend_netapp_e_ssd_cache(resource_name)
     ChefSpec::Matchers::ResourceMatcher.new(:netapp_e_ssd_cache, :suspend, resource_name)
   end
+
+  def upgrade_netapp_e_firmware(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new(:netapp_e_firmware, :upgrade, resource_name)
+  end
 end
