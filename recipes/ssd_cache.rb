@@ -25,12 +25,12 @@ netapp_e_ssd_cache node['netapp']['storage_system_ip'] do
 end
 
 netapp_e_ssd_cache node['netapp']['storage_system_ip'] do
-  action :delete
+  drive_refs node['netapp']['ssd_cache']['drive_refs']
+  action :update
 end
 
 netapp_e_ssd_cache node['netapp']['storage_system_ip'] do
-  drive_refs node['netapp']['ssd_cache']['drive_refs']
-  action :update
+  action :suspend
 end
 
 netapp_e_ssd_cache node['netapp']['storage_system_ip'] do
@@ -38,5 +38,5 @@ netapp_e_ssd_cache node['netapp']['storage_system_ip'] do
 end
 
 netapp_e_ssd_cache node['netapp']['storage_system_ip'] do
-  action :suspend
+  action :delete
 end
