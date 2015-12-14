@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: netapp_e
-# Resource:: volume_group
+# Resource:: volume_copy
 #
 # Copyright 2015, Chef Software, Inc.
 #
