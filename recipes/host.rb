@@ -16,20 +16,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
-netapp_e_host 'demo_host' do
-  storage_system '10.250.117.112'
-  host_default false
-  code 'demo_code'
-  host_used true
-  index 0
-  host_type_name 'dc'
+netapp_e_host node['netapp']['host']['name'] do
+  storage_system node['netapp']['storage_system_ip']
+  host_default node['netapp']['host']['host_default']
+  code node['netapp']['host']['code']
+  host_used node['netapp']['host']['host_used']
+  index node['netapp']['host']['index']
+  host_type_name node['netapp']['host']['host_type_name']
+  ports node['netapp']['host']['ports']
+  group_id node['netapp']['host']['groupid']
 
   action :create
 end
 
-netapp_e_host 'demo_host' do
-  storage_system '10.250.117.112'
+netapp_e_host node['netapp']['host']['name'] do
+  storage_system node['netapp']['storage_system_ip']
 
   action :delete
 end

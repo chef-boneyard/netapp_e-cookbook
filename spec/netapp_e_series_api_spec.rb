@@ -181,7 +181,7 @@ describe 'netapp_e_series_api' do
       expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
       expect(@netapp_api).to receive(:host_id).with('12345', 'demo_host').and_return('111111')
       expect(@netapp_api).to receive(:request).with(:delete, '/devmgr/v2/storage-systems/12345/hosts/111111').and_return(response)
-      expect(@netapp_api).to receive(:status).with(response, 200, [200], 'Failed to delete host')
+      expect(@netapp_api).to receive(:status).with(response, 204, [204], 'Failed to delete host')
 
       @netapp_api.delete_host('10.0.0.1', 'demo_host')
     end

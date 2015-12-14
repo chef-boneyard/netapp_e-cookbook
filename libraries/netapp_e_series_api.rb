@@ -74,7 +74,7 @@ class NetApp
         return false if host.nil?
 
         response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/hosts/#{host}")
-        status(response, 200, [200], 'Failed to delete host')
+        status(response, 204, [204], 'Failed to delete host')
       end
 
       # Call host-group API /devmgr/v2/{storage-system-id}/host-groups to add a host-group
