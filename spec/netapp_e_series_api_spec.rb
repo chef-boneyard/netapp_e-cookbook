@@ -901,7 +901,7 @@ describe 'netapp_e_series_api' do
 
     it 'return false when storage system does not exist while create' do
       expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return(nil)
-      expect(@netapp_api.create_volume_copy('10.0.0.1',  sourceId: '111', targetId: '555')).to eq(false)
+      expect(@netapp_api.create_volume_copy('10.0.0.1', sourceId: '111', targetId: '555')).to eq(false)
     end
 
     it 'is deleted' do

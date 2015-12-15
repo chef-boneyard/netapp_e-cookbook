@@ -20,7 +20,7 @@
 include NetAppEHelper
 
 action :create do
-  request_body = { controllerAddresses: Array.new << new_resource.name, password: new_resource.password, wwn: new_resource.wwn, metaTags: new_resource.meta_tags }
+  request_body = { controllerAddresses: [] << new_resource.name, password: new_resource.password, wwn: new_resource.wwn, metaTags: new_resource.meta_tags }
 
   netapp_api = netapp_api_create
 
