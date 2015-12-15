@@ -23,7 +23,7 @@ action :create do
   # Validations
   fail ArgumentError, 'Attribute disk_drive_ids is required for volume group creation' if new_resource.disk_drive_ids.empty?
 
-  request_body = { raidLevel: 'raidDiskPool', diskDriveIds: new_resource.disk_drive_ids, name: new_resource.name }
+  request_body = { raidLevel: new_resource.raid_level, diskDriveIds: new_resource.disk_drive_ids, name: new_resource.name }
 
   netapp_api = netapp_api_create
 
@@ -35,7 +35,6 @@ action :create do
 end
 
 action :delete do
-
   netapp_api = netapp_api_create
 
   netapp_api.login unless node['netapp']['basic_auth']

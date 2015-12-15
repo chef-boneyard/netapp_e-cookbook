@@ -17,9 +17,9 @@
 # limitations under the License.
 #
 
-netapp_e_iscsi '10.250.117.112' do
-  iscsi_alias 'demo_alias'
-  enable_chap_authentication false
+netapp_e_iscsi node['netapp']['storage_system_ip'] do
+  iscsi_alias node['netapp']['iscsi']['alias_name']
+  enable_chap_authentication node['netapp']['iscsi']['enable_chap_authentication']
 
   action :update
 end

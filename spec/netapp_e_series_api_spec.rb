@@ -2,7 +2,12 @@ require_relative '../libraries/netapp_e_series_api'
 
 describe 'netapp_e_series_api' do
   before do
-    @netapp_api = NetApp::ESeries::Api.new('rw', 'rw', '127.0.0.1', true, true)
+    params = {  user: 'rw', password: 'rw',
+                url: '127.0.0.1', basic_auth: true,
+                asup: true
+              }
+
+    @netapp_api = NetApp::ESeries::Api.new(params)
   end
 
   context 'login:' do
@@ -77,7 +82,12 @@ describe 'netapp_e_series_api' do
     end
 
     it 'when basic authentication is set to false' do
-      @netapp_api_no_basic_auth = NetApp::ESeries::Api.new('rw', 'rw', '127.0.0.1', false, true)
+      params = {  user: 'rw', password: 'rw',
+                  url: '127.0.0.1', basic_auth: false,
+                  asup: true
+                }
+
+      @netapp_api_no_basic_auth = NetApp::ESeries::Api.new(params)
       headers = { 'Accept' => 'application/json', 'Content-Type' => 'application/json', 'cookie' => @cookie }
 
       expect(Excon).to receive(:get).with('127.0.0.1', path: '/devmgr/v2/storage-systems', headers: headers, body: "{\"ip\":\"10.0.0.1\"}", connect_timeout: nil)
@@ -109,14 +119,13 @@ describe 'netapp_e_series_api' do
 
       expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
       expect(@netapp_api).to receive(:request).with(:delete, '/devmgr/v2/storage-systems/12345').and_return(response)
-      expect(@netapp_api).to receive(:status).with(response, 200, [200], 'Storage Deletion Failed')
+      expect(@netapp_api).to receive(:status).with(response, 204, [204], 'Storage Deletion Failed')
 
       @netapp_api.delete_storage_system('10.0.0.1')
     end
 
     it 'return false if the storage system does not exist (delete)' do
       expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return(nil)
-
       expect(@netapp_api.delete_storage_system('10.0.0.1')).to eq(false)
     end
   end
@@ -172,7 +181,7 @@ describe 'netapp_e_series_api' do
       expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
       expect(@netapp_api).to receive(:host_id).with('12345', 'demo_host').and_return('111111')
       expect(@netapp_api).to receive(:request).with(:delete, '/devmgr/v2/storage-systems/12345/hosts/111111').and_return(response)
-      expect(@netapp_api).to receive(:status).with(response, 200, [200], 'Failed to delete host')
+      expect(@netapp_api).to receive(:status).with(response, 204, [204], 'Failed to delete host')
 
       @netapp_api.delete_host('10.0.0.1', 'demo_host')
     end
@@ -223,7 +232,7 @@ describe 'netapp_e_series_api' do
       expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
       expect(@netapp_api).to receive(:host_group_id).with('12345', 'demo_host_group').and_return('111111')
       expect(@netapp_api).to receive(:request).with(:delete, '/devmgr/v2/storage-systems/12345/host-groups/111111').and_return(response)
-      expect(@netapp_api).to receive(:status).with(response, 200, [200], 'Failed to delete host group')
+      expect(@netapp_api).to receive(:status).with(response, 204, [204], 'Failed to delete host group')
 
       @netapp_api.delete_host_group('10.0.0.1', 'demo_host_group')
     end
@@ -242,7 +251,7 @@ describe 'netapp_e_series_api' do
     end
   end
 
-  context 'storage_pool:' do
+  context 'storage_pool' do
     it 'is created' do
       response = double
       request_body = "{\"name\":\"demo_storage_pool\"}"
@@ -250,14 +259,13 @@ describe 'netapp_e_series_api' do
       expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
       expect(@netapp_api).to receive(:storage_pool_id).with('12345', 'demo_storage_pool').and_return(nil)
       expect(@netapp_api).to receive(:request).with(:post, '/devmgr/v2/storage-systems/12345/storage-pools', request_body).and_return(response)
-      expect(@netapp_api).to receive(:status).with(response, 201, [201], 'Failed to create storage pool')
+      expect(@netapp_api).to receive(:status).with(response, 200, [200], 'Failed to create storage pool')
 
       @netapp_api.create_storage_pool('10.0.0.1', name: 'demo_storage_pool')
     end
 
     it 'return false when storage system does not exist (create)' do
       expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return(nil)
-
       expect(@netapp_api.create_storage_pool('10.0.0.1', name: 'demo_storage_pool')).to eq(false)
     end
 
@@ -274,7 +282,7 @@ describe 'netapp_e_series_api' do
       expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
       expect(@netapp_api).to receive(:storage_pool_id).with('12345', 'demo_storage_pool').and_return('111111')
       expect(@netapp_api).to receive(:request).with(:delete, '/devmgr/v2/storage-systems/12345/storage-pools/111111').and_return(response)
-      expect(@netapp_api).to receive(:status).with(response, 200, [200], 'Failed to delete storage pool')
+      expect(@netapp_api).to receive(:status).with(response, 204, [204], 'Failed to delete storage pool')
 
       @netapp_api.delete_storage_pool('10.0.0.1', 'demo_storage_pool')
     end
@@ -301,7 +309,7 @@ describe 'netapp_e_series_api' do
       expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
       expect(@netapp_api).to receive(:volume_id).with('12345', 'demo_volume').and_return(nil)
       expect(@netapp_api).to receive(:request).with(:post, '/devmgr/v2/storage-systems/12345/volumes', request_body).and_return(response)
-      expect(@netapp_api).to receive(:status).with(response, 201, [201], 'Failed to create volume')
+      expect(@netapp_api).to receive(:status).with(response, 200, [200], 'Failed to create volume')
 
       @netapp_api.create_volume('10.0.0.1', name: 'demo_volume')
     end
@@ -325,7 +333,7 @@ describe 'netapp_e_series_api' do
       expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
       expect(@netapp_api).to receive(:volume_id).with('12345', 'demo_volume').and_return('111111')
       expect(@netapp_api).to receive(:request).with(:delete, '/devmgr/v2/storage-systems/12345/volumes/111111').and_return(response)
-      expect(@netapp_api).to receive(:status).with(response, 200, [200], 'Failed to delete volume')
+      expect(@netapp_api).to receive(:status).with(response, 204, [204], 'Failed to delete volume')
 
       @netapp_api.delete_volume('10.0.0.1', 'demo_volume')
     end
@@ -377,7 +385,7 @@ describe 'netapp_e_series_api' do
       expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
       expect(@netapp_api).to receive(:group_snapshot_id).with('12345', 'demo_group_snapshot').and_return(nil)
       expect(@netapp_api).to receive(:request).with(:post, '/devmgr/v2/storage-systems/12345/snapshot-groups', request_body).and_return(response)
-      expect(@netapp_api).to receive(:status).with(response, 201, [201], 'Failed to create group snapshot')
+      expect(@netapp_api).to receive(:status).with(response, 200, [200], 'Failed to create group snapshot')
 
       @netapp_api.create_group_snapshot('10.0.0.1', name: 'demo_group_snapshot')
     end
@@ -401,8 +409,7 @@ describe 'netapp_e_series_api' do
       expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
       expect(@netapp_api).to receive(:group_snapshot_id).with('12345', 'demo_group_snapshot').and_return('111111')
       expect(@netapp_api).to receive(:request).with(:delete, '/devmgr/v2/storage-systems/12345/snapshot-groups/111111').and_return(response)
-      expect(@netapp_api).to receive(:status).with(response, 200, [200], 'Failed to delete group snapshot')
-
+      expect(@netapp_api).to receive(:status).with(response, 204, [204], 'Failed to delete group snapshot')
       @netapp_api.delete_group_snapshot('10.0.0.1', 'demo_group_snapshot')
     end
 
@@ -740,13 +747,312 @@ describe 'netapp_e_series_api' do
 
   context 'test_asup_negative' do
     before do
-      @netapp_api = NetApp::ESeries::Api.new('rw', 'rw', '127.0.0.1', true, false)
+      params = {  user: 'rw', password: 'rw',
+                  url: '127.0.0.1', basic_auth: true,
+                  asup: false
+                }
+
+      @netapp_api = NetApp::ESeries::Api.new(params)
     end
 
     it 'does nothing' do
       expect(@netapp_api).not_to receive(:request)
-
       @netapp_api.send_asup
+    end
+  end
+
+  context 'mirror_group' do
+    it 'is created' do
+      response = double
+      request_body = "{\"name\":\"demo_mirror_group\"}"
+
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
+      expect(@netapp_api).to receive(:mirror_group_id).with('12345', 'demo_mirror_group').and_return(nil)
+      expect(@netapp_api).to receive(:request).with(:post, '/devmgr/v2/storage-systems/12345/async-mirrors', request_body).and_return(response)
+      expect(@netapp_api).to receive(:status).with(response, 200, [200], 'Failed to create mirror group')
+      @netapp_api.create_mirror_group('10.0.0.1', name: 'demo_mirror_group')
+    end
+
+    it 'return false when storage system does not exist while create' do
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return(nil)
+      expect(@netapp_api.create_mirror_group('10.0.0.1', name: 'demo_mirror_group')).to eq(false)
+    end
+
+    it 'return false when mirror group exists while create' do
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
+      expect(@netapp_api).to receive(:mirror_group_id).with('12345', 'demo_mirror_group').and_return('111111')
+      expect(@netapp_api.create_mirror_group('10.0.0.1', name: 'demo_mirror_group')).to eq(false)
+    end
+
+    it 'is deleted' do
+      response = double
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
+      expect(@netapp_api).to receive(:mirror_group_id).with('12345', 'demo_mirror_group').and_return('111111')
+      expect(@netapp_api).to receive(:request).with(:delete, '/devmgr/v2/storage-systems/12345/async-mirrors/111111').and_return(response)
+      expect(@netapp_api).to receive(:status).with(response, 204, [204], 'Failed to delete mirror group')
+      @netapp_api.delete_mirror_group('10.0.0.1', 'demo_mirror_group')
+    end
+
+    it 'return false when the Storage system does not exist while delete' do
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return(nil)
+      expect(@netapp_api.delete_mirror_group('10.0.0.1', 'demo_mirror_group')).to eq(false)
+    end
+
+    it 'return false when the mirror group does not exist while delete' do
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
+      expect(@netapp_api).to receive(:mirror_group_id).with('12345', 'demo_mirror_group').and_return(nil)
+      expect(@netapp_api.delete_mirror_group('10.0.0.1', 'demo_mirror_group')).to eq(false)
+    end
+  end
+
+  context 'mirror_group_id' do
+    it 'returns id when group exist' do
+      response = double(body: "[{\"label\":\"demo_mirror_group\",\"id\":\"111111\"}]")
+      expect(@netapp_api).to receive(:request).with(:get, '/devmgr/v2/storage-systems/12345/async-mirrors').and_return(response)
+      expect(@netapp_api.send(:mirror_group_id, '12345', 'demo_mirror_group')).to eq('111111')
+    end
+
+    it 'returns nil when no mirror group exist' do
+      response = double(body: '[]')
+      expect(@netapp_api).to receive(:request).with(:get, '/devmgr/v2/storage-systems/12345/async-mirrors').and_return(response)
+      expect(@netapp_api.send(:mirror_group_id, '12345', 'demo_mirror_group')).to eq(nil)
+    end
+
+    it 'returns nil when the required mirror group does not exist' do
+      response = double(body: "[{\"label\":\"demo_mirror_group_1\",\"id\":\"111111\"}]")
+      expect(@netapp_api).to receive(:request).with(:get, '/devmgr/v2/storage-systems/12345/async-mirrors').and_return(response)
+      expect(@netapp_api.send(:mirror_group_id, '12345', 'demo_mirror_group')).to eq(nil)
+    end
+  end
+
+  context 'consistency_group' do
+    it 'is created' do
+      response = double
+      request_body = "{\"name\":\"demo_consistency_group\"}"
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
+      expect(@netapp_api).to receive(:consistency_group_id).with('12345', 'demo_consistency_group').and_return(nil)
+      expect(@netapp_api).to receive(:request).with(:post, '/devmgr/v2/storage-systems/12345/consistency-groups', request_body).and_return(response)
+      expect(@netapp_api).to receive(:status).with(response, 200, [200], 'Failed to create consistency group')
+      @netapp_api.create_consistency_group('10.0.0.1', name: 'demo_consistency_group')
+    end
+
+    it 'return false when storage system does not exist while create' do
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return(nil)
+      expect(@netapp_api.create_consistency_group('10.0.0.1', name: 'demo_consistency_group')).to eq(false)
+    end
+
+    it 'return false when consistency group exist while create' do
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
+      expect(@netapp_api).to receive(:consistency_group_id).with('12345', 'demo_consistency_group').and_return('111111')
+      expect(@netapp_api.create_consistency_group('10.0.0.1', name: 'demo_consistency_group')).to eq(false)
+    end
+
+    it 'is deleted' do
+      response = double
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
+      expect(@netapp_api).to receive(:consistency_group_id).with('12345', 'demo_consistency_group').and_return('111111')
+      expect(@netapp_api).to receive(:request).with(:delete, '/devmgr/v2/storage-systems/12345/consistency-groups/111111').and_return(response)
+      expect(@netapp_api).to receive(:status).with(response, 204, [204], 'Failed to delete consistency group')
+      @netapp_api.delete_consistency_group('10.0.0.1', 'demo_consistency_group')
+    end
+
+    it 'return false when the Storage system does not exist while delete' do
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return(nil)
+      expect(@netapp_api.delete_consistency_group('10.0.0.1', 'demo_consistency_group')).to eq(false)
+    end
+
+    it 'return false when the consistency group does not exist while delete' do
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
+      expect(@netapp_api).to receive(:consistency_group_id).with('12345', 'demo_consistency_group').and_return(nil)
+      expect(@netapp_api.delete_consistency_group('10.0.0.1', 'demo_consistency_group')).to eq(false)
+    end
+  end
+
+  context 'consistency_group_id' do
+    it 'returns id when consistency group exist' do
+      response = double(body: "[{\"label\":\"demo_consistency_group\",\"id\":\"111111\"}]")
+      expect(@netapp_api).to receive(:request).with(:get, '/devmgr/v2/storage-systems/12345/consistency-groups').and_return(response)
+      expect(@netapp_api.send(:consistency_group_id, '12345', 'demo_consistency_group')).to eq('111111')
+    end
+
+    it 'returns nil when no consistency group exist' do
+      response = double(body: '[]')
+      expect(@netapp_api).to receive(:request).with(:get, '/devmgr/v2/storage-systems/12345/consistency-groups').and_return(response)
+      expect(@netapp_api.send(:consistency_group_id, '12345', 'demo_consistency_group')).to eq(nil)
+    end
+
+    it 'returns nil when the required consistency group does not exist' do
+      response = double(body: "[{\"label\":\"demo_consistency_group_1\",\"id\":\"111111\"}]")
+      expect(@netapp_api).to receive(:request).with(:get, '/devmgr/v2/storage-systems/12345/consistency-groups').and_return(response)
+      expect(@netapp_api.send(:consistency_group_id, '12345', 'demo_consistency_group')).to eq(nil)
+    end
+  end
+
+  context 'volume_copy' do
+    it 'is created' do
+      response = double
+      request_body = "{\"sourceId\":\"111\",\"targetId\":\"555\"}"
+
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
+      expect(@netapp_api).to receive(:request).with(:post, '/devmgr/v2/storage-systems/12345/volume-copy-jobs', request_body).and_return(response)
+      expect(@netapp_api).to receive(:status).with(response, 200, [200], 'Failed to create volume copy pair')
+      @netapp_api.create_volume_copy('10.0.0.1', sourceId: '111', targetId: '555')
+    end
+
+    it 'return false when storage system does not exist while create' do
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return(nil)
+      expect(@netapp_api.create_volume_copy('10.0.0.1', sourceId: '111', targetId: '555')).to eq(false)
+    end
+
+    it 'is deleted' do
+      response = double
+
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
+      expect(@netapp_api).to receive(:volume_pair_id).with('12345', '111111').and_return('111111')
+      expect(@netapp_api).to receive(:request).with(:delete, '/devmgr/v2/storage-systems/12345/volume-copy-jobs/111111').and_return(response)
+      expect(@netapp_api).to receive(:status).with(response, 204, [204], 'Failed to delete volume copy pair')
+      @netapp_api.delete_volume_copy('10.0.0.1', '111111')
+    end
+
+    it 'return false when the Storage system does not exist while delete' do
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return(nil)
+      expect(@netapp_api.delete_volume_copy('10.0.0.1', '111111')).to eq(false)
+    end
+
+    it 'return false when the volume copy does not exist while delete' do
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
+      expect(@netapp_api).to receive(:volume_pair_id).with('12345', '111111').and_return(nil)
+      expect(@netapp_api.delete_volume_copy('10.0.0.1', '111111')).to eq(false)
+    end
+  end
+
+  context 'volume_pair_id' do
+    it 'returns id when volume pair exist' do
+      response = double(body: "[{\"id\":\"11111\"}]")
+      expect(@netapp_api).to receive(:request).with(:get, '/devmgr/v2/storage-systems/12345/volume-copy-jobs').and_return(response)
+      expect(@netapp_api.send(:volume_pair_id, '12345', '11111')).to eq('11111')
+    end
+
+    it 'returns nil when no volume pair exist' do
+      response = double(body: '[]')
+      expect(@netapp_api).to receive(:request).with(:get, '/devmgr/v2/storage-systems/12345/volume-copy-jobs').and_return(response)
+      expect(@netapp_api.send(:volume_pair_id, '12345', '111111')).to eq(nil)
+    end
+
+    it 'returns nil when the required volume pair does not exist' do
+      response = double(body: '[]')
+      expect(@netapp_api).to receive(:request).with(:get, '/devmgr/v2/storage-systems/12345/volume-copy-jobs').and_return(response)
+      expect(@netapp_api.send(:volume_pair_id, '12345', '111111')).to eq(nil)
+    end
+  end
+
+  context 'ssd_cache' do
+    it 'is created' do
+      response = double
+      request_body = "{\"driveRefs\":[\"111111\"]}"
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
+      expect(@netapp_api).to receive(:request).with(:post, '/devmgr/v2/storage-systems/12345/flash-cache', request_body).and_return(response)
+      expect(@netapp_api).to receive(:status).with(response, 200, [200], 'Failed to create ssd/flash cache')
+      @netapp_api.create_ssd_cache('10.0.0.1', driveRefs: ['111111'])
+    end
+
+    it 'return false when storage system does not exist while create' do
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return(nil)
+      expect(@netapp_api.create_ssd_cache('10.0.0.1', driveRefs: ['111111'])).to eq(false)
+    end
+
+    it 'is deleted' do
+      response = double
+
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
+      expect(@netapp_api).to receive(:request).with(:delete, '/devmgr/v2/storage-systems/12345/flash-cache').and_return(response)
+      expect(@netapp_api).to receive(:status).with(response, 200, [200], 'Failed to delete ssd/flash cache')
+
+      @netapp_api.delete_ssd_cache('10.0.0.1')
+    end
+
+    it 'return false when storage system does not exist while delete' do
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return(nil)
+      expect(@netapp_api.delete_ssd_cache('10.0.0.1')).to eq(false)
+    end
+
+    it 'add drives to ssd/flash cache' do
+      response = double
+
+      request_body = "{\"driveRefs\":[\"111111\"]}"
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
+      expect(@netapp_api).to receive(:request).with(:post, '/devmgr/v2/storage-systems/12345/flash-cache/addDrives', request_body).and_return(response)
+      expect(@netapp_api).to receive(:status).with(response, 200, [200], 'Failed to add drives in ssd/flash cache')
+      @netapp_api.update_ssd_cache('10.0.0.1', driveRefs: ['111111'])
+    end
+
+    it 'return false when storage system does not exist while update' do
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return(nil)
+      expect(@netapp_api.update_ssd_cache('10.0.0.1', driveRefs: ['111111'])).to eq(false)
+    end
+
+    it 'is resumed' do
+      response = double
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
+      expect(@netapp_api).to receive(:request).with(:post, '/devmgr/v2/storage-systems/12345/flash-cache/resume').and_return(response)
+      expect(@netapp_api).to receive(:status).with(response, 200, [200], 'Failed to resume ssd/flash cache')
+      @netapp_api.resume_ssd_cache('10.0.0.1')
+    end
+
+    it 'return false when storage system does not exist while resume' do
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return(nil)
+      expect(@netapp_api.resume_ssd_cache('10.0.0.1')).to eq(false)
+    end
+
+    it 'is suspended' do
+      response = double
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
+      expect(@netapp_api).to receive(:request).with(:post, '/devmgr/v2/storage-systems/12345/flash-cache/suspend').and_return(response)
+      expect(@netapp_api).to receive(:status).with(response, 200, [200], 'Failed to suspend ssd/flash cache')
+      @netapp_api.suspend_ssd_cache('10.0.0.1')
+    end
+
+    it 'return false when storage system does not exist while suspend' do
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return(nil)
+      expect(@netapp_api.suspend_ssd_cache('10.0.0.1')).to eq(false)
+    end
+  end
+
+  context 'firmware' do
+    it 'is upgraded' do
+      response = double
+      request_body = "{\"cfw_file\":\"test_file_name\"}"
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
+      expect(@netapp_api).to receive(:request).with(:post, '/devmgr/v2/storage-systems/12345/cfw-upgrade', request_body).and_return(response)
+      expect(@netapp_api).to receive(:status).with(response, 202, [202], 'Failed to upgrade firmware')
+      @netapp_api.upgrade_firmware('10.0.0.1', cfw_file: 'test_file_name')
+    end
+
+    it 'return false when the Storage system does not exist while delete' do
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return(nil)
+      expect(@netapp_api.delete_consistency_group('10.0.0.1', 'demo_consistency_group')).to eq(false)
+    end
+
+    it 'return false when the consistency group does not exist while delete' do
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
+      expect(@netapp_api).to receive(:consistency_group_id).with('12345', 'demo_consistency_group').and_return(nil)
+      expect(@netapp_api.delete_consistency_group('10.0.0.1', 'demo_consistency_group')).to eq(false)
+    end
+  end
+
+  context 'network_configuration' do
+    it 'is updated' do
+      response = double
+      request_body = "{\"controllerRef\":\"07001233434353535325555\"}"
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
+      expect(@netapp_api).to receive(:request).with(:post, '/devmgr/v2/storage-systems/12345/configuration/ethernet-interfaces', request_body).and_return(response)
+      expect(@netapp_api).to receive(:status).with(response, 200, [200], 'Failed to update Network Parameters')
+      @netapp_api.update_network_configuration('10.0.0.1', controllerRef: '07001233434353535325555')
+    end
+
+    it 'return false when storage system does not exist while update' do
+      expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return(nil)
+      expect(@netapp_api.update_network_configuration('10.0.0.1', 'controllerRef' => '07001233434353535325555')).to eq(false)
     end
   end
 end

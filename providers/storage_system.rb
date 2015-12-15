@@ -20,7 +20,7 @@
 include NetAppEHelper
 
 action :create do
-  request_body = { controllerAddresses: Array.new << new_resource.name, password: new_resource.password, wwn: new_resource.wwn, metaTags: new_resource.meta_tags }
+  request_body = { controllerAddresses: [] << new_resource.name, password: new_resource.password, wwn: new_resource.wwn, metaTags: new_resource.meta_tags }
 
   netapp_api = netapp_api_create
 
@@ -28,7 +28,7 @@ action :create do
   resource_update_status = netapp_api.create_storage_system(request_body)
   netapp_api.logout unless node['netapp']['basic_auth']
 
-  netapp_api.send_asup()
+  netapp_api.send_asup
 
   new_resource.updated_by_last_action(true) if resource_update_status
 end

@@ -26,7 +26,7 @@ action :create do
   fail ArgumentError, 'Attribute size is required for volume creation' unless new_resource.size
   fail ArgumentError, 'Attribute segment_size is required for volume creation' unless new_resource.segment_size
 
-  request_body = { poolId: new_resource.pool_id, name: new_resource.name, sizeUnit: new_resource.size_unit, size: new_resource.size, segSize: new_resource.segment_size }
+  request_body = { poolId: new_resource.pool_id, name: new_resource.name, sizeUnit: new_resource.size_unit, size: new_resource.size, segSize: new_resource.segment_size, dataAssuranceEnabled: new_resource.data_assurance_enabled }
 
   netapp_api = netapp_api_create
 

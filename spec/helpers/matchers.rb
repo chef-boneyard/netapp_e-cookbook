@@ -94,4 +94,56 @@ if defined?(ChefSpec)
   def delete_netapp_e_volume_group(resource_name)
     ChefSpec::Matchers::ResourceMatcher.new(:netapp_e_volume_group, :delete, resource_name)
   end
+
+  def create_netapp_e_mirror_group(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new(:netapp_e_mirror_group, :create, resource_name)
+  end
+
+  def delete_netapp_e_mirror_group(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new(:netapp_e_mirror_group, :delete, resource_name)
+  end
+
+  def create_netapp_e_volume_copy(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new(:netapp_e_volume_copy, :create, resource_name)
+  end
+
+  def delete_netapp_e_volume_copy(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new(:netapp_e_volume_copy, :delete, resource_name)
+  end
+
+  def create_netapp_e_ssd_cache(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new(:netapp_e_ssd_cache, :create, resource_name)
+  end
+
+  def delete_netapp_e_ssd_cache(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new(:netapp_e_ssd_cache, :delete, resource_name)
+  end
+
+  def update_netapp_e_ssd_cache(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new(:netapp_e_ssd_cache, :update, resource_name)
+  end
+
+  def resume_netapp_e_ssd_cache(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new(:netapp_e_ssd_cache, :resume, resource_name)
+  end
+
+  def suspend_netapp_e_ssd_cache(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new(:netapp_e_ssd_cache, :suspend, resource_name)
+  end
+
+  def upgrade_netapp_e_firmware(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new(:netapp_e_firmware, :upgrade, resource_name)
+  end
+
+  def create_netapp_e_consistency_group(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new(:netapp_e_consistency_group, :create, resource_name)
+  end
+
+  def delete_netapp_e_consistency_group(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new(:netapp_e_consistency_group, :delete, resource_name)
+  end
+
+  def update_netapp_e_network_configuration(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new(:netapp_e_network_configuration, :update, resource_name)
+  end
 end

@@ -17,20 +17,20 @@
 # limitations under the License.
 #
 
-netapp_e_snapshot_group 'demo_snapshot_group' do
-  storage_system '10.250.117.112'
-  base_mappable_object_id '0200000060080E500032223000000388543E09C1'
-  repository_percentage 10_000_000_000
-  warning_threshold 0
-  auto_delete_limit 32
-  full_policy 'failbasewrites'
-  storage_pool_id '0400000060080E50003220A80000006F52D8010D'
+netapp_e_snapshot_group node['netapp']['snapshot_group']['name'] do
+  storage_system node['netapp']['storage_system_ip']
+  base_mappable_object_id node['netapp']['snapshot_group']['base_mappable_object_id']
+  repository_percentage node['netapp']['snapshot_group']['repository_percentage']
+  warning_threshold node['netapp']['snapshot_group']['warning_threshold']
+  auto_delete_limit node['netapp']['snapshot_group']['auto_delete_limit']
+  full_policy node['netapp']['snapshot_group']['full_policy']
+  storage_pool_id node['netapp']['snapshot_group']['storage_pool_id']
 
   action :create
 end
 
-netapp_e_snapshot_group 'demo_snapshot_group' do
-  storage_system '10.250.117.112'
+netapp_e_snapshot_group node['netapp']['snapshot_group']['name'] do
+  storage_system node['netapp']['storage_system_ip']
 
   action :delete
 end

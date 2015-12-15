@@ -4,13 +4,14 @@ require 'excon'
 class NetApp
   class ESeries
     class Api
-      def initialize(user, password, url, basic_auth, asup, connect_timeout = nil)
-        @user = user
-        @password = password
-        @url = url
-        @basic_auth = basic_auth
-        @asup = asup
-        @connect_timeout = connect_timeout
+      # user, password, url, basic_auth, asup, connect_timeout = nil
+      def initialize(options = {})
+        @user = options[:user]
+        @password = options[:password]
+        @url = options[:url]
+        @basic_auth = options[:basic_auth]
+        @asup = options[:asup]
+        @connect_timeout = options[:connect_timeout]
       end
 
       def login
@@ -40,7 +41,7 @@ class NetApp
         return false if sys_id.nil?
 
         response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}")
-        status(response, 200, [200], 'Storage Deletion Failed')
+        status(response, 204, [204], 'Storage Deletion Failed')
       end
 
       # Call storage system API /devmgr/v2/{storage-system-id}/passwords to change the password of the storage system
@@ -73,7 +74,31 @@ class NetApp
         return false if host.nil?
 
         response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/hosts/#{host}")
-        status(response, 200, [200], 'Failed to delete host')
+        status(response, 204, [204], 'Failed to delete host')
+      end
+
+      # Call Consistency Group API /devmgr/v2/storage-systems/{storage-system-id}/consistency-groups to create consistency group
+      def create_consistency_group(storage_system_ip, request_body)
+        sys_id = storage_system_id(storage_system_ip)
+        return false if sys_id.nil?
+
+        consistency_grp_id = consistency_group_id(sys_id, request_body[:name])
+        return false unless consistency_grp_id.nil?
+
+        response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/consistency-groups", request_body.to_json)
+        status(response, 200, [200], 'Failed to create consistency group')
+      end
+
+      # Call consistency-group API /devmgr/v2/{storage-system-id}/consistency-groups/{consistency-group-id} to remove the consistency-group
+      def delete_consistency_group(storage_system_ip, name)
+        sys_id = storage_system_id(storage_system_ip)
+        return false if sys_id.nil?
+
+        consistency_grp_id = consistency_group_id(sys_id, name)
+        return false if consistency_grp_id.nil?
+
+        response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/consistency-groups/#{consistency_grp_id}")
+        status(response, 204, [204], 'Failed to delete consistency group')
       end
 
       # Call host-group API /devmgr/v2/{storage-system-id}/host-groups to add a host-group
@@ -97,7 +122,38 @@ class NetApp
         return false if host_grp_id.nil?
 
         response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/host-groups/#{host_grp_id}")
-        status(response, 200, [200], 'Failed to delete host group')
+        status(response, 204, [204], 'Failed to delete host group')
+      end
+
+      # Call volume copy pair API /devmgr/v2/storage-systems/systemId/volume-copy-jobs to create a new volume pair
+      def create_volume_copy(storage_system_ip, request_body)
+        sys_id = storage_system_id(storage_system_ip)
+        return false if sys_id.nil?
+
+        response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/volume-copy-jobs", request_body.to_json)
+        status(response, 200, [200], 'Failed to create volume copy pair')
+      end
+
+      # Call volume copy pair API to delete a volume pair
+      def delete_volume_copy(storage_system_ip, vc_id)
+        sys_id = storage_system_id(storage_system_ip)
+        return false if sys_id.nil?
+
+        volume_pair_id = volume_pair_id(sys_id, vc_id)
+        return false if volume_pair_id.nil?
+        response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/volume-copy-jobs/#{volume_pair_id}")
+        status(response, 204, [204], 'Failed to delete volume copy pair')
+      end
+
+      # Update Web Proxy Service
+      def web_proxy_update
+        update_status = check_update
+        return false if update_status.nil?
+
+        response = request(:post, '/devmgr/v2/upgrade/download')
+        status(response, 200, [200], 'Failed to download the latest version')
+        response = request(:post, '/devmgr/v2/upgrade/reload')
+        status(response, 200, [200], 'Failed to install latest version')
       end
 
       # Call storage-pool API /devmgr/v2/{storage-system-id}/storage-pools to create a volume group or a disk pool.
@@ -110,7 +166,7 @@ class NetApp
         return false unless pool_id.nil?
 
         response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/storage-pools", request_body.to_json)
-        status(response, 201, [201], 'Failed to create storage pool')
+        status(response, 200, [200], 'Failed to create storage pool')
       end
 
       # Call storage-pool API /devmgr/v2/{storage-system-id}/storage-pools/{storage-pool-id} to delete a volume group or a disk pool.
@@ -122,7 +178,16 @@ class NetApp
         return false if pool_id.nil?
 
         response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/storage-pools/#{pool_id}")
-        status(response, 200, [200], 'Failed to delete storage pool')
+        status(response, 204, [204], 'Failed to delete storage pool')
+      end
+
+      # Call network API /devmgr/v2/storage-systems/#{storage_sys_id}/configuration/ethernet-interfaces to update Network Configurations.
+      def update_network_configuration(storage_system_ip, request_body)
+        sys_id = storage_system_id(storage_system_ip)
+        return false if sys_id.nil?
+
+        response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/configuration/ethernet-interfaces", request_body.to_json)
+        status(response, 200, [200], 'Failed to update Network Parameters')
       end
 
       # Call volume API /devmgr/v2/{storage-system-id}/volumes to create a new volume.
@@ -134,7 +199,7 @@ class NetApp
         return false unless vol_id.nil?
 
         response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/volumes", request_body.to_json)
-        status(response, 201, [201], 'Failed to create volume')
+        status(response, 200, [200], 'Failed to create volume')
       end
 
       # Call volume API /devmgr/v2/{storage-system-id}/volumes/{volume-id} to update volume attributes.
@@ -159,7 +224,7 @@ class NetApp
         return false if vol_id.nil?
 
         response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/volumes/#{vol_id}")
-        status(response, 200, [200], 'Failed to delete volume')
+        status(response, 204, [204], 'Failed to delete volume')
       end
 
       # Call group snapshot API /devmgr/v2/{storage-system-id}/group-snapshots/ create a group snapshot.
@@ -171,7 +236,7 @@ class NetApp
         return false unless snapshot_id.nil?
 
         response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/snapshot-groups", request_body.to_json)
-        status(response, 201, [201], 'Failed to create group snapshot')
+        status(response, 200, [200], 'Failed to create group snapshot')
       end
 
       # Call group snapshot API /devmgr/v2/{storage-system-id}/group-snapshots/{group-snapshot-id} delete a group snapshot.
@@ -183,7 +248,7 @@ class NetApp
         return false if snapshot_id.nil?
 
         response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/snapshot-groups/#{snapshot_id}")
-        status(response, 200, [200], 'Failed to delete group snapshot')
+        status(response, 204, [204], 'Failed to delete group snapshot')
       end
 
       # Call volume snapshot API /devmgr/v2/{storage-system-id}/volume-snapshots create a volume snapshot.
@@ -208,6 +273,30 @@ class NetApp
 
         response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/snapshot-volumes/#{snapshot_id}")
         status(response, 200, [200], 'Failed to delete volume snapshot')
+      end
+
+      # Call Mirroring API /devmgr/v2/storage-systems/systemId/Async-mirrors to add a new mirror group
+      def create_mirror_group(storage_system_ip, request_body)
+        sys_id = storage_system_id(storage_system_ip)
+        return false if sys_id.nil?
+
+        mirror_group_id = mirror_group_id(sys_id, request_body[:name])
+        return false unless mirror_group_id.nil?
+
+        response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/async-mirrors", request_body.to_json)
+        status(response, 200, [200], 'Failed to create mirror group')
+      end
+
+      # Call Mirroring API to remove mirror group
+      def delete_mirror_group(storage_system_ip, name)
+        sys_id = storage_system_id(storage_system_ip)
+        return false if sys_id.nil?
+
+        mirror_group_id = mirror_group_id(sys_id, name)
+        return false if mirror_group_id.nil?
+
+        response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/async-mirrors/#{mirror_group_id}")
+        status(response, 204, [204], 'Failed to delete mirror group')
       end
 
       # Call iscsi API /devmgr/v2/{storage-system-id}//iscsi/target-settings to update iscsi settings.
@@ -251,15 +340,61 @@ class NetApp
 
       # Send ASUP key/value pair for tracking
       def send_asup
-        if @asup
-          client_info = {
-              'application'  => 'Chef',
-              'chef-version' => Chef::VERSION,
-              'url'          => @url
-          }.to_json
+        client_info = { 'application'  => 'Chef',
+                        'chef-version' => Chef::VERSION,
+                        'url'          => @url
+                      }.to_json if @asup
 
-          post_key_value('Chef', client_info)
-        end
+        post_key_value('Chef', client_info) if @asup
+      end
+
+      def create_ssd_cache(storage_system_ip, request_body)
+        sys_id = storage_system_id(storage_system_ip)
+        return false if sys_id.nil?
+
+        response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/flash-cache", request_body.to_json)
+        status(response, 200, [200], 'Failed to create ssd/flash cache')
+      end
+
+      def delete_ssd_cache(storage_system_ip)
+        sys_id = storage_system_id(storage_system_ip)
+        return false if sys_id.nil?
+
+        response = request(:delete, "/devmgr/v2/storage-systems/#{sys_id}/flash-cache")
+        status(response, 200, [200], 'Failed to delete ssd/flash cache')
+      end
+
+      def update_ssd_cache(storage_system_ip, request_body)
+        sys_id = storage_system_id(storage_system_ip)
+        return false if sys_id.nil?
+
+        response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/flash-cache/addDrives", request_body.to_json)
+        status(response, 200, [200], 'Failed to add drives in ssd/flash cache')
+      end
+
+      def resume_ssd_cache(storage_system_ip)
+        sys_id = storage_system_id(storage_system_ip)
+        return false if sys_id.nil?
+
+        response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/flash-cache/resume")
+        status(response, 200, [200], 'Failed to resume ssd/flash cache')
+      end
+
+      def suspend_ssd_cache(storage_system_ip)
+        sys_id = storage_system_id(storage_system_ip)
+        return false if sys_id.nil?
+
+        response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/flash-cache/suspend")
+        status(response, 200, [200], 'Failed to suspend ssd/flash cache')
+      end
+
+      # upgrade firware version
+      def upgrade_firmware(storage_system_ip, request_body)
+        sys_id = storage_system_id(storage_system_ip)
+        return false if sys_id.nil?
+
+        response = request(:post, "/devmgr/v2/storage-systems/#{sys_id}/cfw-upgrade", request_body.to_json)
+        status(response, 202, [202], 'Failed to upgrade firmware')
       end
 
       private
@@ -284,12 +419,35 @@ class NetApp
         nil
       end
 
+      # Check if Web Proxy update is needed or the current version is the latest
+      def check_update
+        response = request(:get, '/devmgr/v2/upgrade')
+        version_details = JSON.parse(response.body)
+        installed_version = version_details['currentVersions'][0]['version']
+        if !version_details['stagedVersions']
+          update_version = version_details['stagedVersions'][0]['version']
+        else
+          update_version = installed_version
+        end
+        return true if installed_version != update_version
+      end
+
       # Get the host-group-id using storage-system-ip and host-group name
       def host_group_id(storage_sys_id, name)
         response = request(:get, "/devmgr/v2/storage-systems/#{storage_sys_id}/host-groups")
         host_groups = JSON.parse(response.body)
         host_groups.each do |host_group|
           return host_group['id'] if host_group['label'] == name
+        end
+        nil
+      end
+
+      # Get the consistency-group-id using storage-system-ip and consistency-group name
+      def consistency_group_id(storage_sys_id, name)
+        response = request(:get, "/devmgr/v2/storage-systems/#{storage_sys_id}/consistency-groups")
+        consistency_groups = JSON.parse(response.body)
+        consistency_groups.each do |consistency_group|
+          return consistency_group['id'] if consistency_group['label'] == name
         end
         nil
       end
@@ -344,6 +502,26 @@ class NetApp
         nil
       end
 
+      # Get the mirror id using storage-system-ip and async-mirrors
+      def mirror_group_id(storage_sys_id, name)
+        response = request(:get, "/devmgr/v2/storage-systems/#{storage_sys_id}/async-mirrors")
+        mirrors = JSON.parse(response.body)
+        mirrors.each do |mirror|
+          return mirror['id'] if mirror['label'] == name
+        end
+        nil
+      end
+
+      # Get the volume copy pair id using storage-system-ip and volume-pair name
+      def volume_pair_id(storage_sys_id, vc_id)
+        response = request(:get, "/devmgr/v2/storage-systems/#{storage_sys_id}/volume-copy-jobs")
+        volume_pairs = JSON.parse(response.body)
+        volume_pairs.each do |volume_pair|
+          return volume_pair['id'] if volume_pair['id'] == vc_id
+        end
+        nil
+      end
+
       # Determine the status of the resource:
       # True - Resource was updated
       # False - Resource exists in the desired state.
@@ -362,7 +540,7 @@ class NetApp
             break
           end
         end
-        request_fail ? (fail "#{failure_message}.\n\n#{response.body}") : resource_update_status
+        request_fail ? (fail "Status #{response.status} #{failure_message}.\n\n#{response.body}") : resource_update_status
       end
 
       # Make a call to the web proxy

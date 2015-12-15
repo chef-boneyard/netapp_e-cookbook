@@ -1,9 +1,9 @@
 module NetAppEHelper
   def url
     if node['netapp']['https']
-      "https://#{node['netapp']['fqdn']}:#{node['netapp']['port'].nil? ? 8443 :  node['netapp']['port']}"
+      "https://#{node['netapp']['fqdn']}:#{node['netapp']['port'].nil? ? 8443 : node['netapp']['port']}"
     else
-      "http://#{node['netapp']['fqdn']}:#{node['netapp']['port'].nil? ? 8080 :  node['netapp']['port']}"
+      "http://#{node['netapp']['fqdn']}:#{node['netapp']['port'].nil? ? 8080 : node['netapp']['port']}"
     end
   end
 
@@ -23,11 +23,12 @@ module NetAppEHelper
     # Validate the mandatory parameters and create a netapp api object
     validate_node_attributes
 
-    if node['netapp']['api']
-      if node['netapp']['api']['timeout']
-        return NetApp::ESeries::Api.new(node['netapp']['user'], node['netapp']['password'], url, node['netapp']['basic_auth'], node['netapp']['asup'], node['netapp']['api']['timeout']) if node['netapp']['api']['timeout']
-      end
-    end
-    NetApp::ESeries::Api.new(node['netapp']['user'], node['netapp']['password'], url, node['netapp']['basic_auth'], node['netapp']['asup'])
+    params = { user: node['netapp']['user'], password: node['netapp']['password'],
+               url: url, basic_auth: node['netapp']['basic_auth'],
+               asup: node['netapp']['asup']
+              }
+
+    params.merge! timeout: node['netapp']['api']['timeout'] if node['netapp']['api'] && node['netapp']['api']['timeout']
+    NetApp::ESeries::Api.new(params)
   end
 end

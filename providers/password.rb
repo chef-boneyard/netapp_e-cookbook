@@ -20,7 +20,6 @@
 include NetAppEHelper
 
 action :update do
-
   request_body = { currentAdminPassword: new_resource.current_admin_password, adminPassword: new_resource.admin_password, newPassword: new_resource.new_password }
 
   netapp_api = netapp_api_create
