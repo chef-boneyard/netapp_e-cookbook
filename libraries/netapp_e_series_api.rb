@@ -1,5 +1,4 @@
 require 'json'
-require 'excon'
 
 class NetApp
   class ESeries
@@ -545,6 +544,7 @@ class NetApp
 
       # Make a call to the web proxy
       def request(method, path, body = nil)
+        require 'excon'
         if @basic_auth
           Excon.send(method, @url, path: path, headers: web_proxy_headers, body: body, connect_timeout: @connect_timeout, user: @user, password: @password)
         else
