@@ -17,4 +17,6 @@
 # limitations under the License.
 #
 
-chef_gem 'excon'
+chef_gem 'excon' do
+  compile_time true
+end

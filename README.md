@@ -18,7 +18,7 @@ Use `auto_upgrade` recipe to upgrade your NetApp SANtricity Web Service Proxy
 
 NetApp E-Series connection
 -----------------
-In order to use the Resources provided by the cookbook you need in include the `default` recipe in your runlist. The connection is made over HTTPS through the SANtricity Web Services Proxy and the connection settings are managed by attributes.
+In order to use the Resources provided by the cookbook you need to include the `default` recipe in your run-list. The connection is made over HTTPS through the SANtricity Web Services Proxy and the connection settings are managed by attributes.
 
     ['netapp']['https'] boolean
     ['netapp']['user'] string

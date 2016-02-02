@@ -544,7 +544,11 @@ class NetApp
 
       # Make a call to the web proxy
       def request(method, path, body = nil)
-        require 'excon'
+        begin
+          require 'excon'
+        rescue LoadError
+          raise "The 'excon' gem is not available. Ensure the netapp_e::default recipe is at the beginning of your run-list before attempting to use netapp_e cookbook resources."
+        end
         if @basic_auth
           Excon.send(method, @url, path: path, headers: web_proxy_headers, body: body, connect_timeout: @connect_timeout, user: @user, password: @password)
         else
