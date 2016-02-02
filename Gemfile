@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 group :lint do
-  gem 'foodcritic', '6.0.0'
+  gem 'foodcritic', '4.0.0'
   gem 'rubocop', '0.35.1'
 end
 
