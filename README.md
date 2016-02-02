@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/mattray/netapp_e-cookbook.png)](https://travis-ci.org/mattray/netapp_e-cookbook)
+
 NetApp E-Series Cookbook
 ========================
 
