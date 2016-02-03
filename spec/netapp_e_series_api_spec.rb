@@ -1,4 +1,5 @@
 require_relative '../libraries/netapp_e_series_api'
+require 'excon'
 
 describe 'netapp_e_series_api' do
   before do
