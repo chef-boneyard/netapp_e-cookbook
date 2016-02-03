@@ -17,7 +17,7 @@ describe 'netapp e series cookbook helper method' do
 
   context 'netapp_api_create:' do
     it 'when timeout is set' do
-      @netapp_e_helper.node['netapp'] = { 'user' => 'rw', 'password' => 'rw', 'basic_auth' =>  true, 'api' => { 'timeout' => 100 }, 'asup' => true }
+      @netapp_e_helper.node['netapp'] = { 'user' => 'rw', 'password' => 'rw', 'basic_auth' => true, 'api' => { 'timeout' => 100 }, 'asup' => true }
 
       params = {  user: 'rw', password: 'rw',
                   url: 'http://10.0.0.1:8080', basic_auth: true,
@@ -31,7 +31,7 @@ describe 'netapp e series cookbook helper method' do
     end
 
     it 'when timeout is not set' do
-      @netapp_e_helper.node['netapp'] = { 'user' => 'rw', 'password' => 'rw', 'basic_auth' =>  true, 'asup' => true }
+      @netapp_e_helper.node['netapp'] = { 'user' => 'rw', 'password' => 'rw', 'basic_auth' => true, 'asup' => true }
       params = {  user: 'rw', password: 'rw',
                   url: 'http://10.0.0.1:8080', basic_auth: true,
                   asup: true
@@ -46,25 +46,25 @@ describe 'netapp e series cookbook helper method' do
 
   context 'url:' do
     it 'when https and port is set' do
-      @netapp_e_helper.node['netapp'] = { 'https' => true, 'fqdn' =>  '10.0.0.1', 'port' => '9000' }
+      @netapp_e_helper.node['netapp'] = { 'https' => true, 'fqdn' => '10.0.0.1', 'port' => '9000' }
 
       expect(@netapp_e_helper.url).to eq('https://10.0.0.1:9000')
     end
 
     it 'when https and port is set' do
-      @netapp_e_helper.node['netapp'] = { 'https' => true, 'fqdn' =>  '10.0.0.1' }
+      @netapp_e_helper.node['netapp'] = { 'https' => true, 'fqdn' => '10.0.0.1' }
 
       expect(@netapp_e_helper.url).to eq('https://10.0.0.1:8443')
     end
 
     it 'when http and port is set' do
-      @netapp_e_helper.node['netapp'] = { 'https' => false, 'fqdn' =>  '10.0.0.1', 'port' => '9000' }
+      @netapp_e_helper.node['netapp'] = { 'https' => false, 'fqdn' => '10.0.0.1', 'port' => '9000' }
 
       expect(@netapp_e_helper.url).to eq('http://10.0.0.1:9000')
     end
 
     it 'when http and port is set' do
-      @netapp_e_helper.node['netapp'] = { 'https' => false, 'fqdn' =>  '10.0.0.1' }
+      @netapp_e_helper.node['netapp'] = { 'https' => false, 'fqdn' => '10.0.0.1' }
 
       expect(@netapp_e_helper.url).to eq('http://10.0.0.1:8080')
     end

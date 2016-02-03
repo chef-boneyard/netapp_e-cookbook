@@ -342,7 +342,7 @@ class NetApp
         client_info = { 'application'  => 'Chef',
                         'chef-version' => Chef::VERSION,
                         'url'          => @url
-                      }.to_json if @asup
+        }.to_json if @asup
 
         post_key_value('Chef', client_info) if @asup
       end
@@ -423,11 +423,11 @@ class NetApp
         response = request(:get, '/devmgr/v2/upgrade')
         version_details = JSON.parse(response.body)
         installed_version = version_details['currentVersions'][0]['version']
-        if !version_details['stagedVersions']
-          update_version = version_details['stagedVersions'][0]['version']
-        else
-          update_version = installed_version
-        end
+        update_version = if !version_details['stagedVersions']
+                           version_details['stagedVersions'][0]['version']
+                         else
+                           installed_version
+                         end
         return true if installed_version != update_version
       end
 
