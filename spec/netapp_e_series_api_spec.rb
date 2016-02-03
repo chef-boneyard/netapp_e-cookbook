@@ -76,9 +76,9 @@ describe 'netapp_e_series_api' do
     it 'when basic authentication is set to true' do
       headers = { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }
 
-      expect(Excon).to receive(:get).with('127.0.0.1', path: '/devmgr/v2/storage-systems', headers: headers, body: "{\"ip\":\"10.0.0.1\"}", connect_timeout: nil, user: 'rw', password: 'rw')
+      expect(Excon).to receive(:get).with('127.0.0.1', path: '/devmgr/v2/storage-systems', headers: headers, body: '{"ip":"10.0.0.1"}', connect_timeout: nil, user: 'rw', password: 'rw')
 
-      @netapp_api.send(:request, :get, '/devmgr/v2/storage-systems', "{\"ip\":\"10.0.0.1\"}")
+      @netapp_api.send(:request, :get, '/devmgr/v2/storage-systems', '{"ip":"10.0.0.1"}')
     end
 
     it 'when basic authentication is set to false' do
@@ -90,16 +90,16 @@ describe 'netapp_e_series_api' do
       @netapp_api_no_basic_auth = NetApp::ESeries::Api.new(params)
       headers = { 'Accept' => 'application/json', 'Content-Type' => 'application/json', 'cookie' => @cookie }
 
-      expect(Excon).to receive(:get).with('127.0.0.1', path: '/devmgr/v2/storage-systems', headers: headers, body: "{\"ip\":\"10.0.0.1\"}", connect_timeout: nil)
+      expect(Excon).to receive(:get).with('127.0.0.1', path: '/devmgr/v2/storage-systems', headers: headers, body: '{"ip":"10.0.0.1"}', connect_timeout: nil)
 
-      @netapp_api_no_basic_auth.send(:request, :get, '/devmgr/v2/storage-systems', "{\"ip\":\"10.0.0.1\"}")
+      @netapp_api_no_basic_auth.send(:request, :get, '/devmgr/v2/storage-systems', '{"ip":"10.0.0.1"}')
     end
   end
 
   context 'storage_system:' do
     it 'is created' do
       response = double
-      request_body = "{\"controllerAddresses\":[\"10.0.0.1\"]}"
+      request_body = '{"controllerAddresses":["10.0.0.1"]}'
 
       expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return(nil)
       expect(@netapp_api).to receive(:request).with(:post, '/devmgr/v2/storage-systems', request_body).and_return(response)
@@ -133,7 +133,7 @@ describe 'netapp_e_series_api' do
   context 'change password:' do
     it 'when storage exists ' do
       response = double
-      request_body = "{\"newPassword\":\"Netapp123\"}"
+      request_body = '{"newPassword":"Netapp123"}'
 
       expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
       expect(@netapp_api).to receive(:request).with(:post, '/devmgr/v2/storage-systems/12345/passwords', request_body).and_return(response)
@@ -152,7 +152,7 @@ describe 'netapp_e_series_api' do
   context 'host:' do
     it 'is created' do
       response = double
-      request_body = "{\"name\":\"demo_host\"}"
+      request_body = '{"name":"demo_host"}'
 
       expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
       expect(@netapp_api).to receive(:host_id).with('12345', 'demo_host').and_return(nil)
@@ -203,7 +203,7 @@ describe 'netapp_e_series_api' do
   context 'host_group:' do
     it 'is created' do
       response = double
-      request_body = "{\"name\":\"demo_host_group\"}"
+      request_body = '{"name":"demo_host_group"}'
 
       expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
       expect(@netapp_api).to receive(:host_group_id).with('12345', 'demo_host_group').and_return(nil)
@@ -254,7 +254,7 @@ describe 'netapp_e_series_api' do
   context 'storage_pool' do
     it 'is created' do
       response = double
-      request_body = "{\"name\":\"demo_storage_pool\"}"
+      request_body = '{"name":"demo_storage_pool"}'
 
       expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
       expect(@netapp_api).to receive(:storage_pool_id).with('12345', 'demo_storage_pool').and_return(nil)
@@ -304,7 +304,7 @@ describe 'netapp_e_series_api' do
   context 'volume:' do
     it 'is created' do
       response = double
-      request_body = "{\"name\":\"demo_volume\"}"
+      request_body = '{"name":"demo_volume"}'
 
       expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
       expect(@netapp_api).to receive(:volume_id).with('12345', 'demo_volume').and_return(nil)
@@ -353,7 +353,7 @@ describe 'netapp_e_series_api' do
 
     it 'is updated' do
       response = double
-      request_body = "{\"name\":\"demo_vol\"}"
+      request_body = '{"name":"demo_vol"}'
 
       expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
       expect(@netapp_api).to receive(:volume_id).with('12345', 'demo_volume').and_return('111111')
@@ -380,7 +380,7 @@ describe 'netapp_e_series_api' do
   context 'group_snapshot:' do
     it 'is created' do
       response = double
-      request_body = "{\"name\":\"demo_group_snapshot\"}"
+      request_body = '{"name":"demo_group_snapshot"}'
 
       expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
       expect(@netapp_api).to receive(:group_snapshot_id).with('12345', 'demo_group_snapshot').and_return(nil)
@@ -430,7 +430,7 @@ describe 'netapp_e_series_api' do
   context 'volume_snapshot:' do
     it 'is created' do
       response = double
-      request_body = "{\"name\":\"demo_volume_snapshot\"}"
+      request_body = '{"name":"demo_volume_snapshot"}'
 
       expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
       expect(@netapp_api).to receive(:volume_snapshot_id).with('12345', 'demo_volume_snapshot').and_return(nil)
@@ -481,7 +481,7 @@ describe 'netapp_e_series_api' do
   context 'thin_volume:' do
     it 'is created' do
       response = double
-      request_body = "{\"name\":\"demo_thin_volume\"}"
+      request_body = '{"name":"demo_thin_volume"}'
 
       expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
       expect(@netapp_api).to receive(:thin_volume_id).with('12345', 'demo_thin_volume').and_return(nil)
@@ -532,7 +532,7 @@ describe 'netapp_e_series_api' do
   context 'iscsi:' do
     it 'is updated' do
       response = double
-      request_body = "{\"alias\":\"iscsi_new\"}"
+      request_body = '{"alias":"iscsi_new"}'
 
       expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
       expect(@netapp_api).to receive(:request).with(:post, '/devmgr/v2/storage-systems/12345/iscsi/target-settings', request_body).and_return(response)
@@ -550,7 +550,7 @@ describe 'netapp_e_series_api' do
 
   context 'storage_system_id:' do
     it 'returns id when storage system exists' do
-      response = double(body: "[{\"ip1\":\"10.0.0.1\",\"ip2\":\"10.0.0.2\",\"id\":\"111111\"}]")
+      response = double(body: '[{"ip1":"10.0.0.1","ip2":"10.0.0.2","id":"111111"}]')
 
       expect(@netapp_api).to receive(:request).with(:get, '/devmgr/v2/storage-systems').and_return(response)
       expect(@netapp_api.send(:storage_system_id, '10.0.0.1')).to eq('111111')
@@ -564,7 +564,7 @@ describe 'netapp_e_series_api' do
     end
 
     it 'returns nil when required storage system does not exist' do
-      response = double(body: "[{\"ip1\":\"10.10.10.1\",\"ip2\":\"10.10.10.2\",\"id\":\"111111\"}]")
+      response = double(body: '[{"ip1":"10.10.10.1","ip2":"10.10.10.2","id":"111111"}]')
 
       expect(@netapp_api).to receive(:request).with(:get, '/devmgr/v2/storage-systems').and_return(response)
       expect(@netapp_api.send(:storage_system_id, '10.0.0.1')).to eq(nil)
@@ -573,7 +573,7 @@ describe 'netapp_e_series_api' do
 
   context 'host_id:' do
     it 'returns id when host exits' do
-      response = double(body: "[{\"label\":\"demo_host\",\"id\":\"111111\"}]")
+      response = double(body: '[{"label":"demo_host","id":"111111"}]')
 
       expect(@netapp_api).to receive(:request).with(:get, '/devmgr/v2/storage-systems/12345/hosts').and_return(response)
       expect(@netapp_api.send(:host_id, '12345', 'demo_host')).to eq('111111')
@@ -587,7 +587,7 @@ describe 'netapp_e_series_api' do
     end
 
     it 'returns nil when the required host does not exist' do
-      response = double(body: "[{\"label\":\"demo_host_1\",\"id\":\"111111\"}]")
+      response = double(body: '[{"label":"demo_host_1","id":"111111"}]')
 
       expect(@netapp_api).to receive(:request).with(:get, '/devmgr/v2/storage-systems/12345/hosts').and_return(response)
       expect(@netapp_api.send(:host_id, '12345', 'demo_host')).to eq(nil)
@@ -596,7 +596,7 @@ describe 'netapp_e_series_api' do
 
   context 'host_group_id:' do
     it 'returns id when host exits' do
-      response = double(body: "[{\"label\":\"demo_host_group\",\"id\":\"111111\"}]")
+      response = double(body: '[{"label":"demo_host_group","id":"111111"}]')
 
       expect(@netapp_api).to receive(:request).with(:get, '/devmgr/v2/storage-systems/12345/host-groups').and_return(response)
       expect(@netapp_api.send(:host_group_id, '12345', 'demo_host_group')).to eq('111111')
@@ -610,7 +610,7 @@ describe 'netapp_e_series_api' do
     end
 
     it 'returns nil when the required host does not exist' do
-      response = double(body: "[{\"label\":\"demo_host_group_1\",\"id\":\"111111\"}]")
+      response = double(body: '[{"label":"demo_host_group_1","id":"111111"}]')
 
       expect(@netapp_api).to receive(:request).with(:get, '/devmgr/v2/storage-systems/12345/host-groups').and_return(response)
       expect(@netapp_api.send(:host_group_id, '12345', 'demo_host_group')).to eq(nil)
@@ -619,7 +619,7 @@ describe 'netapp_e_series_api' do
 
   context 'storage_pool_id:' do
     it 'returns id when host exits' do
-      response = double(body: "[{\"label\":\"demo_pool\",\"id\":\"111111\"}]")
+      response = double(body: '[{"label":"demo_pool","id":"111111"}]')
 
       expect(@netapp_api).to receive(:request).with(:get, '/devmgr/v2/storage-systems/12345/storage-pools').and_return(response)
       expect(@netapp_api.send(:storage_pool_id, '12345', 'demo_pool')).to eq('111111')
@@ -633,7 +633,7 @@ describe 'netapp_e_series_api' do
     end
 
     it 'returns nil when the required host does not exist' do
-      response = double(body: "[{\"label\":\"demo_pool_1\",\"id\":\"111111\"}]")
+      response = double(body: '[{"label":"demo_pool_1","id":"111111"}]')
 
       expect(@netapp_api).to receive(:request).with(:get, '/devmgr/v2/storage-systems/12345/storage-pools').and_return(response)
       expect(@netapp_api.send(:storage_pool_id, '12345', 'demo_pool')).to eq(nil)
@@ -642,7 +642,7 @@ describe 'netapp_e_series_api' do
 
   context 'volume_id:' do
     it 'returns id when host exits' do
-      response = double(body: "[{\"name\":\"demo_volume\",\"id\":\"111111\"}]")
+      response = double(body: '[{"name":"demo_volume","id":"111111"}]')
 
       expect(@netapp_api).to receive(:request).with(:get, '/devmgr/v2/storage-systems/12345/volumes').and_return(response)
       expect(@netapp_api.send(:volume_id, '12345', 'demo_volume')).to eq('111111')
@@ -656,7 +656,7 @@ describe 'netapp_e_series_api' do
     end
 
     it 'returns nil when the required host does not exist' do
-      response = double(body: "[{\"name\":\"demo_volume_1\",\"id\":\"111111\"}]")
+      response = double(body: '[{"name":"demo_volume_1","id":"111111"}]')
 
       expect(@netapp_api).to receive(:request).with(:get, '/devmgr/v2/storage-systems/12345/volumes').and_return(response)
       expect(@netapp_api.send(:volume_id, '12345', 'demo_volume')).to eq(nil)
@@ -665,7 +665,7 @@ describe 'netapp_e_series_api' do
 
   context 'group_snapshot_id:' do
     it 'returns id when host exits' do
-      response = double(body: "[{\"label\":\"demo_group_snapshot\",\"id\":\"111111\"}]")
+      response = double(body: '[{"label":"demo_group_snapshot","id":"111111"}]')
 
       expect(@netapp_api).to receive(:request).with(:get, '/devmgr/v2/storage-systems/12345/snapshot-groups').and_return(response)
       expect(@netapp_api.send(:group_snapshot_id, '12345', 'demo_group_snapshot')).to eq('111111')
@@ -679,7 +679,7 @@ describe 'netapp_e_series_api' do
     end
 
     it 'returns nil when the required host does not exist' do
-      response = double(body: "[{\"label\":\"demo_group_snapshot_1\",\"id\":\"111111\"}]")
+      response = double(body: '[{"label":"demo_group_snapshot_1","id":"111111"}]')
 
       expect(@netapp_api).to receive(:request).with(:get, '/devmgr/v2/storage-systems/12345/snapshot-groups').and_return(response)
       expect(@netapp_api.send(:group_snapshot_id, '12345', 'demo_group_snapshot')).to eq(nil)
@@ -688,7 +688,7 @@ describe 'netapp_e_series_api' do
 
   context 'volume_snapshot_id:' do
     it 'returns id when host exits' do
-      response = double(body: "[{\"label\":\"demo_snapshot_volume\",\"id\":\"111111\"}]")
+      response = double(body: '[{"label":"demo_snapshot_volume","id":"111111"}]')
 
       expect(@netapp_api).to receive(:request).with(:get, '/devmgr/v2/storage-systems/12345/snapshot-volumes').and_return(response)
       expect(@netapp_api.send(:volume_snapshot_id, '12345', 'demo_snapshot_volume')).to eq('111111')
@@ -702,7 +702,7 @@ describe 'netapp_e_series_api' do
     end
 
     it 'returns nil when the required host does not exist' do
-      response = double(body: "[{\"label\":\"demo_snapshot_volume_1\",\"id\":\"111111\"}]")
+      response = double(body: '[{"label":"demo_snapshot_volume_1","id":"111111"}]')
 
       expect(@netapp_api).to receive(:request).with(:get, '/devmgr/v2/storage-systems/12345/snapshot-volumes').and_return(response)
       expect(@netapp_api.send(:volume_snapshot_id, '12345', 'demo_snapshot_volume')).to eq(nil)
@@ -711,7 +711,7 @@ describe 'netapp_e_series_api' do
 
   context 'thin_volume_id:' do
     it 'returns id when host exits' do
-      response = double(body: "[{\"name\":\"demo_thin_volume\",\"id\":\"111111\"}]")
+      response = double(body: '[{"name":"demo_thin_volume","id":"111111"}]')
 
       expect(@netapp_api).to receive(:request).with(:get, '/devmgr/v2/storage-systems/12345/thin-volumes').and_return(response)
       expect(@netapp_api.send(:thin_volume_id, '12345', 'demo_thin_volume')).to eq('111111')
@@ -725,7 +725,7 @@ describe 'netapp_e_series_api' do
     end
 
     it 'returns nil when the required host does not exist' do
-      response = double(body: "[{\"name\":\"demo_thin_volume_1\",\"id\":\"111111\"}]")
+      response = double(body: '[{"name":"demo_thin_volume_1","id":"111111"}]')
 
       expect(@netapp_api).to receive(:request).with(:get, '/devmgr/v2/storage-systems/12345/thin-volumes').and_return(response)
       expect(@netapp_api.send(:thin_volume_id, '12345', 'demo_thin_volume')).to eq(nil)
@@ -736,7 +736,7 @@ describe 'netapp_e_series_api' do
     it 'send asup to proxy' do
       response = double
       stub_const('Chef::VERSION', '12.4.1')
-      request_body = "{\"application\":\"Chef\",\"chef-version\":\"12.4.1\",\"url\":\"127.0.0.1\"}"
+      request_body = '{"application":"Chef","chef-version":"12.4.1","url":"127.0.0.1"}'
 
       expect(@netapp_api).to receive(:request).with(:post, '/devmgr/v2/key-values/Chef', request_body).and_return(response)
       expect(@netapp_api).to receive(:status).with(response, 200, [200], 'Failed to post key/value pair')
@@ -764,7 +764,7 @@ describe 'netapp_e_series_api' do
   context 'mirror_group' do
     it 'is created' do
       response = double
-      request_body = "{\"name\":\"demo_mirror_group\"}"
+      request_body = '{"name":"demo_mirror_group"}'
 
       expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
       expect(@netapp_api).to receive(:mirror_group_id).with('12345', 'demo_mirror_group').and_return(nil)
@@ -807,7 +807,7 @@ describe 'netapp_e_series_api' do
 
   context 'mirror_group_id' do
     it 'returns id when group exist' do
-      response = double(body: "[{\"label\":\"demo_mirror_group\",\"id\":\"111111\"}]")
+      response = double(body: '[{"label":"demo_mirror_group","id":"111111"}]')
       expect(@netapp_api).to receive(:request).with(:get, '/devmgr/v2/storage-systems/12345/async-mirrors').and_return(response)
       expect(@netapp_api.send(:mirror_group_id, '12345', 'demo_mirror_group')).to eq('111111')
     end
@@ -819,7 +819,7 @@ describe 'netapp_e_series_api' do
     end
 
     it 'returns nil when the required mirror group does not exist' do
-      response = double(body: "[{\"label\":\"demo_mirror_group_1\",\"id\":\"111111\"}]")
+      response = double(body: '[{"label":"demo_mirror_group_1","id":"111111"}]')
       expect(@netapp_api).to receive(:request).with(:get, '/devmgr/v2/storage-systems/12345/async-mirrors').and_return(response)
       expect(@netapp_api.send(:mirror_group_id, '12345', 'demo_mirror_group')).to eq(nil)
     end
@@ -828,7 +828,7 @@ describe 'netapp_e_series_api' do
   context 'consistency_group' do
     it 'is created' do
       response = double
-      request_body = "{\"name\":\"demo_consistency_group\"}"
+      request_body = '{"name":"demo_consistency_group"}'
       expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
       expect(@netapp_api).to receive(:consistency_group_id).with('12345', 'demo_consistency_group').and_return(nil)
       expect(@netapp_api).to receive(:request).with(:post, '/devmgr/v2/storage-systems/12345/consistency-groups', request_body).and_return(response)
@@ -870,7 +870,7 @@ describe 'netapp_e_series_api' do
 
   context 'consistency_group_id' do
     it 'returns id when consistency group exist' do
-      response = double(body: "[{\"label\":\"demo_consistency_group\",\"id\":\"111111\"}]")
+      response = double(body: '[{"label":"demo_consistency_group","id":"111111"}]')
       expect(@netapp_api).to receive(:request).with(:get, '/devmgr/v2/storage-systems/12345/consistency-groups').and_return(response)
       expect(@netapp_api.send(:consistency_group_id, '12345', 'demo_consistency_group')).to eq('111111')
     end
@@ -882,7 +882,7 @@ describe 'netapp_e_series_api' do
     end
 
     it 'returns nil when the required consistency group does not exist' do
-      response = double(body: "[{\"label\":\"demo_consistency_group_1\",\"id\":\"111111\"}]")
+      response = double(body: '[{"label":"demo_consistency_group_1","id":"111111"}]')
       expect(@netapp_api).to receive(:request).with(:get, '/devmgr/v2/storage-systems/12345/consistency-groups').and_return(response)
       expect(@netapp_api.send(:consistency_group_id, '12345', 'demo_consistency_group')).to eq(nil)
     end
@@ -891,7 +891,7 @@ describe 'netapp_e_series_api' do
   context 'volume_copy' do
     it 'is created' do
       response = double
-      request_body = "{\"sourceId\":\"111\",\"targetId\":\"555\"}"
+      request_body = '{"sourceId":"111","targetId":"555"}'
 
       expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
       expect(@netapp_api).to receive(:request).with(:post, '/devmgr/v2/storage-systems/12345/volume-copy-jobs', request_body).and_return(response)
@@ -928,7 +928,7 @@ describe 'netapp_e_series_api' do
 
   context 'volume_pair_id' do
     it 'returns id when volume pair exist' do
-      response = double(body: "[{\"id\":\"11111\"}]")
+      response = double(body: '[{"id":"11111"}]')
       expect(@netapp_api).to receive(:request).with(:get, '/devmgr/v2/storage-systems/12345/volume-copy-jobs').and_return(response)
       expect(@netapp_api.send(:volume_pair_id, '12345', '11111')).to eq('11111')
     end
@@ -949,7 +949,7 @@ describe 'netapp_e_series_api' do
   context 'ssd_cache' do
     it 'is created' do
       response = double
-      request_body = "{\"driveRefs\":[\"111111\"]}"
+      request_body = '{"driveRefs":["111111"]}'
       expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
       expect(@netapp_api).to receive(:request).with(:post, '/devmgr/v2/storage-systems/12345/flash-cache', request_body).and_return(response)
       expect(@netapp_api).to receive(:status).with(response, 200, [200], 'Failed to create ssd/flash cache')
@@ -979,7 +979,7 @@ describe 'netapp_e_series_api' do
     it 'add drives to ssd/flash cache' do
       response = double
 
-      request_body = "{\"driveRefs\":[\"111111\"]}"
+      request_body = '{"driveRefs":["111111"]}'
       expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
       expect(@netapp_api).to receive(:request).with(:post, '/devmgr/v2/storage-systems/12345/flash-cache/addDrives', request_body).and_return(response)
       expect(@netapp_api).to receive(:status).with(response, 200, [200], 'Failed to add drives in ssd/flash cache')
@@ -1021,7 +1021,7 @@ describe 'netapp_e_series_api' do
   context 'firmware' do
     it 'is upgraded' do
       response = double
-      request_body = "{\"cfw_file\":\"test_file_name\"}"
+      request_body = '{"cfw_file":"test_file_name"}'
       expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
       expect(@netapp_api).to receive(:request).with(:post, '/devmgr/v2/storage-systems/12345/cfw-upgrade', request_body).and_return(response)
       expect(@netapp_api).to receive(:status).with(response, 202, [202], 'Failed to upgrade firmware')
@@ -1043,7 +1043,7 @@ describe 'netapp_e_series_api' do
   context 'network_configuration' do
     it 'is updated' do
       response = double
-      request_body = "{\"controllerRef\":\"07001233434353535325555\"}"
+      request_body = '{"controllerRef":"07001233434353535325555"}'
       expect(@netapp_api).to receive(:storage_system_id).with('10.0.0.1').and_return('12345')
       expect(@netapp_api).to receive(:request).with(:post, '/devmgr/v2/storage-systems/12345/configuration/ethernet-interfaces', request_body).and_return(response)
       expect(@netapp_api).to receive(:status).with(response, 200, [200], 'Failed to update Network Parameters')

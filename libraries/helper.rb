@@ -28,7 +28,7 @@ module NetAppEHelper
                asup: node['netapp']['asup']
               }
 
-    params.merge! timeout: node['netapp']['api']['timeout'] if node['netapp']['api'] && node['netapp']['api']['timeout']
+    params[:timeout] = node['netapp']['api']['timeout'] if node['netapp']['api'] && node['netapp']['api']['timeout']
     NetApp::ESeries::Api.new(params)
   end
 end
