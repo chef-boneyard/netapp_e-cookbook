@@ -14,11 +14,11 @@ You need to rename the directory to netapp_e from netapp_e-cookbook in order to 
 
 #### NetApp SANtricity Web Service Proxy Upgrade
 
-Use 'auto_upgrade' recipe to upgrade your NetApp SANtricity Web Service Proxy
+Use `auto_upgrade` recipe to upgrade your NetApp SANtricity Web Service Proxy
 
 NetApp E-Series connection
 -----------------
-The connection is made over HTTPS through the SANtricity Web Services Proxy and the connection settings are managed by attributes.
+In order to use the Resources provided by the cookbook you need to include the `default` recipe in your run-list. The connection is made over HTTPS through the SANtricity Web Services Proxy and the connection settings are managed by attributes.
 
     ['netapp']['https'] boolean
     ['netapp']['user'] string
@@ -38,6 +38,10 @@ You need to have the necessary certificates in the environment path of machine i
 
 NetApp E-Series Recipes
 =======================
+
+default
+-------
+This recipe is required for using the cookbook's Resources, it installs the required `excon` gem for the Chef client.
 
 proxy
 -----
@@ -904,7 +908,7 @@ License and Authors
 - Authors:: Matt Ray (matt@getchef.com)
 
 ```text
-Copyright 2015 Chef Software, Inc.
+Copyright 2015-2016 Chef Software, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
