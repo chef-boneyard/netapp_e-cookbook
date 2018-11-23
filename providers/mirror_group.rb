@@ -21,7 +21,7 @@ include NetAppEHelper
 
 action :create do
   # Validations
-  fail ArgumentError, 'Attribute secondary_array_id is required for mirror group creation' unless new_resource.secondary_array_id
+  raise ArgumentError, 'Attribute secondary_array_id is required for mirror group creation' unless new_resource.secondary_array_id
 
   request_body = { secondaryArrayId: new_resource.secondary_array_id, name: new_resource.name, syncIntervalMinutes: new_resource.sync_interval_minutes, manualSync: new_resource.manual_sync, recoveryWarnThresholdMinutes: new_resource.recovery_warn_threshold_minutes, repoUtilizationWarnThreshold: new_resource.repo_utilization_warn_threshold, syncWarnThresholdMinutes: new_resource.syncWarn_threshold_minutes }
 

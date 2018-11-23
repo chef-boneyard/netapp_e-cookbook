@@ -49,7 +49,7 @@ default['netapp']['volume_copy']['target_id'] = '0200000060080E50001F69B40000170
 # default['netapp']['volume_copy']['online_copy'] = false            # optional parameter, defaults to false
 
 # ssd cache / flash cache
-default['netapp']['ssd_cache']['drive_refs'] = %w(123, 234) # Need to pass drive refs its a array of string
+default['netapp']['ssd_cache']['drive_refs'] = %w[123 234] # Need to pass drive refs its a array of string
 default['netapp']['ssd_cache']['name'] = 'flashCache'              # optional parameter
 default['netapp']['ssd_cache']['enable_existing_volumes'] = false  # optional parameter
 
@@ -87,8 +87,7 @@ default['netapp']['host']['host_used'] = true
 default['netapp']['host']['index'] = 0
 default['netapp']['host']['host_type_name'] = 'VmwTPPGFLUA'
 default['netapp']['host']['ports'] = [{ 'type' => 'fc', 'port' => '4983294832', 'label' => 'esx_140a' },
-                                      { 'type' => 'fc', 'port' => '2101001B32A2D180', 'label' => 'esx_140b' }
-                                     ]
+                                      { 'type' => 'fc', 'port' => '2101001B32A2D180', 'label' => 'esx_140b' }]
 default['netapp']['host']['groupid'] = '8500000060080E50001F69B400360CBE565E35E3'
 
 # iscsi updation
@@ -131,7 +130,7 @@ default['netapp']['consistency_group']['rollback_priority'] = 'highest'
 default['netapp']['disk_pool']['name'] = 'demo_disk_pool'
 default['netapp']['disk_pool']['raid_level'] = 'raidDiskPool'
 # Minimum 11 drive id's need to be provided when using raidLevel value raidDiskPool
-default['netapp']['disk_pool']['disk_drive_ids'] = %w(010000005000C5004B993D9B0000000000000000 010000005000CCA016B152540000000000000000 010000005000CCA016B19B600000000000000000 010000005000CCA016B2BCB00000000000000000 010000005000CCA016B2F5FC0000000000000000 010000005000CCA016B3B0980000000000000000 010000005000CCA0225C24B80000000000000000 010000005000CCA0225CD88C0000000000000000 010000005000CCA0225F50100000000000000000 010000005000CCA02260F2EC0000000000000000 010000005000CCA02260F3080000000000000000)
+default['netapp']['disk_pool']['disk_drive_ids'] = %w[010000005000C5004B993D9B0000000000000000 010000005000CCA016B152540000000000000000 010000005000CCA016B19B600000000000000000 010000005000CCA016B2BCB00000000000000000 010000005000CCA016B2F5FC0000000000000000 010000005000CCA016B3B0980000000000000000 010000005000CCA0225C24B80000000000000000 010000005000CCA0225CD88C0000000000000000 010000005000CCA0225F50100000000000000000 010000005000CCA02260F2EC0000000000000000 010000005000CCA02260F3080000000000000000]
 
 # Manage Controller Network configuration
 default['netapp']['network_configuration']['controller_ref'] = '07001233434353535325555'

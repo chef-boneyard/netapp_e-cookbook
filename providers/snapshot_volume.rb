@@ -21,11 +21,11 @@ include NetAppEHelper
 
 action :create do
   # Validations
-  fail ArgumentError, 'Attribute snapshot_image_id is required for volume snapshot creation' unless new_resource.snapshot_image_id
-  fail ArgumentError, 'Attribute full_threshold is required for volume snapshot creation' unless new_resource.full_threshold
-  fail ArgumentError, 'Attribute view_mode is required for volume snapshot creation' unless new_resource.view_mode
-  fail ArgumentError, 'Attribute repository_percentage is required for volume   snapshot creation' unless new_resource.repository_percentage
-  fail ArgumentError, 'Attribute repository_pool_id is required for volume snapshot creation' unless new_resource.repository_pool_id
+  raise ArgumentError, 'Attribute snapshot_image_id is required for volume snapshot creation' unless new_resource.snapshot_image_id
+  raise ArgumentError, 'Attribute full_threshold is required for volume snapshot creation' unless new_resource.full_threshold
+  raise ArgumentError, 'Attribute view_mode is required for volume snapshot creation' unless new_resource.view_mode
+  raise ArgumentError, 'Attribute repository_percentage is required for volume   snapshot creation' unless new_resource.repository_percentage
+  raise ArgumentError, 'Attribute repository_pool_id is required for volume snapshot creation' unless new_resource.repository_pool_id
 
   request_body = { snapshotImageId: new_resource.snapshot_image_id, fullThreshold: new_resource.full_threshold, name: new_resource.name, viewMode: new_resource.view_mode, repositoryPercentage: new_resource.repository_percentage, repositoryPoolId: new_resource.repository_pool_id }
 

@@ -23,6 +23,6 @@ default_action :create
 attribute :name, kind_of: String, required: true, name_attribute: true
 attribute :storage_system, kind_of: String, required: true
 
-attribute :raid_level, kind_of: String, equal_to: %w(Unsupported All 0 1 3 5 6 DiskPool)
+attribute :raid_level, kind_of: String, equal_to: %w[Unsupported All 0 1 3 5 6 DiskPool]
 attribute :disk_drive_ids, kind_of: Array
 attribute :erase_secured_drives, kind_of: [TrueClass, FalseClass], default: false

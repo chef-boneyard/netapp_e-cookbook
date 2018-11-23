@@ -21,12 +21,12 @@ include NetAppEHelper
 
 action :create do
   # Validations
-  fail ArgumentError, 'Attribute base_mappable_object_id is required to create group snapshot creation' unless new_resource.base_mappable_object_id
-  fail ArgumentError, 'Attribute repository_percentage is required to create group snapshot creation' unless new_resource.repository_percentage
-  fail ArgumentError, 'Attribute warning_threshold is required to create group snapshot creation' unless new_resource.warning_threshold
-  fail ArgumentError, 'Attribute auto_delete_limit is required to create group snapshot creation' unless new_resource.auto_delete_limit
-  fail ArgumentError, 'Attribute full_policy is required to create group snapshot creation' unless new_resource.full_policy
-  fail ArgumentError, 'Attribute storage_pool_id is required to create group snapshot creation' unless new_resource.storage_pool_id
+  raise ArgumentError, 'Attribute base_mappable_object_id is required to create group snapshot creation' unless new_resource.base_mappable_object_id
+  raise ArgumentError, 'Attribute repository_percentage is required to create group snapshot creation' unless new_resource.repository_percentage
+  raise ArgumentError, 'Attribute warning_threshold is required to create group snapshot creation' unless new_resource.warning_threshold
+  raise ArgumentError, 'Attribute auto_delete_limit is required to create group snapshot creation' unless new_resource.auto_delete_limit
+  raise ArgumentError, 'Attribute full_policy is required to create group snapshot creation' unless new_resource.full_policy
+  raise ArgumentError, 'Attribute storage_pool_id is required to create group snapshot creation' unless new_resource.storage_pool_id
 
   request_body = { baseMappableObjectId: new_resource.base_mappable_object_id, name: new_resource.name, repositoryPercentage: new_resource.repository_percentage, warningThreshold: new_resource.warning_threshold, autoDeleteLimit: new_resource.auto_delete_limit, fullPolicy: new_resource.full_policy, storagePoolId: new_resource.storage_pool_id }
 

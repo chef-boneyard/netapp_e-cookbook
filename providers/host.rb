@@ -21,11 +21,11 @@ include NetAppEHelper
 
 action :create do
   # Validations
-  fail ArgumentError, 'Attribute host_default is required for host creation' if new_resource.host_default.nil?
-  fail ArgumentError, 'Attribute code is required for host creation' unless new_resource.code
-  fail ArgumentError, 'Attribute host_used is required for host creation' if new_resource.host_used.nil?
-  fail ArgumentError, 'Attribute index is required for host creation' unless new_resource.index
-  fail ArgumentError, 'Attribute host_type_name is required for host creation' unless new_resource.host_type_name
+  raise ArgumentError, 'Attribute host_default is required for host creation' if new_resource.host_default.nil?
+  raise ArgumentError, 'Attribute code is required for host creation' unless new_resource.code
+  raise ArgumentError, 'Attribute host_used is required for host creation' if new_resource.host_used.nil?
+  raise ArgumentError, 'Attribute index is required for host creation' unless new_resource.index
+  raise ArgumentError, 'Attribute host_type_name is required for host creation' unless new_resource.host_type_name
 
   # HTTP Request body
   host_type = { default: new_resource.host_default, code: new_resource.code, used: new_resource.host_used, index: new_resource.index, name: new_resource.host_type_name }

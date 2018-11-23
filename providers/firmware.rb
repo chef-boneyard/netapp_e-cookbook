@@ -21,8 +21,7 @@ include NetAppEHelper
 action :upgrade do
   request_body = { cfwFile: new_resource.cfw_file, nvsramFile: new_resource.nvsram_file,
                    stageFirmware: new_resource.stage_firmware,
-                   skipMelCheck: new_resource.skip_mel_check
-                 }
+                   skipMelCheck: new_resource.skip_mel_check }
 
   netapp_api = netapp_api_create
 

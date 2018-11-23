@@ -16,13 +16,13 @@ class NetApp
       def login
         body = { userId: @user, password: @password }.to_json
         response = request(:post, '/devmgr/utils/login', body)
-        fail "Login failed. HTTP error- #{response.status}" if response.status != 200
+        raise "Login failed. HTTP error- #{response.status}" if response.status != 200
         @cookie = response.headers['Set-Cookie'].split(';').first
       end
 
       def logout
         response = request(:delete, '/devmgr/utils/login')
-        fail "Logout failed. HTTP error- #{response.status}" if response.status != 204
+        raise "Logout failed. HTTP error- #{response.status}" if response.status != 204
         @cookie = nil
       end
 
@@ -339,10 +339,11 @@ class NetApp
 
       # Send ASUP key/value pair for tracking
       def send_asup
-        client_info = { 'application'  => 'Chef',
-                        'chef-version' => Chef::VERSION,
-                        'url'          => @url
-        }.to_json if @asup
+        if @asup
+          client_info = { 'application'  => 'Chef',
+                          'chef-version' => Chef::VERSION,
+                          'url'          => @url }.to_json
+        end
 
         post_key_value('Chef', client_info) if @asup
       end
@@ -403,7 +404,7 @@ class NetApp
         response = request(:get, '/devmgr/v2/storage-systems')
         storage_systems = JSON.parse(response.body)
         storage_systems.each do |system|
-          return system['id'] if system['ip1'] == storage_system_ip || system['ip2'] == storage_system_ip
+          return system['id'] if system.include?(storage_system_ip)
         end
         nil
       end
@@ -539,7 +540,7 @@ class NetApp
             break
           end
         end
-        request_fail ? (fail "Status #{response.status} #{failure_message}.\n\n#{response.body}") : resource_update_status
+        request_fail ? (raise "Status #{response.status} #{failure_message}.\n\n#{response.body}") : resource_update_status
       end
 
       # Make a call to the web proxy

@@ -7,6 +7,10 @@ LineLength:
   Enabled: false
 MethodLength:
   Max: 30
+Metrics/BlockLength:
+  Exclude:
+  - 'spec/netapp_e_series_api_spec.rb'
+  - 'spec/helper_spec.rb'
 Documentation:
   Enabled: false
 ClassLength:

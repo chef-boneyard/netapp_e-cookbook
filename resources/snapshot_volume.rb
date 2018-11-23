@@ -25,6 +25,6 @@ attribute :storage_system, kind_of: String, required: true
 
 attribute :snapshot_image_id, kind_of: String
 attribute :full_threshold, kind_of: Integer
-attribute :view_mode, kind_of: String, equal_to: %w(modeUnknown readWrite readOnly)
+attribute :view_mode, kind_of: String, equal_to: %w[modeUnknown readWrite readOnly]
 attribute :repository_percentage, kind_of: Integer
 attribute :repository_pool_id, kind_of: String

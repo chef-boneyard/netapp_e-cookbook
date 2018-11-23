@@ -27,5 +27,5 @@ attribute :base_mappable_object_id, kind_of: String
 attribute :repository_percentage, kind_of: Integer
 attribute :warning_threshold, kind_of: Integer
 attribute :auto_delete_limit, kind_of: Integer
-attribute :full_policy, kind_of: String, equal_to: %w(unknown failbasewrites purgepit)
+attribute :full_policy, kind_of: String, equal_to: %w[unknown failbasewrites purgepit]
 attribute :storage_pool_id, kind_of: String

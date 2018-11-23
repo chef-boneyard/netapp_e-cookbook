@@ -5,8 +5,7 @@ describe 'netapp_e_series_api' do
   before do
     params = {  user: 'rw', password: 'rw',
                 url: '127.0.0.1', basic_auth: true,
-                asup: true
-              }
+                asup: true }
 
     @netapp_api = NetApp::ESeries::Api.new(params)
   end
@@ -85,8 +84,7 @@ describe 'netapp_e_series_api' do
     it 'when basic authentication is set to false' do
       params = {  user: 'rw', password: 'rw',
                   url: '127.0.0.1', basic_auth: false,
-                  asup: true
-                }
+                  asup: true }
 
       @netapp_api_no_basic_auth = NetApp::ESeries::Api.new(params)
       headers = { 'Accept' => 'application/json', 'Content-Type' => 'application/json', 'cookie' => @cookie }
@@ -750,8 +748,7 @@ describe 'netapp_e_series_api' do
     before do
       params = {  user: 'rw', password: 'rw',
                   url: '127.0.0.1', basic_auth: true,
-                  asup: false
-                }
+                  asup: false }
 
       @netapp_api = NetApp::ESeries::Api.new(params)
     end

@@ -21,8 +21,8 @@ include NetAppEHelper
 
 action :create do
   # Validations
-  fail ArgumentError, 'Attribute source_id is required for volume copy creation' unless new_resource.source_id
-  fail ArgumentError, 'Attribute target_id is required for volume copy creation' unless new_resource.target_id
+  raise ArgumentError, 'Attribute source_id is required for volume copy creation' unless new_resource.source_id
+  raise ArgumentError, 'Attribute target_id is required for volume copy creation' unless new_resource.target_id
 
   request_body = { sourceId: new_resource.source_id, targetId: new_resource.target_id, copyPriority: new_resource.copy_priority,
                    targetWriteProtected: new_resource.target_write_protected, onlineCopy: new_resource.online_copy }

@@ -8,12 +8,12 @@ module NetAppEHelper
   end
 
   def validate_node_attributes
-    fail unless node['netapp']['https'] == true || node['netapp']['https'] == false
-    fail unless node['netapp']['user'].class == String
-    fail unless node['netapp']['password'].class == String
-    fail unless node['netapp']['fqdn'].class == String
-    fail unless node['netapp']['basic_auth'] == true || node['netapp']['basic_auth'] == false
-    fail unless node['netapp']['asup'] == true || node['netapp']['asup'] == false
+    raise unless node['netapp']['https'] == true || node['netapp']['https'] == false
+    raise unless node['netapp']['user'].class == String
+    raise unless node['netapp']['password'].class == String
+    raise unless node['netapp']['fqdn'].class == String
+    raise unless node['netapp']['basic_auth'] == true || node['netapp']['basic_auth'] == false
+    raise unless node['netapp']['asup'] == true || node['netapp']['asup'] == false
   rescue
     Chef::Log.error('One or more mandatory parameters are not provided or are set incorrectly')
     exit
@@ -25,8 +25,7 @@ module NetAppEHelper
 
     params = { user: node['netapp']['user'], password: node['netapp']['password'],
                url: url, basic_auth: node['netapp']['basic_auth'],
-               asup: node['netapp']['asup']
-              }
+               asup: node['netapp']['asup'] }
 
     params[:timeout] = node['netapp']['api']['timeout'] if node['netapp']['api'] && node['netapp']['api']['timeout']
     NetApp::ESeries::Api.new(params)

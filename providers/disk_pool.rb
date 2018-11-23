@@ -21,7 +21,7 @@ include NetAppEHelper
 
 action :create do
   # Validations
-  fail ArgumentError, 'Attribute disk_drive_ids is required for volume group creation' if new_resource.disk_drive_ids.empty?
+  raise ArgumentError, 'Attribute disk_drive_ids is required for volume group creation' if new_resource.disk_drive_ids.empty?
 
   request_body = { raidLevel: new_resource.raid_level, diskDriveIds: new_resource.disk_drive_ids, name: new_resource.name }
 

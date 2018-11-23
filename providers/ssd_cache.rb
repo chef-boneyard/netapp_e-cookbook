@@ -21,7 +21,7 @@ include NetAppEHelper
 
 action :create do
   # Validations
-  fail ArugumentError 'Attribute drive_refs is required for ssd_cache creation' unless new_resource.drive_refs
+  raise ArugumentError 'Attribute drive_refs is required for ssd_cache creation' unless new_resource.drive_refs
 
   request_body = { driveRefs: new_resource.drive_refs, name: new_resource.name,
                    enableExistingVolumes: new_resource.enable_existing_volumes }
@@ -44,7 +44,7 @@ end
 
 action :update do
   # Validations
-  fail ArugumentError 'Attribute drive_refs is required for ssd_cache creation' unless new_resource.drive_refs
+  raise ArugumentError 'Attribute drive_refs is required for ssd_cache creation' unless new_resource.drive_refs
 
   request_body = { driveRef: new_resource.drive_refs }
 
